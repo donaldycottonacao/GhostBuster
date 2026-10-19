@@ -426,3 +426,77 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# ==============================================================================
+# GhostBuster Project Specific Ignores
+# ==============================================================================
+
+# Dart & Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.pub/
+
+# Android build outputs & local properties
+**/android/.gradle
+**/android/local.properties
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/generated/
+**/android/app/build/
+*.keystore
+*.jks
+
+# iOS build outputs & CocoaPods
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.framework
+
+# Web build output
+**/frontend-client/build/web/
+
+# Python Virtual Environments & Cache
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Sensitive Audio Recordings & Generated Models (Privacy & Ethics)
+# Input voice samples and generated output audio should not be committed to Git
+backend-tools/voice_samples/*
+!backend-tools/voice_samples/.gitkeep
+backend-tools/output_assets/*
+!backend-tools/output_assets/.gitkeep
+
+# Optional local binary media assets (Ringtones & proprietary fonts)
+frontend-client/assets/audio/*.mp3
+frontend-client/assets/audio/*.wav
+frontend-client/assets/fonts/*.ttf
+frontend-client/assets/fonts/*.otf
+!frontend-client/assets/audio/README.md
+!frontend-client/assets/fonts/README.md
+
+# Environment variables & secrets
+.env
+*.env.*
+*.pem
+*.key
