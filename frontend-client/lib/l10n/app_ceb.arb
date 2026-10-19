@@ -57,8 +57,6 @@
   "setupVoiceScript": "SCRIPT SA TINGOG",
   "setupGenerateWithAI": "Himoa gamit ang AI",
   "setupWriteMyOwn": "Ako ang mosulat",
-  "setupEditableAIDraft": "MA-EDIT NGA AI DRAFT",
-  "setupYourScript": "IMONG SCRIPT",
   "setupScriptHint": "Isulat ang imong script...",
   "setupScriptExample": "Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.",
   "setupReviewNote": "Susiha ug usba una gamiton.",

@@ -57,8 +57,6 @@
   "setupVoiceScript": "SCRIPT NG SASABIHIN",
   "setupGenerateWithAI": "Gumawa gamit ang AI",
   "setupWriteMyOwn": "Ako ang susulat",
-  "setupEditableAIDraft": "MAA-EDIT NA AI DRAFT",
-  "setupYourScript": "SCRIPT MO",
   "setupScriptHint": "Isulat ang script mo...",
   "setupScriptExample": "Uy, puwede mo ba akong tawagan? Kailangan ko ng dahilan para makalabas.",
   "setupReviewNote": "Suriin at i-edit bago gamitin.",

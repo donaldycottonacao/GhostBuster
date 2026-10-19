@@ -1,82 +1,118 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:frontend_client/main.dart';
-import 'package:frontend_client/models/call_state.dart';
-import 'package:frontend_client/providers/call_provider.dart';
+import 'package:frontend_client/widgets/slide_button.dart';
 
 void main() {
-  testWidgets('setup selections are stored in the in-memory call session', (
+  testWidgets('setup previews a static countdown with the selected delay', (
     tester,
   ) async {
-    final provider = CallProvider();
-    await tester.pumpWidget(GhostBusterApp(provider: provider));
+    await tester.pumpWidget(const GhostBusterApp());
     await tester.pumpAndSettle();
 
     expect(find.text('Set your exit'), findsOneWidget);
-    expect(provider.state, CallLifecycleState.configuration);
-
     await tester.tap(find.text('1 min'));
     await tester.pump();
-    expect(provider.delaySeconds, 60);
 
-    await tester.tap(find.text('Tagalog'));
+    final armButton = find.text('ARM STEALTH MODE');
+    await tester.ensureVisible(armButton);
+    await tester.tap(armButton);
     await tester.pumpAndSettle();
-    expect(provider.languageCode, 'tl');
-    expect(provider.currentLocale.languageCode, 'en');
 
-    final situationField = find.byType(TextField).first;
-    await tester.ensureVisible(situationField);
-    await tester.enterText(situationField, 'At a party and ready to leave');
-    expect(provider.situationText, 'At a party and ready to leave');
+    expect(find.text('01:00'), findsOneWidget);
+    expect(find.text('SILENT COUNTDOWN'), findsOneWidget);
 
-    final scriptField = find.byType(TextField).last;
-    await tester.ensureVisible(scriptField);
-    await tester.enterText(scriptField, 'Please call me when you can.');
-    expect(provider.voiceScriptText, 'Please call me when you can.');
+    final cancelButton = find.text('CANCEL');
+    await tester.ensureVisible(cancelButton);
+    await tester.tap(cancelButton);
+    await tester.pumpAndSettle();
+    expect(find.text('Set your exit'), findsOneWidget);
   });
 
-  testWidgets('AI option uses a local sample for the selected language', (
+  testWidgets('preview flow shows incoming, active, ended, and setup screens', (
     tester,
   ) async {
-    final provider = CallProvider();
-    await tester.pumpWidget(GhostBusterApp(provider: provider));
+    await tester.pumpWidget(const GhostBusterApp());
+    await tester.pumpAndSettle();
+
+    final armButton = find.text('ARM STEALTH MODE');
+    await tester.ensureVisible(armButton);
+    await tester.tap(armButton);
+    await tester.pumpAndSettle();
+
+    final incomingPreview = find.text('Preview incoming call screen');
+    await tester.ensureVisible(incomingPreview);
+    await tester.tap(incomingPreview);
+    await tester.pumpAndSettle();
+    expect(find.text('Incoming call...'), findsOneWidget);
+    expect(find.text('Riley Morgan'), findsOneWidget);
+
+    final slideButton = find.byType(SlideButton);
+    await tester.ensureVisible(slideButton);
+    final sliderRect = tester.getRect(slideButton);
+    await tester.dragFrom(
+      Offset(sliderRect.left + 35, sliderRect.center.dy),
+      Offset(sliderRect.width, 0),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Connected'), findsOneWidget);
+    expect(find.text('00:18'), findsOneWidget);
+
+    final muteButton = find.text('Mute');
+    await tester.ensureVisible(muteButton);
+    await tester.tap(muteButton);
+    await tester.pump();
+    expect(find.text('Unmute'), findsOneWidget);
+
+    await tester.tap(find.text('Keypad'));
+    await tester.pump();
+    expect(find.text('1'), findsOneWidget);
+
+    final hideKeypad = find.text('HIDE KEYPAD');
+    await tester.ensureVisible(hideKeypad);
+    await tester.tap(hideKeypad);
+    await tester.pump();
+
+    final endCall = find.byIcon(Icons.call_end_rounded);
+    await tester.ensureVisible(endCall);
+    await tester.tap(endCall);
+    await tester.pumpAndSettle();
+    expect(find.text('Call ended'), findsOneWidget);
+
+    final returnButton = find.text('RETURN TO SETUP');
+    await tester.ensureVisible(returnButton);
+    await tester.tap(returnButton);
+    await tester.pumpAndSettle();
+    expect(find.text('Set your exit'), findsOneWidget);
+  });
+
+  testWidgets('AI button inserts a local sample that remains editable', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const GhostBusterApp());
     await tester.pumpAndSettle();
 
     final bisayaOption = find.text('Cebuano / Bisaya');
     await tester.ensureVisible(bisayaOption);
     await tester.tap(bisayaOption);
-    await tester.pumpAndSettle();
-    expect(provider.languageCode, 'ceb');
+    await tester.pump();
 
     final generateOption = find.text('Generate with AI');
     await tester.ensureVisible(generateOption);
     await tester.tap(generateOption);
     await tester.pump();
 
-    const bisayaSample =
-        'Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.';
-    expect(provider.voiceScriptText, bisayaSample);
-    expect(provider.currentLocale.languageCode, 'en');
-
-    final ownOption = find.text('Write my own');
-    await tester.ensureVisible(ownOption);
-    await tester.tap(ownOption);
-    await tester.pump();
     final scriptField = find.byType(TextField).last;
     await tester.ensureVisible(scriptField);
-    await tester.enterText(scriptField, 'Akong kaugalingong script');
-    expect(provider.voiceScriptText, 'Akong kaugalingong script');
-  });
+    expect(
+      (tester.widget<TextField>(scriptField).controller!).text,
+      'Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.',
+    );
 
-  testWidgets('arm control does not start a call flow yet', (tester) async {
-    final provider = CallProvider();
-    await tester.pumpWidget(GhostBusterApp(provider: provider));
-    await tester.pumpAndSettle();
-
-    final armButton = find.text('ARM STEALTH MODE');
-    await tester.ensureVisible(armButton);
-    await tester.tap(armButton);
-    await tester.pump();
-    expect(provider.state, CallLifecycleState.configuration);
+    await tester.enterText(scriptField, 'My custom script');
+    expect(
+      (tester.widget<TextField>(scriptField).controller!).text,
+      'My custom script',
+    );
   });
 }

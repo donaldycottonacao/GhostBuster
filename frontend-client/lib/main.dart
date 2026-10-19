@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/call_provider.dart';
-import 'screens/stealth_trigger.dart';
+import 'screens/screen_preview_host.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,7 +69,7 @@ class GhostBusterApp extends StatelessWidget {
                 elevation: 0,
               ),
             ),
-            home: const StealthTriggerScreen(),
+            home: const ScreenPreviewHost(),
           );
         },
       ),

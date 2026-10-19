@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
-import '../providers/call_provider.dart';
 
 const _background = Color(0xFF171A18);
 const _surface = Color(0xFF222724);
@@ -13,7 +11,12 @@ const _muted = Color(0xFFABB4AD);
 const _orange = Color(0xFFFFA33B);
 
 class StealthTriggerScreen extends StatefulWidget {
-  const StealthTriggerScreen({super.key});
+  const StealthTriggerScreen({
+    super.key,
+    required this.onPreviewCountdown,
+  });
+
+  final void Function(int delaySeconds, String script) onPreviewCountdown;
 
   @override
   State<StealthTriggerScreen> createState() => _StealthTriggerScreenState();
@@ -23,6 +26,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   final _situationController = TextEditingController();
   final _scriptController = TextEditingController();
 
+  int _selectedDelay = 30;
+  String _selectedLanguage = 'en';
   String _selectedMode = 'own';
   String _selectedRingtone = 'containment';
   bool _hasInitializedScript = false;
@@ -38,9 +43,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_hasInitializedScript) return;
-    final provider = context.read<CallProvider>();
-    _situationController.text = provider.situationText;
-    _scriptController.text = provider.voiceScriptText;
+    _scriptController.text = AppLocalizations.of(context)?.setupScriptExample ??
+        'Hey, can you call me? I need a reason to step out.';
     _hasInitializedScript = true;
   }
 
@@ -402,7 +406,6 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       controller: _situationController,
                       minLines: 3,
                       maxLines: 5,
-                      onChanged: context.read<CallProvider>().setSituationText,
                       style: const TextStyle(color: Colors.white, fontSize: 14),
                       decoration: _fieldDecoration(
                         l10n?.setupSituationHint ??
@@ -439,8 +442,6 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                           controller: _scriptController,
                           minLines: 2,
                           maxLines: 5,
-                          onChanged:
-                              context.read<CallProvider>().setVoiceScriptText,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -476,7 +477,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                   SizedBox(
                     height: 60,
                     child: FilledButton.icon(
-                      onPressed: () {},
+                      onPressed: () => widget.onPreviewCountdown(
+                        _selectedDelay,
+                        _scriptController.text,
+                      ),
                       style: FilledButton.styleFrom(
                         backgroundColor: _accent,
                         foregroundColor: const Color(0xFF152019),
@@ -518,22 +522,20 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   }
 
   Widget _delayOption(int seconds, String label) {
-    final provider = context.watch<CallProvider>();
-    final isSelected = provider.delaySeconds == seconds;
+    final isSelected = _selectedDelay == seconds;
     return _SelectionChip(
       label: label,
       isSelected: isSelected,
-      onTap: () => context.read<CallProvider>().setDelaySeconds(seconds),
+      onTap: () => setState(() => _selectedDelay = seconds),
     );
   }
 
   Widget _languageOption(String code, String label) {
-    final provider = context.watch<CallProvider>();
-    final isSelected = provider.languageCode == code;
+    final isSelected = _selectedLanguage == code;
     return _SelectionChip(
       label: label,
       isSelected: isSelected,
-      onTap: () => context.read<CallProvider>().setScriptLanguage(code),
+      onTap: () => setState(() => _selectedLanguage = code),
     );
   }
 
@@ -551,8 +553,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
         setState(() => _selectedMode = mode);
         if (mode != 'ai') return;
 
-        final provider = context.read<CallProvider>();
-        final sample = switch (provider.languageCode) {
+        final sample = switch (_selectedLanguage) {
           'tl' =>
             'Uy, puwede mo ba akong tawagan? Kailangan ko ng dahilan para makalabas.',
           'ceb' =>
@@ -560,7 +561,6 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
           _ => 'Hey, can you call me? I need a reason to step out.',
         };
         _scriptController.text = sample;
-        provider.setVoiceScriptText(sample);
       },
       borderRadius: BorderRadius.circular(10),
       child: Container(
