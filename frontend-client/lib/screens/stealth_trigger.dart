@@ -86,7 +86,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -232,7 +232,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                 }).toList(),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 32),
 
               // Action Trigger Button
               if (_isCountdownActive)
@@ -264,7 +264,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                   ),
                 ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Center(
                 child: Text(
                   'Simulation only. No actual phone lines or cellular networks are accessed.',
