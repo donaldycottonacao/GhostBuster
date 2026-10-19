@@ -105,18 +105,18 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
               Column(
                 children: [
                   // Remind Me & Message Action Scaffolds
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Column(
-                        children: const [
+                        children: [
                           Icon(Icons.alarm, color: Colors.white70, size: 28),
                           SizedBox(height: 6),
                           Text('Remind Me', style: TextStyle(color: Colors.white70, fontSize: 12)),
                         ],
                       ),
                       Column(
-                        children: const [
+                        children: [
                           Icon(Icons.message, color: Colors.white70, size: 28),
                           SizedBox(height: 6),
                           Text('Message', style: TextStyle(color: Colors.white70, fontSize: 12)),

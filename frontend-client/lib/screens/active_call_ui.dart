@@ -159,27 +159,27 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
+                            children: [
                               DialPadButton(digit: '1', subtext: ''),
                               DialPadButton(digit: '2', subtext: 'A B C'),
                               DialPadButton(digit: '3', subtext: 'D E F'),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
+                            children: [
                               DialPadButton(digit: '4', subtext: 'G H I'),
                               DialPadButton(digit: '5', subtext: 'J K L'),
                               DialPadButton(digit: '6', subtext: 'M N O'),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
+                            children: [
                               DialPadButton(digit: '7', subtext: 'P Q R S'),
                               DialPadButton(digit: '8', subtext: 'T U V'),
                               DialPadButton(digit: '9', subtext: 'W X Y Z'),
