@@ -13,6 +13,6 @@ void main() {
     // Verify persona section and action buttons exist
     expect(find.text('CALLER PERSONA'), findsOneWidget);
     expect(find.text('TRIGGER DELAY'), findsOneWidget);
-    expect(find.textContaining('ARM ESCAPE CALL'), findsOneWidget);
+    expect(find.textContaining('ARM ESCAPE CALL', skipOffstage: false), findsOneWidget);
   });
 }
