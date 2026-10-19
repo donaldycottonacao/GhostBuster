@@ -115,4 +115,96 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get personaOffice => 'Office Dispatch';
+
+  @override
+  String get setupTagline => 'DISCREET EXITS. BRIGHTER DAYS.';
+
+  @override
+  String get setupFieldMode => 'FIELD MODE';
+
+  @override
+  String get setupTitle => 'Set your exit';
+
+  @override
+  String get setupSubtitle => 'A convincing call, right on cue.';
+
+  @override
+  String get setupRingDelay => 'RING DELAY';
+
+  @override
+  String get setupRingDelayHelp => 'Set how long until the call comes in.';
+
+  @override
+  String get setupDelay10Seconds => '10 sec';
+
+  @override
+  String get setupDelay30Seconds => '30 sec';
+
+  @override
+  String get setupDelay1Minute => '1 min';
+
+  @override
+  String get setupDelay3Minutes => '3 min';
+
+  @override
+  String get setupIncomingCall => 'INCOMING CALL';
+
+  @override
+  String get setupPreview => 'PREVIEW';
+
+  @override
+  String get setupEmergencyContact => 'Emergency contact';
+
+  @override
+  String get setupVoicePanicked => 'VOICE: PANICKED';
+
+  @override
+  String get setupRingtone => 'Ringtone';
+
+  @override
+  String get setupRingtoneContainment => 'Containment Alarm';
+
+  @override
+  String get setupRingtoneSoft => 'Soft Chime';
+
+  @override
+  String get setupRingtoneClassic => 'Classic Ringtone';
+
+  @override
+  String get setupScriptLanguage => 'SCRIPT LANGUAGE';
+
+  @override
+  String get setupSituationEvent => 'SITUATION / EVENT';
+
+  @override
+  String get setupSituationHint => 'e.g., At a party and ready to head home';
+
+  @override
+  String get setupVoiceScript => 'VOICE SCRIPT';
+
+  @override
+  String get setupGenerateWithAI => 'Generate with AI';
+
+  @override
+  String get setupWriteMyOwn => 'Write my own';
+
+  @override
+  String get setupScriptHint => 'Write your script...';
+
+  @override
+  String get setupScriptExample =>
+      'Hey, can you call me? I need a reason to step out.';
+
+  @override
+  String get setupReviewNote => 'Review and edit before use.';
+
+  @override
+  String get setupArmButton => 'ARM STEALTH MODE';
+
+  @override
+  String get setupArmedStatus => 'STEALTH MODE ARMED';
+
+  @override
+  String get setupDisclaimer =>
+      'Preview only. No call is scheduled from this screen.';
 }
