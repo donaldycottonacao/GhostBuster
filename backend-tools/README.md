@@ -57,6 +57,14 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+### 4. Configure Environment Variables
+Copy the template to create a local `.env` configuration:
+```bash
+cp .env.example .env     # macOS / Linux
+copy .env.example .env   # Windows (cmd/PowerShell)
+```
+*(Never commit `.env` or personal voice samples to version control.)*
+
 ---
 
 ## Execution Instructions

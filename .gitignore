@@ -498,5 +498,6 @@ frontend-client/assets/fonts/*.otf
 # Environment variables & secrets
 .env
 *.env.*
+!**/.env.example
 *.pem
 *.key
