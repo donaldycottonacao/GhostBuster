@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
+import '../providers/call_provider.dart';
+import 'incoming_call_ui.dart';
 
 const _background = Color(0xFF171A18);
 const _surface = Color(0xFF222724);
@@ -21,11 +24,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   final _situationController = TextEditingController();
   final _scriptController = TextEditingController();
 
-  int _selectedDelay = 30;
-  String _selectedLanguage = 'en';
   String _selectedMode = 'own';
   String _selectedRingtone = 'containment';
-  bool _isArmed = false;
   bool _hasInitializedScript = false;
 
   @override
@@ -39,14 +39,16 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_hasInitializedScript) return;
-    _scriptController.text = AppLocalizations.of(context)?.setupScriptExample ??
-        'Hey, can you call me? I need a reason to step out.';
+    final provider = context.read<CallProvider>();
+    _situationController.text = provider.situationText;
+    _scriptController.text = provider.voiceScriptText;
     _hasInitializedScript = true;
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final provider = context.watch<CallProvider>();
 
     return Scaffold(
       backgroundColor: _background,
@@ -402,6 +404,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       controller: _situationController,
                       minLines: 3,
                       maxLines: 5,
+                      onChanged: context.read<CallProvider>().setSituationText,
                       style: const TextStyle(color: Colors.white, fontSize: 14),
                       decoration: _fieldDecoration(
                         l10n?.setupSituationHint ??
@@ -438,6 +441,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                           controller: _scriptController,
                           minLines: 2,
                           maxLines: 5,
+                          onChanged:
+                              context.read<CallProvider>().setVoiceScriptText,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
@@ -473,21 +478,44 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                   SizedBox(
                     height: 60,
                     child: FilledButton.icon(
-                      onPressed: () => setState(() => _isArmed = !_isArmed),
+                      onPressed: () {
+                        if (provider.isCountdownActive) {
+                          provider.cancelCountdown();
+                          return;
+                        }
+                        provider.startCountdown(
+                          onTriggered: () {
+                            if (!context.mounted) return;
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => const IncomingCallScreen(),
+                              ),
+                            );
+                          },
+                        );
+                      },
                       style: FilledButton.styleFrom(
-                        backgroundColor: _isArmed ? _surfaceRaised : _accent,
-                        foregroundColor:
-                            _isArmed ? Colors.white : const Color(0xFF152019),
+                        backgroundColor: provider.isCountdownActive
+                            ? _surfaceRaised
+                            : _accent,
+                        foregroundColor: provider.isCountdownActive
+                            ? Colors.white
+                            : const Color(0xFF152019),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
                       icon: Icon(
-                        _isArmed ? Icons.check_circle : Icons.hearing_rounded,
+                        provider.isCountdownActive
+                            ? Icons.close_rounded
+                            : Icons.hearing_rounded,
                       ),
                       label: Text(
-                        _isArmed
-                            ? l10n?.setupArmedStatus ?? 'STEALTH MODE ARMED'
+                        provider.isCountdownActive
+                            ? l10n?.cancelCountdown(
+                                  provider.remainingCountdown,
+                                ) ??
+                                'CANCEL COUNTDOWN (${provider.remainingCountdown}s)'
                             : l10n?.setupArmButton ?? 'ARM STEALTH MODE',
                         style: const TextStyle(
                           fontSize: 15,
@@ -518,20 +546,22 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   }
 
   Widget _delayOption(int seconds, String label) {
-    final isSelected = _selectedDelay == seconds;
+    final provider = context.watch<CallProvider>();
+    final isSelected = provider.delaySeconds == seconds;
     return _SelectionChip(
       label: label,
       isSelected: isSelected,
-      onTap: () => setState(() => _selectedDelay = seconds),
+      onTap: () => context.read<CallProvider>().setDelaySeconds(seconds),
     );
   }
 
   Widget _languageOption(String code, String label) {
-    final isSelected = _selectedLanguage == code;
+    final provider = context.watch<CallProvider>();
+    final isSelected = provider.languageCode == code;
     return _SelectionChip(
       label: label,
       isSelected: isSelected,
-      onTap: () => setState(() => _selectedLanguage = code),
+      onTap: () => context.read<CallProvider>().setLocale(Locale(code)),
     );
   }
 
@@ -642,8 +672,15 @@ class _SectionCard extends StatelessWidget {
                   letterSpacing: 1,
                 ),
               ),
-              const Spacer(),
-              if (trailing != null) trailing!,
+              if (trailing != null) ...[
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: trailing!,
+                  ),
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 14),
