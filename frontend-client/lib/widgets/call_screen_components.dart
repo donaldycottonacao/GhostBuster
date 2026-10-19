@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-const callScreenBackground = Color(0xFF111315);
-const callScreenSurface = Color(0xFF202428);
-const callScreenBorder = Color(0xFF373D43);
-const callScreenMuted = Color(0xFF9BA2A9);
+const callScreenBackground = Color(0xFF0A0D0C);
+const callScreenSurface = Color(0xFF191D20);
+const callScreenBorder = Color(0xFF353B40);
+const callScreenMuted = Color(0xFFA7AFB7);
 const callScreenGreen = Color(0xFF36CF5A);
 const callScreenRed = Color(0xFFE8393B);
 

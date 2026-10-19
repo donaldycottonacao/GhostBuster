@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 
-const _background = Color(0xFF171A18);
-const _surface = Color(0xFF222724);
-const _surfaceRaised = Color(0xFF2B312D);
+const _background = Color(0xFF0A0D0C);
+const _surface = Color(0xFF171B19);
+const _surfaceRaised = Color(0xFF202623);
 const _border = Color(0xFF39423C);
 const _accent = Color(0xFF8BC49A);
 const _muted = Color(0xFFABB4AD);

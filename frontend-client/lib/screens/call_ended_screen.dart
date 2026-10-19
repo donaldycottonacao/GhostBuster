@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const _background = Color(0xFF101214);
+const _background = Color(0xFF0A0D0C);
 const _muted = Color(0xFF9AA1A8);
 const _green = Color(0xFF86D78E);
 
@@ -57,7 +57,7 @@ class CallEndedScreen extends StatelessWidget {
                   onPressed: onReturnToSetup,
                   style: FilledButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF2B3035),
+                    backgroundColor: const Color(0xFF24292D),
                     shape: const StadiumBorder(),
                   ),
                   child: const Text(

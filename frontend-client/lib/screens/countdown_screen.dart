@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const _background = Color(0xFF101214);
-const _surface = Color(0xFF1B1E21);
+const _background = Color(0xFF0A0D0C);
+const _surface = Color(0xFF171B1D);
 const _border = Color(0xFF33383D);
 const _green = Color(0xFF86D78E);
 const _muted = Color(0xFF9AA1A8);
