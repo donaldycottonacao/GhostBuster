@@ -1,0 +1,15 @@
+# GhostBuster Backend Audio Processing Tools - Core Dependencies
+# Minimal requirements for starter CLI scaffolding and validation.
+# Heavyweight neural voice modeling libraries are deferred until model training/inference is configured.
+
+# Core utilities and basic audio format inspection (pure Python / lightweight wheels)
+# Uncomment when audio wave manipulation is needed:
+# numpy>=1.24.0,<2.0.0
+# soundfile>=0.12.1
+
+# Future / Optional Heavyweight ML Dependencies (deferred):
+# torch>=2.2.0
+# torchaudio>=2.2.0
+# TTS>=0.22.0          # Coqui TTS engine (requires explicit speaker model consent)
+# edge-tts>=6.1.12     # Lightweight text-to-speech fallback
+# scipy>=1.11.0

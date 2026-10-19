@@ -1,0 +1,28 @@
+name: frontend_client
+description: "GhostBuster - Simulated tactical social escape call frontend application."
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Asset directories registered for optional ringtones, dialogues, and custom fonts.
+  # Safe placeholders (README.md) exist in both directories so compilation succeeds
+  # even before binary media files are added.
+  assets:
+    - assets/audio/
+    - assets/fonts/
