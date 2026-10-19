@@ -37,14 +37,9 @@ class StealthTriggerScreen extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(l10n.english, style: const TextStyle(color: Colors.white)),
-                leading: Radio<String>(
-                  value: 'en',
-                  groupValue: provider.currentLocale.languageCode,
-                  onChanged: (val) {
-                    if (val != null) provider.setLocale(Locale(val));
-                    Navigator.of(dialogContext).pop();
-                  },
-                ),
+                trailing: provider.currentLocale.languageCode == 'en'
+                    ? const Icon(Icons.check, color: Colors.blueAccent)
+                    : null,
                 onTap: () {
                   provider.setLocale(const Locale('en'));
                   Navigator.of(dialogContext).pop();
@@ -52,14 +47,9 @@ class StealthTriggerScreen extends StatelessWidget {
               ),
               ListTile(
                 title: Text(l10n.tagalog, style: const TextStyle(color: Colors.white)),
-                leading: Radio<String>(
-                  value: 'tl',
-                  groupValue: provider.currentLocale.languageCode,
-                  onChanged: (val) {
-                    if (val != null) provider.setLocale(Locale(val));
-                    Navigator.of(dialogContext).pop();
-                  },
-                ),
+                trailing: provider.currentLocale.languageCode == 'tl'
+                    ? const Icon(Icons.check, color: Colors.blueAccent)
+                    : null,
                 onTap: () {
                   provider.setLocale(const Locale('tl'));
                   Navigator.of(dialogContext).pop();
@@ -67,14 +57,9 @@ class StealthTriggerScreen extends StatelessWidget {
               ),
               ListTile(
                 title: Text(l10n.cebuano, style: const TextStyle(color: Colors.white)),
-                leading: Radio<String>(
-                  value: 'ceb',
-                  groupValue: provider.currentLocale.languageCode,
-                  onChanged: (val) {
-                    if (val != null) provider.setLocale(Locale(val));
-                    Navigator.of(dialogContext).pop();
-                  },
-                ),
+                trailing: provider.currentLocale.languageCode == 'ceb'
+                    ? const Icon(Icons.check, color: Colors.blueAccent)
+                    : null,
                 onTap: () {
                   provider.setLocale(const Locale('ceb'));
                   Navigator.of(dialogContext).pop();
