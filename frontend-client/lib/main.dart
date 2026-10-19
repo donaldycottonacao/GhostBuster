@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'l10n/app_localizations.dart';
+import 'providers/call_provider.dart';
 import 'screens/stealth_trigger.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Set system UI overlay style to dark for tactical immersion
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -20,39 +23,56 @@ void main() {
 
 /// Root widget for the GhostBuster application.
 class GhostBusterApp extends StatelessWidget {
-  const GhostBusterApp({super.key});
+  final CallProvider? provider;
+
+  const GhostBusterApp({super.key, this.provider});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GhostBuster',
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2563EB),
-          brightness: Brightness.light,
-        ),
+    return ChangeNotifierProvider(
+      create: (_) => provider ?? CallProvider(),
+      child: Consumer<CallProvider>(
+        builder: (context, callProvider, _) {
+          return MaterialApp(
+            title: 'GhostBuster',
+            debugShowCheckedModeBanner: false,
+            locale: callProvider.currentLocale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            themeMode: ThemeMode.dark,
+            theme: ThemeData(
+              brightness: Brightness.light,
+              useMaterial3: true,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(0xFF2563EB),
+                brightness: Brightness.light,
+              ),
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              useMaterial3: true,
+              scaffoldBackgroundColor: const Color(0xFF0F172A),
+              colorScheme: const ColorScheme.dark(
+                primary: Color(0xFF3B82F6),
+                secondary: Color(0xFF10B981),
+                surface: Color(0xFF1E293B),
+                error: Color(0xFFEF4444),
+              ),
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Color(0xFF0F172A),
+                foregroundColor: Colors.white,
+                elevation: 0,
+              ),
+            ),
+            home: const StealthTriggerScreen(),
+          );
+        },
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFF0F172A),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF3B82F6),
-          secondary: Color(0xFF10B981),
-          surface: Color(0xFF1E293B),
-          error: Color(0xFFEF4444),
-        ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0F172A),
-          foregroundColor: Colors.white,
-          elevation: 0,
-        ),
-      ),
-      home: const StealthTriggerScreen(),
     );
   }
 }

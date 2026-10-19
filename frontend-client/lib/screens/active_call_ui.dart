@@ -1,82 +1,37 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../models/call_state.dart';
-import '../services/audio_service.dart';
+import '../providers/call_provider.dart';
 import '../widgets/dial_pad_button.dart';
 
 /// Screen simulating an active ongoing phone call with elapsed time display and keypad controls.
 class ActiveCallScreen extends StatefulWidget {
-  final CallSession session;
-
-  const ActiveCallScreen({
-    super.key,
-    required this.session,
-  });
+  const ActiveCallScreen({super.key});
 
   @override
   State<ActiveCallScreen> createState() => _ActiveCallScreenState();
 }
 
 class _ActiveCallScreenState extends State<ActiveCallScreen> {
-  final AudioService _audioService = AudioService();
-  late CallSession _currentSession;
-  Timer? _elapsedTimer;
-  int _elapsedSeconds = 0;
   bool _showKeypadModal = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _currentSession = widget.session;
-    _startElapsedTimer();
-    _playSimulatedPeerAudio();
-  }
-
-  void _startElapsedTimer() {
-    _elapsedTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) return;
-      setState(() {
-        _elapsedSeconds++;
-      });
-    });
-  }
-
-  void _playSimulatedPeerAudio() {
-    final asset = _currentSession.persona.audioTrackAsset;
-    if (asset != null && asset.isNotEmpty) {
-      _audioService.playPeerAudio(asset);
-    }
-  }
-
-  String _formatElapsedTime(int totalSeconds) {
-    final minutes = (totalSeconds ~/ 60).toString().padLeft(2, '0');
-    final seconds = (totalSeconds % 60).toString().padLeft(2, '0');
-    return '$minutes:$seconds';
-  }
-
-  void _toggleMute() {
-    setState(() {
-      _currentSession = _currentSession.copyWith(isMuted: !_currentSession.isMuted);
-    });
-  }
-
-  void _toggleSpeaker() {
-    setState(() {
-      _currentSession = _currentSession.copyWith(isSpeakerOn: !_currentSession.isSpeakerOn);
-    });
-  }
-
-  void _endCall() {
-    _audioService.stopAll();
-    _elapsedTimer?.cancel();
+  void _endCall(BuildContext context, CallProvider provider) {
+    provider.endCall();
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
-  @override
-  void dispose() {
-    _elapsedTimer?.cancel();
-    _audioService.stopAll();
-    super.dispose();
+  String _getPersonaLocalizedName(CallerPersona persona, AppLocalizations l10n) {
+    switch (persona.id) {
+      case 'mom':
+        return l10n.personaMom;
+      case 'landlord':
+        return l10n.personaLandlord;
+      case 'work_boss':
+        return l10n.personaOffice;
+      default:
+        return persona.name;
+    }
   }
 
   Widget _buildControlCircle({
@@ -115,7 +70,9 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final persona = _currentSession.persona;
+    final provider = context.watch<CallProvider>();
+    final l10n = AppLocalizations.of(context)!;
+    final persona = provider.persona;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -130,7 +87,7 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                 children: [
                   const SizedBox(height: 36),
                   Text(
-                    persona.name,
+                    _getPersonaLocalizedName(persona, l10n),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 32,
@@ -140,7 +97,7 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    _formatElapsedTime(_elapsedSeconds),
+                    provider.formattedElapsedTime,
                     style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 18,
@@ -192,7 +149,10 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                                 _showKeypadModal = false;
                               });
                             },
-                            child: const Text('Hide Keypad', style: TextStyle(color: Colors.white70)),
+                            child: Text(
+                              l10n.hideKeypad,
+                              style: const TextStyle(color: Colors.white70),
+                            ),
                           ),
                         ],
                       ),
@@ -206,14 +166,14 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildControlCircle(
-                          icon: _currentSession.isMuted ? Icons.mic_off : Icons.mic,
-                          label: _currentSession.isMuted ? 'unmute' : 'mute',
-                          isActive: _currentSession.isMuted,
-                          onTap: _toggleMute,
+                          icon: provider.isMuted ? Icons.mic_off : Icons.mic,
+                          label: provider.isMuted ? l10n.unmute : l10n.mute,
+                          isActive: provider.isMuted,
+                          onTap: () => provider.toggleMute(),
                         ),
                         _buildControlCircle(
                           icon: Icons.dialpad,
-                          label: 'keypad',
+                          label: l10n.keypad,
                           isActive: false,
                           onTap: () {
                             setState(() {
@@ -222,10 +182,10 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                           },
                         ),
                         _buildControlCircle(
-                          icon: _currentSession.isSpeakerOn ? Icons.volume_up : Icons.volume_down,
-                          label: 'speaker',
-                          isActive: _currentSession.isSpeakerOn,
-                          onTap: _toggleSpeaker,
+                          icon: provider.isSpeakerOn ? Icons.volume_up : Icons.volume_down,
+                          label: l10n.speaker,
+                          isActive: provider.isSpeakerOn,
+                          onTap: () => provider.toggleSpeaker(),
                         ),
                       ],
                     ),
@@ -235,19 +195,19 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                       children: [
                         _buildControlCircle(
                           icon: Icons.add_call,
-                          label: 'add call',
+                          label: l10n.addCall,
                           isActive: false,
                           onTap: () {},
                         ),
                         _buildControlCircle(
                           icon: Icons.videocam,
-                          label: 'FaceTime',
+                          label: l10n.facetime,
                           isActive: false,
                           onTap: () {},
                         ),
                         _buildControlCircle(
                           icon: Icons.contacts,
-                          label: 'contacts',
+                          label: l10n.contacts,
                           isActive: false,
                           onTap: () {},
                         ),
@@ -266,7 +226,7 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                     color: const Color(0xFFEF4444),
                     shape: const CircleBorder(),
                     child: InkWell(
-                      onTap: _endCall,
+                      onTap: () => _endCall(context, provider),
                       customBorder: const CircleBorder(),
                       child: const Icon(
                         Icons.call_end,
