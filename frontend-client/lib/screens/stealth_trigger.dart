@@ -12,7 +12,7 @@ class StealthTriggerScreen extends StatefulWidget {
 }
 
 class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
-  CallerPersona _selectedPersona = CallerPersona.defaultPersonas[0];
+  CallerPersona _selectedPersona = CallerPersona.defaultPersona;
   int _delaySeconds = 5;
   int _remainingSeconds = 5;
   bool _isCountdownActive = false;
