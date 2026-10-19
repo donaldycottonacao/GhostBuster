@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
 import '../providers/call_provider.dart';
-import 'incoming_call_ui.dart';
 
 const _background = Color(0xFF171A18);
 const _surface = Color(0xFF222724);
@@ -48,7 +47,6 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final provider = context.watch<CallProvider>();
 
     return Scaffold(
       backgroundColor: _background,
@@ -478,45 +476,19 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                   SizedBox(
                     height: 60,
                     child: FilledButton.icon(
-                      onPressed: () {
-                        if (provider.isCountdownActive) {
-                          provider.cancelCountdown();
-                          return;
-                        }
-                        provider.startCountdown(
-                          onTriggered: () {
-                            if (!context.mounted) return;
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (_) => const IncomingCallScreen(),
-                              ),
-                            );
-                          },
-                        );
-                      },
+                      onPressed: () {},
                       style: FilledButton.styleFrom(
-                        backgroundColor: provider.isCountdownActive
-                            ? _surfaceRaised
-                            : _accent,
-                        foregroundColor: provider.isCountdownActive
-                            ? Colors.white
-                            : const Color(0xFF152019),
+                        backgroundColor: _accent,
+                        foregroundColor: const Color(0xFF152019),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      icon: Icon(
-                        provider.isCountdownActive
-                            ? Icons.close_rounded
-                            : Icons.hearing_rounded,
+                      icon: const Icon(
+                        Icons.hearing_rounded,
                       ),
                       label: Text(
-                        provider.isCountdownActive
-                            ? l10n?.cancelCountdown(
-                                  provider.remainingCountdown,
-                                ) ??
-                                'CANCEL COUNTDOWN (${provider.remainingCountdown}s)'
-                            : l10n?.setupArmButton ?? 'ARM STEALTH MODE',
+                        l10n?.setupArmButton ?? 'ARM STEALTH MODE',
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
@@ -561,7 +533,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
     return _SelectionChip(
       label: label,
       isSelected: isSelected,
-      onTap: () => context.read<CallProvider>().setLocale(Locale(code)),
+      onTap: () => context.read<CallProvider>().setScriptLanguage(code),
     );
   }
 
@@ -575,7 +547,21 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   Widget _modeOption(String mode, String label) {
     final isSelected = _selectedMode == mode;
     return InkWell(
-      onTap: () => setState(() => _selectedMode = mode),
+      onTap: () {
+        setState(() => _selectedMode = mode);
+        if (mode != 'ai') return;
+
+        final provider = context.read<CallProvider>();
+        final sample = switch (provider.languageCode) {
+          'tl' =>
+            'Uy, puwede mo ba akong tawagan? Kailangan ko ng dahilan para makalabas.',
+          'ceb' =>
+            'Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.',
+          _ => 'Hey, can you call me? I need a reason to step out.',
+        };
+        _scriptController.text = sample;
+        provider.setVoiceScriptText(sample);
+      },
       borderRadius: BorderRadius.circular(10),
       child: Container(
         constraints: const BoxConstraints(minHeight: 42),

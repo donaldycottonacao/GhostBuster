@@ -13,6 +13,7 @@ class CallProvider extends ChangeNotifier {
   CallSession _session = const CallSession();
   Timer? _countdownTimer;
   Timer? _elapsedTimer;
+  Locale _currentLocale = const Locale('en');
 
   CallSession get session => _session;
   CallLifecycleState get state => _session.state;
@@ -26,7 +27,7 @@ class CallProvider extends ChangeNotifier {
   bool get isMuted => _session.isMuted;
   bool get isSpeakerOn => _session.isSpeakerOn;
   bool get isCountdownActive => _session.state == CallLifecycleState.countdown;
-  Locale get currentLocale => Locale(_session.languageCode);
+  Locale get currentLocale => _currentLocale;
 
   /// Formatted call duration string (mm:ss).
   String get formattedElapsedTime {
@@ -39,8 +40,14 @@ class CallProvider extends ChangeNotifier {
 
   /// Change active application locale between English, Tagalog, and Cebuano.
   void setLocale(Locale locale) {
+    if (_currentLocale == locale) return;
+    _currentLocale = locale;
+    notifyListeners();
+  }
+
+  /// Select the language used for the simulated voice script.
+  void setScriptLanguage(String languageCode) {
     const supportedLanguageCodes = {'en', 'tl', 'ceb'};
-    final languageCode = locale.languageCode;
     if (!supportedLanguageCodes.contains(languageCode) ||
         _session.languageCode == languageCode) {
       return;

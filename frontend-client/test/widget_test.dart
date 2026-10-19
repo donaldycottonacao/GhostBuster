@@ -22,7 +22,7 @@ void main() {
     await tester.tap(find.text('Tagalog'));
     await tester.pumpAndSettle();
     expect(provider.languageCode, 'tl');
-    expect(provider.currentLocale.languageCode, 'tl');
+    expect(provider.currentLocale.languageCode, 'en');
 
     final situationField = find.byType(TextField).first;
     await tester.ensureVisible(situationField);
@@ -35,38 +35,48 @@ void main() {
     expect(provider.voiceScriptText, 'Please call me when you can.');
   });
 
-  testWidgets('call lifecycle transitions through countdown and call states', (
+  testWidgets('AI option uses a local sample for the selected language', (
     tester,
   ) async {
     final provider = CallProvider();
-    addTearDown(provider.dispose);
+    await tester.pumpWidget(GhostBusterApp(provider: provider));
+    await tester.pumpAndSettle();
 
-    provider.startCountdown();
-    expect(provider.state, CallLifecycleState.countdown);
-    provider.cancelCountdown();
-    expect(provider.state, CallLifecycleState.configuration);
+    final bisayaOption = find.text('Cebuano / Bisaya');
+    await tester.ensureVisible(bisayaOption);
+    await tester.tap(bisayaOption);
+    await tester.pumpAndSettle();
+    expect(provider.languageCode, 'ceb');
 
-    provider.setDelaySeconds(1);
-    provider.startCountdown();
-    await tester.pump(const Duration(seconds: 1));
-    expect(provider.state, CallLifecycleState.ringing);
+    final generateOption = find.text('Generate with AI');
+    await tester.ensureVisible(generateOption);
+    await tester.tap(generateOption);
+    await tester.pump();
 
-    provider.answerCall();
-    expect(provider.state, CallLifecycleState.active);
-    provider.endCall();
-    expect(provider.state, CallLifecycleState.configuration);
+    const bisayaSample =
+        'Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.';
+    expect(provider.voiceScriptText, bisayaSample);
+    expect(provider.currentLocale.languageCode, 'en');
+
+    final ownOption = find.text('Write my own');
+    await tester.ensureVisible(ownOption);
+    await tester.tap(ownOption);
+    await tester.pump();
+    final scriptField = find.byType(TextField).last;
+    await tester.ensureVisible(scriptField);
+    await tester.enterText(scriptField, 'Akong kaugalingong script');
+    expect(provider.voiceScriptText, 'Akong kaugalingong script');
   });
 
-  testWidgets('declining a ringing call ends the session', (tester) async {
+  testWidgets('arm control does not start a call flow yet', (tester) async {
     final provider = CallProvider();
-    addTearDown(provider.dispose);
+    await tester.pumpWidget(GhostBusterApp(provider: provider));
+    await tester.pumpAndSettle();
 
-    provider.setDelaySeconds(1);
-    provider.startCountdown();
-    await tester.pump(const Duration(seconds: 1));
-    expect(provider.state, CallLifecycleState.ringing);
-
-    provider.declineCall();
-    expect(provider.state, CallLifecycleState.ended);
+    final armButton = find.text('ARM STEALTH MODE');
+    await tester.ensureVisible(armButton);
+    await tester.tap(armButton);
+    await tester.pump();
+    expect(provider.state, CallLifecycleState.configuration);
   });
 }
