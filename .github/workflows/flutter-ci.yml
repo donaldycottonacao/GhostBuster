@@ -2,9 +2,9 @@ name: GhostBuster CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, development, develop ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, development, develop ]
 
 jobs:
   flutter-ci:
@@ -63,4 +63,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Validate Python script syntax
-        run: python -m compileall scripts
+        run: python -m compileall scripts tests
+
+      - name: Run Python CLI smoke tests
+        run: python -m unittest tests/test_cli.py

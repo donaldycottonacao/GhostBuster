@@ -47,7 +47,7 @@ class DialPadButton extends StatelessWidget {
                 Text(
                   subtext!,
                   style: TextStyle(
-                    color: foregroundColor.withOpacity(0.7),
+                    color: foregroundColor.withValues(alpha: 0.7),
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 1.5,

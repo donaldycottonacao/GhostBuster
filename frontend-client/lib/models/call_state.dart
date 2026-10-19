@@ -30,13 +30,15 @@ class CallerPersona {
     this.audioTrackAsset,
   });
 
+  static const CallerPersona defaultPersona = CallerPersona(
+    id: 'mom',
+    name: 'Mom',
+    number: '+1 (555) 234-5678',
+    audioTrackAsset: 'assets/audio/peer_mom.mp3',
+  );
+
   static const List<CallerPersona> defaultPersonas = [
-    CallerPersona(
-      id: 'mom',
-      name: 'Mom',
-      number: '+1 (555) 234-5678',
-      audioTrackAsset: 'assets/audio/peer_mom.mp3',
-    ),
+    defaultPersona,
     CallerPersona(
       id: 'landlord',
       name: 'Landlord (Maintenance)',
@@ -64,7 +66,7 @@ class CallSession {
 
   const CallSession({
     this.state = CallLifecycleState.configuration,
-    this.persona = CallerPersona.defaultPersonas[0],
+    this.persona = CallerPersona.defaultPersona,
     this.countdownSeconds = 10,
     this.remainingCountdown = 10,
     this.activeDurationSeconds = 0,

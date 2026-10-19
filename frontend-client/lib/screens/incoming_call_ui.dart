@@ -1,62 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../models/call_state.dart';
-import '../services/audio_service.dart';
+import '../providers/call_provider.dart';
 import '../widgets/slide_button.dart';
 import 'active_call_ui.dart';
 
 /// Screen simulating a hyper-realistic incoming phone call.
-class IncomingCallScreen extends StatefulWidget {
-  final CallSession session;
+class IncomingCallScreen extends StatelessWidget {
+  const IncomingCallScreen({super.key});
 
-  const IncomingCallScreen({
-    super.key,
-    required this.session,
-  });
-
-  @override
-  State<IncomingCallScreen> createState() => _IncomingCallScreenState();
-}
-
-class _IncomingCallScreenState extends State<IncomingCallScreen> {
-  final AudioService _audioService = AudioService();
-
-  @override
-  void initState() {
-    super.initState();
-    _startSimulatedRingtone();
-  }
-
-  void _startSimulatedRingtone() {
-    _audioService.playRingtone(assetPath: 'assets/audio/ringtone_ios.mp3');
-  }
-
-  void _answerCall() {
-    _audioService.stopAll();
-    final updatedSession = widget.session.copyWith(
-      state: CallLifecycleState.active,
-    );
-
+  void _answerCall(BuildContext context, CallProvider provider) {
+    provider.answerCall();
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (context) => ActiveCallScreen(session: updatedSession),
+        builder: (_) => const ActiveCallScreen(),
       ),
     );
   }
 
-  void _declineCall() {
-    _audioService.stopAll();
+  void _declineCall(BuildContext context, CallProvider provider) {
+    provider.declineCall();
     Navigator.of(context).pop();
   }
 
-  @override
-  void dispose() {
-    _audioService.stopAll();
-    super.dispose();
+  String _getPersonaLocalizedName(CallerPersona persona, AppLocalizations l10n) {
+    switch (persona.id) {
+      case 'mom':
+        return l10n.personaMom;
+      case 'landlord':
+        return l10n.personaLandlord;
+      case 'work_boss':
+        return l10n.personaOffice;
+      default:
+        return persona.name;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final persona = widget.session.persona;
+    final provider = context.watch<CallProvider>();
+    final l10n = AppLocalizations.of(context)!;
+    final persona = provider.persona;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -71,7 +56,7 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
                 children: [
                   const SizedBox(height: 48),
                   Text(
-                    persona.name,
+                    _getPersonaLocalizedName(persona, l10n),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 34,
@@ -90,9 +75,9 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'mobile',
-                    style: TextStyle(
+                  Text(
+                    l10n.mobile,
+                    style: const TextStyle(
                       color: Colors.white54,
                       fontSize: 14,
                       letterSpacing: 0.5,
@@ -109,17 +94,17 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Column(
-                        children: const [
-                          Icon(Icons.alarm, color: Colors.white70, size: 28),
-                          SizedBox(height: 6),
-                          Text('Remind Me', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                        children: [
+                          const Icon(Icons.alarm, color: Colors.white70, size: 28),
+                          const SizedBox(height: 6),
+                          Text(l10n.remindMe, style: const TextStyle(color: Colors.white70, fontSize: 12)),
                         ],
                       ),
                       Column(
-                        children: const [
-                          Icon(Icons.message, color: Colors.white70, size: 28),
-                          SizedBox(height: 6),
-                          Text('Message', style: TextStyle(color: Colors.white70, fontSize: 12)),
+                        children: [
+                          const Icon(Icons.message, color: Colors.white70, size: 28),
+                          const SizedBox(height: 6),
+                          Text(l10n.message, style: const TextStyle(color: Colors.white70, fontSize: 12)),
                         ],
                       ),
                     ],
@@ -129,8 +114,8 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
 
                   // Slide To Answer gesture slider
                   SlideButton(
-                    label: 'slide to answer',
-                    onSlideComplete: _answerCall,
+                    label: l10n.slideToAnswer,
+                    onSlideComplete: () => _answerCall(context, provider),
                     width: 290,
                     height: 68,
                   ),
@@ -139,7 +124,7 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
 
                   // Quick Decline Button
                   IconButton(
-                    onPressed: _declineCall,
+                    onPressed: () => _declineCall(context, provider),
                     icon: Container(
                       padding: const EdgeInsets.all(12),
                       decoration: const BoxDecoration(
@@ -152,11 +137,11 @@ class _IncomingCallScreenState extends State<IncomingCallScreen> {
                         size: 28,
                       ),
                     ),
-                    tooltip: 'Decline Call',
+                    tooltip: l10n.decline,
                   ),
-                  const Text(
-                    'Decline',
-                    style: TextStyle(color: Colors.white54, fontSize: 12),
+                  Text(
+                    l10n.decline,
+                    style: const TextStyle(color: Colors.white54, fontSize: 12),
                   ),
                 ],
               ),

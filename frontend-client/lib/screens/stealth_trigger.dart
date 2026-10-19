@@ -1,92 +1,131 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../models/call_state.dart';
+import '../providers/call_provider.dart';
 import 'incoming_call_ui.dart';
 
 /// Screen for configuring stealth timer countdown and caller persona triggers.
-class StealthTriggerScreen extends StatefulWidget {
+class StealthTriggerScreen extends StatelessWidget {
   const StealthTriggerScreen({super.key});
 
-  @override
-  State<StealthTriggerScreen> createState() => _StealthTriggerScreenState();
-}
-
-class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
-  CallerPersona _selectedPersona = CallerPersona.defaultPersonas[0];
-  int _delaySeconds = 5;
-  int _remainingSeconds = 5;
-  bool _isCountdownActive = false;
-  Timer? _countdownTimer;
-
-  @override
-  void dispose() {
-    _countdownTimer?.cancel();
-    super.dispose();
-  }
-
-  void _startCountdown() {
-    setState(() {
-      _remainingSeconds = _delaySeconds;
-      _isCountdownActive = true;
-    });
-
-    _countdownTimer?.cancel();
-    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) return;
-
-      if (_remainingSeconds <= 1) {
-        timer.cancel();
-        setState(() {
-          _isCountdownActive = false;
-        });
-        _triggerIncomingCall();
-      } else {
-        setState(() {
-          _remainingSeconds--;
-        });
-      }
-    });
-  }
-
-  void _cancelCountdown() {
-    _countdownTimer?.cancel();
-    setState(() {
-      _isCountdownActive = false;
-      _remainingSeconds = _delaySeconds;
-    });
-  }
-
-  void _triggerIncomingCall() {
-    final session = CallSession(
-      state: CallLifecycleState.ringing,
-      persona: _selectedPersona,
-      countdownSeconds: _delaySeconds,
+  void _armEscape(BuildContext context, CallProvider provider) {
+    provider.startCountdown(
+      onTriggered: () {
+        if (!context.mounted) return;
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const IncomingCallScreen(),
+          ),
+        );
+      },
     );
+  }
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => IncomingCallScreen(session: session),
-      ),
+  void _showLanguageDialog(BuildContext context, CallProvider provider, AppLocalizations l10n) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFF1E293B),
+          title: Text(
+            l10n.selectLanguage,
+            style: const TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text(l10n.english, style: const TextStyle(color: Colors.white)),
+                leading: Radio<String>(
+                  value: 'en',
+                  groupValue: provider.currentLocale.languageCode,
+                  onChanged: (val) {
+                    if (val != null) provider.setLocale(Locale(val));
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+                onTap: () {
+                  provider.setLocale(const Locale('en'));
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+              ListTile(
+                title: Text(l10n.tagalog, style: const TextStyle(color: Colors.white)),
+                leading: Radio<String>(
+                  value: 'tl',
+                  groupValue: provider.currentLocale.languageCode,
+                  onChanged: (val) {
+                    if (val != null) provider.setLocale(Locale(val));
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+                onTap: () {
+                  provider.setLocale(const Locale('tl'));
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+              ListTile(
+                title: Text(l10n.cebuano, style: const TextStyle(color: Colors.white)),
+                leading: Radio<String>(
+                  value: 'ceb',
+                  groupValue: provider.currentLocale.languageCode,
+                  onChanged: (val) {
+                    if (val != null) provider.setLocale(Locale(val));
+                    Navigator.of(dialogContext).pop();
+                  },
+                ),
+                onTap: () {
+                  provider.setLocale(const Locale('ceb'));
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
+  }
+
+  String _getPersonaLocalizedName(CallerPersona persona, AppLocalizations l10n) {
+    switch (persona.id) {
+      case 'mom':
+        return l10n.personaMom;
+      case 'landlord':
+        return l10n.personaLandlord;
+      case 'work_boss':
+        return l10n.personaOffice;
+      default:
+        return persona.name;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final provider = context.watch<CallProvider>();
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A), // Dark tactical slate
+      backgroundColor: const Color(0xFF0F172A),
       appBar: AppBar(
-        title: const Text(
-          'GhostBuster - Stealth Escape',
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+        title: Text(
+          l10n.appTitle,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.language, color: Colors.lightBlueAccent),
+            tooltip: l10n.language,
+            onPressed: () => _showLanguageDialog(context, provider, l10n),
+          ),
+        ],
       ),
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -102,8 +141,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                 child: Row(
                   children: [
                     Icon(
-                      _isCountdownActive ? Icons.timer : Icons.security,
-                      color: _isCountdownActive ? Colors.amberAccent : Colors.lightBlueAccent,
+                      provider.isCountdownActive ? Icons.timer : Icons.security,
+                      color: provider.isCountdownActive ? Colors.amberAccent : Colors.lightBlueAccent,
                       size: 32,
                     ),
                     const SizedBox(width: 14),
@@ -112,7 +151,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _isCountdownActive ? 'Escape Sequence Armed' : 'Simulated Call Generator',
+                            provider.isCountdownActive ? l10n.escapeSequenceArmed : l10n.appSubtitle,
                             style: theme.textTheme.titleMedium?.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -120,9 +159,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            _isCountdownActive
-                                ? 'Incoming call triggers in $_remainingSeconds seconds...'
-                                : 'Configure trigger delay and select fake caller persona.',
+                            provider.isCountdownActive
+                                ? l10n.incomingCallTriggersIn(provider.remainingCountdown)
+                                : l10n.configureTriggerDesc,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: Colors.white70,
                             ),
@@ -137,9 +176,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
               const SizedBox(height: 24),
 
               // Persona Selector Header
-              const Text(
-                'CALLER PERSONA',
-                style: TextStyle(
+              Text(
+                l10n.callerPersona,
+                style: const TextStyle(
                   color: Colors.white60,
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -150,7 +189,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
 
               // Persona list options
               ...CallerPersona.defaultPersonas.map((persona) {
-                final isSelected = _selectedPersona.id == persona.id;
+                final isSelected = provider.persona.id == persona.id;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: ListTile(
@@ -169,7 +208,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       ),
                     ),
                     title: Text(
-                      persona.name,
+                      _getPersonaLocalizedName(persona, l10n),
                       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                     ),
                     subtitle: Text(
@@ -179,13 +218,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                     trailing: isSelected
                         ? const Icon(Icons.check_circle, color: Colors.blueAccent)
                         : null,
-                    onTap: _isCountdownActive
+                    onTap: provider.isCountdownActive
                         ? null
-                        : () {
-                            setState(() {
-                              _selectedPersona = persona;
-                            });
-                          },
+                        : () => provider.setPersona(persona),
                   ),
                 );
               }),
@@ -193,9 +228,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
               const SizedBox(height: 20),
 
               // Delay Timer Selector Header
-              const Text(
-                'TRIGGER DELAY',
-                style: TextStyle(
+              Text(
+                l10n.triggerDelay,
+                style: const TextStyle(
                   color: Colors.white60,
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -208,7 +243,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [5, 15, 30, 60].map((seconds) {
-                  final isSelected = _delaySeconds == seconds;
+                  final isSelected = provider.delaySeconds == seconds;
                   return ChoiceChip(
                     label: Text('${seconds}s'),
                     selected: isSelected,
@@ -218,28 +253,25 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       color: isSelected ? Colors.white : Colors.white70,
                       fontWeight: FontWeight.bold,
                     ),
-                    onSelected: _isCountdownActive
+                    onSelected: provider.isCountdownActive
                         ? null
                         : (selected) {
                             if (selected) {
-                              setState(() {
-                                _delaySeconds = seconds;
-                                _remainingSeconds = seconds;
-                              });
+                              provider.setDelaySeconds(seconds);
                             }
                           },
                   );
                 }).toList(),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 32),
 
               // Action Trigger Button
-              if (_isCountdownActive)
+              if (provider.isCountdownActive)
                 ElevatedButton.icon(
-                  onPressed: _cancelCountdown,
+                  onPressed: () => provider.cancelCountdown(),
                   icon: const Icon(Icons.close),
-                  label: Text('CANCEL COUNTDOWN ($_remainingSeconds s)'),
+                  label: Text(l10n.cancelCountdown(provider.remainingCountdown)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFEF4444),
                     foregroundColor: Colors.white,
@@ -251,9 +283,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                 )
               else
                 ElevatedButton.icon(
-                  onPressed: _startCountdown,
+                  onPressed: () => _armEscape(context, provider),
                   icon: const Icon(Icons.bolt),
-                  label: Text('ARM ESCAPE CALL (${_delaySeconds}s DELAY)'),
+                  label: Text(l10n.armEscapeCall(provider.delaySeconds)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2563EB),
                     foregroundColor: Colors.white,
@@ -264,10 +296,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                   ),
                 ),
 
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Center(
                 child: Text(
-                  'Simulation only. No actual phone lines or cellular networks are accessed.',
+                  l10n.simulationDisclaimer,
                   style: theme.textTheme.bodySmall?.copyWith(color: Colors.white38),
                   textAlign: TextAlign.center,
                 ),

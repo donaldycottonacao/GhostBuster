@@ -1,0 +1,153 @@
+{
+  "@@locale": "en",
+  "appTitle": "GhostBuster - Stealth Escape",
+  "@appTitle": {
+    "description": "Main application bar title"
+  },
+  "appSubtitle": "Simulated Call Generator",
+  "@appSubtitle": {
+    "description": "Header subtitle describing the application"
+  },
+  "escapeSequenceArmed": "Escape Sequence Armed",
+  "@escapeSequenceArmed": {
+    "description": "Status text when countdown is running"
+  },
+  "incomingCallTriggersIn": "Incoming call triggers in {seconds} seconds...",
+  "@incomingCallTriggersIn": {
+    "description": "Countdown banner message",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "configureTriggerDesc": "Configure trigger delay and select fake caller persona.",
+  "@configureTriggerDesc": {
+    "description": "Configuration instructions text"
+  },
+  "callerPersona": "CALLER PERSONA",
+  "@callerPersona": {
+    "description": "Header for caller persona selection"
+  },
+  "triggerDelay": "TRIGGER DELAY",
+  "@triggerDelay": {
+    "description": "Header for trigger delay selection"
+  },
+  "armEscapeCall": "ARM ESCAPE CALL ({seconds}s DELAY)",
+  "@armEscapeCall": {
+    "description": "Trigger button label",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "cancelCountdown": "CANCEL COUNTDOWN ({seconds}s)",
+  "@cancelCountdown": {
+    "description": "Cancel countdown button label",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "simulationDisclaimer": "Simulation only. No actual phone lines or cellular networks are accessed.",
+  "@simulationDisclaimer": {
+    "description": "Legal and ethical disclaimer at screen bottom"
+  },
+  "mobile": "mobile",
+  "@mobile": {
+    "description": "Sublabel below incoming caller number"
+  },
+  "remindMe": "Remind Me",
+  "@remindMe": {
+    "description": "Incoming call remind me button"
+  },
+  "message": "Message",
+  "@message": {
+    "description": "Incoming call message button"
+  },
+  "slideToAnswer": "slide to answer",
+  "@slideToAnswer": {
+    "description": "Gesture slider prompt text"
+  },
+  "decline": "Decline",
+  "@decline": {
+    "description": "Call decline button label"
+  },
+  "mute": "mute",
+  "@mute": {
+    "description": "Microphone mute button label"
+  },
+  "unmute": "unmute",
+  "@unmute": {
+    "description": "Microphone unmute button label"
+  },
+  "keypad": "keypad",
+  "@keypad": {
+    "description": "Dial pad toggle button label"
+  },
+  "hideKeypad": "Hide Keypad",
+  "@hideKeypad": {
+    "description": "Dismiss dial pad modal label"
+  },
+  "speaker": "speaker",
+  "@speaker": {
+    "description": "Speakerphone toggle button label"
+  },
+  "addCall": "add call",
+  "@addCall": {
+    "description": "Add call placeholder button label"
+  },
+  "facetime": "FaceTime",
+  "@facetime": {
+    "description": "Video call placeholder button label"
+  },
+  "contacts": "contacts",
+  "@contacts": {
+    "description": "Contacts placeholder button label"
+  },
+  "endCall": "End Call",
+  "@endCall": {
+    "description": "End call button tooltip"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language selection label"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Language dialog title"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language name"
+  },
+  "tagalog": "Tagalog",
+  "@tagalog": {
+    "description": "Tagalog language name"
+  },
+  "cebuano": "Cebuano / Bisaya",
+  "@cebuano": {
+    "description": "Cebuano language name"
+  },
+  "errorAudioUnavailable": "Simulated audio track is unavailable. Playing silent safe fallback.",
+  "@errorAudioUnavailable": {
+    "description": "Safe audio fallback error message"
+  },
+  "personaMom": "Mom",
+  "@personaMom": {
+    "description": "Default Mom persona name"
+  },
+  "personaLandlord": "Landlord (Maintenance)",
+  "@personaLandlord": {
+    "description": "Default Landlord persona name"
+  },
+  "personaOffice": "Office Dispatch",
+  "@personaOffice": {
+    "description": "Default Office persona name"
+  }
+}
