@@ -1,152 +1,108 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../l10n/app_localizations.dart';
-import '../models/call_state.dart';
-import '../providers/call_provider.dart';
+
+import '../widgets/call_screen_components.dart';
 import '../widgets/slide_button.dart';
-import 'active_call_ui.dart';
 
 /// Screen simulating a hyper-realistic incoming phone call.
 class IncomingCallScreen extends StatelessWidget {
-  const IncomingCallScreen({super.key});
+  const IncomingCallScreen({
+    super.key,
+    required this.onAnswer,
+    required this.onDecline,
+  });
 
-  void _answerCall(BuildContext context, CallProvider provider) {
-    provider.answerCall();
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const ActiveCallScreen(),
-      ),
-    );
-  }
-
-  void _declineCall(BuildContext context, CallProvider provider) {
-    provider.declineCall();
-    Navigator.of(context).pop();
-  }
-
-  String _getPersonaLocalizedName(CallerPersona persona, AppLocalizations l10n) {
-    switch (persona.id) {
-      case 'mom':
-        return l10n.personaMom;
-      case 'landlord':
-        return l10n.personaLandlord;
-      case 'work_boss':
-        return l10n.personaOffice;
-      default:
-        return persona.name;
-    }
-  }
+  final VoidCallback onAnswer;
+  final VoidCallback onDecline;
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<CallProvider>();
-    final l10n = AppLocalizations.of(context)!;
-    final persona = provider.persona;
-
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: callScreenBackground,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Top Caller Metadata
-              Column(
-                children: [
-                  const SizedBox(height: 48),
-                  Text(
-                    _getPersonaLocalizedName(persona, l10n),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 34,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: -0.5,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final sliderWidth =
+                (constraints.maxWidth - 40).clamp(260.0, 440.0).toDouble();
+            final avatarDiameter =
+                (constraints.maxWidth * 0.42).clamp(150.0, 250.0).toDouble();
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 30),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight - 58,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(height: 12),
+                    Column(
+                      children: [
+                        CallAvatar(diameter: avatarDiameter),
+                        const SizedBox(height: 34),
+                        const Text(
+                          'Riley Morgan',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 34,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 96),
+                        const Text(
+                          'Incoming call...',
+                          style:
+                              TextStyle(color: callScreenMuted, fontSize: 16),
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    persona.number,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
+                    const SizedBox(height: 54),
+                    SlideButton(
+                      label: 'SLIDE TO ANSWER',
+                      onSlideComplete: onAnswer,
+                      width: sliderWidth,
+                      height: 76,
+                      backgroundColor: callScreenSurface,
+                      sliderColor: callScreenGreen,
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.mobile,
-                    style: const TextStyle(
-                      color: Colors.white54,
-                      fontSize: 14,
-                      letterSpacing: 0.5,
+                    const SizedBox(height: 28),
+                    Column(
+                      children: [
+                        SizedBox.square(
+                          dimension: 84,
+                          child: Material(
+                            color: callScreenRed,
+                            shape: const CircleBorder(),
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: onDecline,
+                              child: const Icon(
+                                Icons.call_end_rounded,
+                                color: Colors.white,
+                                size: 34,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'DECLINE',
+                          style: TextStyle(
+                            color: callScreenMuted,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 2.5,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 12),
+                  ],
+                ),
               ),
-
-              // Bottom Action Controls
-              Column(
-                children: [
-                  // Remind Me & Message Action Scaffolds
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          const Icon(Icons.alarm, color: Colors.white70, size: 28),
-                          const SizedBox(height: 6),
-                          Text(l10n.remindMe, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          const Icon(Icons.message, color: Colors.white70, size: 28),
-                          const SizedBox(height: 6),
-                          Text(l10n.message, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 48),
-
-                  // Slide To Answer gesture slider
-                  SlideButton(
-                    label: l10n.slideToAnswer,
-                    onSlideComplete: () => _answerCall(context, provider),
-                    width: 290,
-                    height: 68,
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Quick Decline Button
-                  IconButton(
-                    onPressed: () => _declineCall(context, provider),
-                    icon: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFFEF4444),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.call_end,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ),
-                    tooltip: l10n.decline,
-                  ),
-                  Text(
-                    l10n.decline,
-                    style: const TextStyle(color: Colors.white54, fontSize: 12),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

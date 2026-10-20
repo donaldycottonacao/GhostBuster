@@ -4,7 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/call_provider.dart';
-import 'screens/stealth_trigger.dart';
+import 'screens/screen_preview_host.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,20 +56,20 @@ class GhostBusterApp extends StatelessWidget {
             darkTheme: ThemeData(
               brightness: Brightness.dark,
               useMaterial3: true,
-              scaffoldBackgroundColor: const Color(0xFF0F172A),
+              scaffoldBackgroundColor: const Color(0xFF0A0D0C),
               colorScheme: const ColorScheme.dark(
                 primary: Color(0xFF3B82F6),
                 secondary: Color(0xFF10B981),
-                surface: Color(0xFF1E293B),
+                surface: Color(0xFF191D20),
                 error: Color(0xFFEF4444),
               ),
               appBarTheme: const AppBarTheme(
-                backgroundColor: Color(0xFF0F172A),
+                backgroundColor: Color(0xFF0A0D0C),
                 foregroundColor: Colors.white,
                 elevation: 0,
               ),
             ),
-            home: const StealthTriggerScreen(),
+            home: const ScreenPreviewHost(),
           );
         },
       ),

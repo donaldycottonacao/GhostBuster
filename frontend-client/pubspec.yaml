@@ -12,9 +12,10 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
+  intl: any # Use the version pinned by flutter_localizations.
   provider: ^6.1.2
   cupertino_icons: ^1.0.8
+  audioplayers: ^6.8.1
 
 dev_dependencies:
   flutter_test:

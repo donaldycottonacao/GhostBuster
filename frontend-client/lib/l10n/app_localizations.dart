@@ -1,194 +1,515 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
 
-/// Base class providing strongly typed localized strings for GhostBuster.
+import 'app_localizations_ceb.dart';
+import 'app_localizations_en.dart';
+import 'app_localizations_tl.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
 ///
-/// Implemented for English ('en'), Tagalog ('tl'), and Cebuano ('ceb').
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
 abstract class AppLocalizations {
-  AppLocalizations(this.locale);
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
-  final Locale locale;
+  final String localeName;
 
   static AppLocalizations? of(BuildContext context) {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
-  static const List<Locale> supportedLocales = [
-    Locale('en'),
-    Locale('tl'),
-    Locale('ceb'),
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
   ];
 
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ceb'),
+    Locale('en'),
+    Locale('tl')
+  ];
+
+  /// Main application bar title
+  ///
+  /// In en, this message translates to:
+  /// **'GhostBuster - Stealth Escape'**
   String get appTitle;
+
+  /// Header subtitle describing the application
+  ///
+  /// In en, this message translates to:
+  /// **'Simulated Call Generator'**
   String get appSubtitle;
+
+  /// Status text when countdown is running
+  ///
+  /// In en, this message translates to:
+  /// **'Escape Sequence Armed'**
   String get escapeSequenceArmed;
+
+  /// Countdown banner message
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming call triggers in {seconds} seconds...'**
   String incomingCallTriggersIn(int seconds);
+
+  /// Configuration instructions text
+  ///
+  /// In en, this message translates to:
+  /// **'Configure trigger delay and select fake caller persona.'**
   String get configureTriggerDesc;
+
+  /// Header for caller persona selection
+  ///
+  /// In en, this message translates to:
+  /// **'CALLER PERSONA'**
   String get callerPersona;
+
+  /// Header for trigger delay selection
+  ///
+  /// In en, this message translates to:
+  /// **'TRIGGER DELAY'**
   String get triggerDelay;
+
+  /// Trigger button label
+  ///
+  /// In en, this message translates to:
+  /// **'ARM ESCAPE CALL ({seconds}s DELAY)'**
   String armEscapeCall(int seconds);
+
+  /// Cancel countdown button label
+  ///
+  /// In en, this message translates to:
+  /// **'CANCEL COUNTDOWN ({seconds}s)'**
   String cancelCountdown(int seconds);
+
+  /// Legal and ethical disclaimer at screen bottom
+  ///
+  /// In en, this message translates to:
+  /// **'Simulation only. No actual phone lines or cellular networks are accessed.'**
   String get simulationDisclaimer;
+
+  /// Sublabel below incoming caller number
+  ///
+  /// In en, this message translates to:
+  /// **'mobile'**
   String get mobile;
+
+  /// Incoming call remind me button
+  ///
+  /// In en, this message translates to:
+  /// **'Remind Me'**
   String get remindMe;
+
+  /// Incoming call message button
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
   String get message;
+
+  /// Gesture slider prompt text
+  ///
+  /// In en, this message translates to:
+  /// **'slide to answer'**
   String get slideToAnswer;
+
+  /// Call decline button label
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
   String get decline;
+
+  /// Microphone mute button label
+  ///
+  /// In en, this message translates to:
+  /// **'mute'**
   String get mute;
+
+  /// Microphone unmute button label
+  ///
+  /// In en, this message translates to:
+  /// **'unmute'**
   String get unmute;
+
+  /// Dial pad toggle button label
+  ///
+  /// In en, this message translates to:
+  /// **'keypad'**
   String get keypad;
+
+  /// Dismiss dial pad modal label
+  ///
+  /// In en, this message translates to:
+  /// **'Hide Keypad'**
   String get hideKeypad;
+
+  /// Speakerphone toggle button label
+  ///
+  /// In en, this message translates to:
+  /// **'speaker'**
   String get speaker;
+
+  /// Add call placeholder button label
+  ///
+  /// In en, this message translates to:
+  /// **'add call'**
   String get addCall;
+
+  /// Video call placeholder button label
+  ///
+  /// In en, this message translates to:
+  /// **'FaceTime'**
   String get facetime;
+
+  /// Contacts placeholder button label
+  ///
+  /// In en, this message translates to:
+  /// **'contacts'**
   String get contacts;
+
+  /// End call button tooltip
+  ///
+  /// In en, this message translates to:
+  /// **'End Call'**
   String get endCall;
+
+  /// Language selection label
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
   String get language;
+
+  /// Language dialog title
+  ///
+  /// In en, this message translates to:
+  /// **'Select Language'**
   String get selectLanguage;
+
+  /// English language name
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
   String get english;
+
+  /// Tagalog language name
+  ///
+  /// In en, this message translates to:
+  /// **'Tagalog'**
   String get tagalog;
+
+  /// Cebuano language name
+  ///
+  /// In en, this message translates to:
+  /// **'Cebuano / Bisaya'**
   String get cebuano;
+
+  /// Safe audio fallback error message
+  ///
+  /// In en, this message translates to:
+  /// **'Simulated audio track is unavailable. Playing silent safe fallback.'**
   String get errorAudioUnavailable;
+
+  /// Default Mom persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Mom'**
   String get personaMom;
+
+  /// Default Landlord persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Landlord (Maintenance)'**
   String get personaLandlord;
+
+  /// Default Office persona name
+  ///
+  /// In en, this message translates to:
+  /// **'Office Dispatch'**
   String get personaOffice;
+
+  /// Setup screen brand tagline
+  ///
+  /// In en, this message translates to:
+  /// **'DISCREET EXITS. BRIGHTER DAYS.'**
+  String get setupTagline;
+
+  /// Setup screen mode badge
+  ///
+  /// In en, this message translates to:
+  /// **'FIELD MODE'**
+  String get setupFieldMode;
+
+  /// Setup screen heading
+  ///
+  /// In en, this message translates to:
+  /// **'Set your exit'**
+  String get setupTitle;
+
+  /// Setup screen introduction
+  ///
+  /// In en, this message translates to:
+  /// **'A convincing call, right on cue.'**
+  String get setupSubtitle;
+
+  /// Ring delay section heading
+  ///
+  /// In en, this message translates to:
+  /// **'RING DELAY'**
+  String get setupRingDelay;
+
+  /// Ring delay helper text
+  ///
+  /// In en, this message translates to:
+  /// **'Set how long until the call comes in.'**
+  String get setupRingDelayHelp;
+
+  /// Ten-second delay choice
+  ///
+  /// In en, this message translates to:
+  /// **'10 sec'**
+  String get setupDelay10Seconds;
+
+  /// Thirty-second delay choice
+  ///
+  /// In en, this message translates to:
+  /// **'30 sec'**
+  String get setupDelay30Seconds;
+
+  /// One-minute delay choice
+  ///
+  /// In en, this message translates to:
+  /// **'1 min'**
+  String get setupDelay1Minute;
+
+  /// Three-minute delay choice
+  ///
+  /// In en, this message translates to:
+  /// **'3 min'**
+  String get setupDelay3Minutes;
+
+  /// Incoming call section heading
+  ///
+  /// In en, this message translates to:
+  /// **'INCOMING CALL'**
+  String get setupIncomingCall;
+
+  /// Incoming call preview badge
+  ///
+  /// In en, this message translates to:
+  /// **'PREVIEW'**
+  String get setupPreview;
+
+  /// Caller relationship label
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contact'**
+  String get setupEmergencyContact;
+
+  /// Caller voice style label
+  ///
+  /// In en, this message translates to:
+  /// **'VOICE: PANICKED'**
+  String get setupVoicePanicked;
+
+  /// Ringtone setting label
+  ///
+  /// In en, this message translates to:
+  /// **'Ringtone'**
+  String get setupRingtone;
+
+  /// Containment alarm ringtone option
+  ///
+  /// In en, this message translates to:
+  /// **'Containment Alarm'**
+  String get setupRingtoneContainment;
+
+  /// Soft chime ringtone option
+  ///
+  /// In en, this message translates to:
+  /// **'Soft Chime'**
+  String get setupRingtoneSoft;
+
+  /// Classic ringtone option
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Ringtone'**
+  String get setupRingtoneClassic;
+
+  /// Script language section heading
+  ///
+  /// In en, this message translates to:
+  /// **'SCRIPT LANGUAGE'**
+  String get setupScriptLanguage;
+
+  /// Situation input section heading
+  ///
+  /// In en, this message translates to:
+  /// **'SITUATION / EVENT'**
+  String get setupSituationEvent;
+
+  /// Situation input hint
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., At a party and ready to head home'**
+  String get setupSituationHint;
+
+  /// Voice script section heading
+  ///
+  /// In en, this message translates to:
+  /// **'VOICE SCRIPT'**
+  String get setupVoiceScript;
+
+  /// AI script option label
+  ///
+  /// In en, this message translates to:
+  /// **'Generate with AI'**
+  String get setupGenerateWithAI;
+
+  /// Manual script option label
+  ///
+  /// In en, this message translates to:
+  /// **'Write my own'**
+  String get setupWriteMyOwn;
+
+  /// Voice script input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Write your script...'**
+  String get setupScriptHint;
+
+  /// Initial editable script example
+  ///
+  /// In en, this message translates to:
+  /// **'Hey, can you call me? I need a reason to step out.'**
+  String get setupScriptExample;
+
+  /// Reminder to review the script
+  ///
+  /// In en, this message translates to:
+  /// **'Review and edit before use.'**
+  String get setupReviewNote;
+
+  /// Arm button label
+  ///
+  /// In en, this message translates to:
+  /// **'ARM STEALTH MODE'**
+  String get setupArmButton;
+
+  /// Local armed-state button label
+  ///
+  /// In en, this message translates to:
+  /// **'STEALTH MODE ARMED'**
+  String get setupArmedStatus;
+
+  /// Setup screen preview disclaimer
+  ///
+  /// In en, this message translates to:
+  /// **'Preview only. No call is scheduled from this screen.'**
+  String get setupDisclaimer;
 }
 
-class _AppLocalizationsEn extends AppLocalizations {
-  _AppLocalizationsEn() : super(const Locale('en'));
-
-  @override String get appTitle => 'GhostBuster - Stealth Escape';
-  @override String get appSubtitle => 'Simulated Call Generator';
-  @override String get escapeSequenceArmed => 'Escape Sequence Armed';
-  @override String incomingCallTriggersIn(int seconds) => 'Incoming call triggers in $seconds seconds...';
-  @override String get configureTriggerDesc => 'Configure trigger delay and select fake caller persona.';
-  @override String get callerPersona => 'CALLER PERSONA';
-  @override String get triggerDelay => 'TRIGGER DELAY';
-  @override String armEscapeCall(int seconds) => 'ARM ESCAPE CALL (${seconds}s DELAY)';
-  @override String cancelCountdown(int seconds) => 'CANCEL COUNTDOWN (${seconds}s)';
-  @override String get simulationDisclaimer => 'Simulation only. No actual phone lines or cellular networks are accessed.';
-  @override String get mobile => 'mobile';
-  @override String get remindMe => 'Remind Me';
-  @override String get message => 'Message';
-  @override String get slideToAnswer => 'slide to answer';
-  @override String get decline => 'Decline';
-  @override String get mute => 'mute';
-  @override String get unmute => 'unmute';
-  @override String get keypad => 'keypad';
-  @override String get hideKeypad => 'Hide Keypad';
-  @override String get speaker => 'speaker';
-  @override String get addCall => 'add call';
-  @override String get facetime => 'FaceTime';
-  @override String get contacts => 'contacts';
-  @override String get endCall => 'End Call';
-  @override String get language => 'Language';
-  @override String get selectLanguage => 'Select Language';
-  @override String get english => 'English';
-  @override String get tagalog => 'Tagalog';
-  @override String get cebuano => 'Cebuano / Bisaya';
-  @override String get errorAudioUnavailable => 'Simulated audio track is unavailable. Playing silent safe fallback.';
-  @override String get personaMom => 'Mom';
-  @override String get personaLandlord => 'Landlord (Maintenance)';
-  @override String get personaOffice => 'Office Dispatch';
-}
-
-class _AppLocalizationsTl extends AppLocalizations {
-  _AppLocalizationsTl() : super(const Locale('tl'));
-
-  @override String get appTitle => 'GhostBuster - Palihim na Pagtakas';
-  @override String get appSubtitle => 'Tagabuo ng Huwad na Tawag';
-  @override String get escapeSequenceArmed => 'Nakahanda na ang Pagtakas';
-  @override String incomingCallTriggersIn(int seconds) => 'Tutunog ang tawag sa loob ng $seconds segundo...';
-  @override String get configureTriggerDesc => 'Itakda ang oras ng paghihintay at piliin ang huwad na personahe.';
-  @override String get callerPersona => 'PERSONAHE NG TUMATAWAG';
-  @override String get triggerDelay => 'ORAS NG PAGHIHINTAY';
-  @override String armEscapeCall(int seconds) => 'IHANDA ANG TAWAG (${seconds}s PAGHINTAY)';
-  @override String cancelCountdown(int seconds) => 'IKANSELA ANG ORAS (${seconds}s)';
-  @override String get simulationDisclaimer => 'Panggagaya lamang. Walang aktwal na linya ng telepono o network ang ginagamit.';
-  @override String get mobile => 'mobile';
-  @override String get remindMe => 'Ipaalala sa Akin';
-  @override String get message => 'Mensahe';
-  @override String get slideToAnswer => 'i-slide upang sagutin';
-  @override String get decline => 'Tanggihan';
-  @override String get mute => 'i-mute';
-  @override String get unmute => 'i-unmute';
-  @override String get keypad => 'keypad';
-  @override String get hideKeypad => 'Itago ang Keypad';
-  @override String get speaker => 'speaker';
-  @override String get addCall => 'dagdag tawag';
-  @override String get facetime => 'FaceTime';
-  @override String get contacts => 'mga kontak';
-  @override String get endCall => 'Tapusin ang Tawag';
-  @override String get language => 'Wika';
-  @override String get selectLanguage => 'Pumili ng Wika';
-  @override String get english => 'Ingles';
-  @override String get tagalog => 'Tagalog';
-  @override String get cebuano => 'Cebuano / Bisaya';
-  @override String get errorAudioUnavailable => 'Hindi magagamit ang audio track. Ligtas na ipinagpapatuloy nang walang tunog.';
-  @override String get personaMom => 'Nanay';
-  @override String get personaLandlord => 'May-ari ng Bahay (Maintenance)';
-  @override String get personaOffice => 'Opisina / Dispatch';
-}
-
-class _AppLocalizationsCeb extends AppLocalizations {
-  _AppLocalizationsCeb() : super(const Locale('ceb'));
-
-  @override String get appTitle => 'GhostBuster - Tago nga Pag-ikyas';
-  @override String get appSubtitle => 'Tighimo og Pekeng Tawag';
-  @override String get escapeSequenceArmed => 'Andam na ang Pag-ikyas';
-  @override String incomingCallTriggersIn(int seconds) => 'Motingog ang tawag sulod sa $seconds ka segundo...';
-  @override String get configureTriggerDesc => 'I-set ang oras sa paghulat ug pilia ang pekeng persona.';
-  @override String get callerPersona => 'PERSONA SA MANANAWAG';
-  @override String get triggerDelay => 'ORAS SA PAGHULAT';
-  @override String armEscapeCall(int seconds) => 'ANDAMA ANG TAWAG (${seconds}s HULAT)';
-  @override String cancelCountdown(int seconds) => 'IKANSELA ANG ORAS (${seconds}s)';
-  @override String get simulationDisclaimer => 'Pangsundog lamang. Walay aktwal nga linya sa telepono o network nga gigamit.';
-  @override String get mobile => 'mobile';
-  @override String get remindMe => 'Pahinumdomi Ko';
-  @override String get message => 'Mensahe';
-  @override String get slideToAnswer => 'i-slide aron tubagon';
-  @override String get decline => 'Balibari';
-  @override String get mute => 'i-mute';
-  @override String get unmute => 'i-unmute';
-  @override String get keypad => 'keypad';
-  @override String get hideKeypad => 'Itago ang Keypad';
-  @override String get speaker => 'speaker';
-  @override String get addCall => 'dugang tawag';
-  @override String get facetime => 'FaceTime';
-  @override String get contacts => 'mga kontak';
-  @override String get endCall => 'Undanga ang Tawag';
-  @override String get language => 'Pinulongan';
-  @override String get selectLanguage => 'Pilia ang Pinulongan';
-  @override String get english => 'Iningles';
-  @override String get tagalog => 'Tagalog';
-  @override String get cebuano => 'Cebuano / Bisaya';
-  @override String get errorAudioUnavailable => 'Dili magamit ang audio track. Luwas nga magpadayon nga walay tingog.';
-  @override String get personaMom => 'Mama';
-  @override String get personaLandlord => 'Tag-iya sa Balay (Maintenance)';
-  @override String get personaOffice => 'Opisina / Dispatch';
-}
-
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'tl', 'ceb'].contains(locale.languageCode);
-
-  @override
   Future<AppLocalizations> load(Locale locale) {
-    switch (locale.languageCode) {
-      case 'tl':
-        return SynchronousFuture<AppLocalizations>(_AppLocalizationsTl());
-      case 'ceb':
-        return SynchronousFuture<AppLocalizations>(_AppLocalizationsCeb());
-      case 'en':
-      default:
-        return SynchronousFuture<AppLocalizations>(_AppLocalizationsEn());
-    }
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
   }
 
   @override
+  bool isSupported(Locale locale) =>
+      <String>['ceb', 'en', 'tl'].contains(locale.languageCode);
+
+  @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'ceb':
+      return AppLocalizationsCeb();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'tl':
+      return AppLocalizationsTl();
+  }
+
+  throw FlutterError(
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }
