@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 
-const _background = Color(0xFF080D14);
-const _surface = Color(0xFF111A23);
-const _surfaceRaised = Color(0xFF182531);
-const _border = Color(0xFF2D4050);
-const _accent = Color(0xFF63D9FF);
-const _muted = Color(0xFFAAB9C6);
-const _orange = Color(0xFFFF4D4D);
+const _background = Color(0xFF080B09);
+const _surface = Color(0xFF151D18);
+const _surfaceRaised = Color(0xFF1B261F);
+const _border = Color(0xFF344138);
+const _accent = Color(0xFF8BC49A);
+const _muted = Color(0xFFABB4AD);
+const _orange = Color(0xFFFFB347);
 const _ghostbusterRed = Color(0xFFE53935);
 
 class StealthTriggerScreen extends StatefulWidget {
@@ -208,7 +208,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                           Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF121F29),
+                              color: const Color(0xFF18221B),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(color: _border),
                             ),
@@ -218,7 +218,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                   width: 56,
                                   height: 56,
                                   decoration: const BoxDecoration(
-                                    color: Color(0xFF203B45),
+                                    color: Color(0xFF304A38),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(
@@ -295,7 +295,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                               vertical: 11,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF121F29),
+                              color: const Color(0xFF18221B),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(color: _border),
                             ),
@@ -483,7 +483,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                         ),
                         style: FilledButton.styleFrom(
                           backgroundColor: _accent,
-                          foregroundColor: const Color(0xFF07151C),
+                          foregroundColor: const Color(0xFF102017),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
@@ -507,7 +507,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                           'Preview only. No call is scheduled from this screen.',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        color: Color(0xFF778895),
+                        color: Color(0xFF7E8981),
                         fontSize: 11,
                         height: 1.4,
                       ),
@@ -568,7 +568,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
         constraints: const BoxConstraints(minHeight: 42),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF203B45) : _surfaceRaised,
+          color: isSelected ? const Color(0xFF304A38) : _surfaceRaised,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: isSelected ? _accent : _border),
         ),
@@ -602,9 +602,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
 
   InputDecoration _fieldDecoration(String hint) => InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: Color(0xFF70818F), fontSize: 13),
+        hintStyle: const TextStyle(color: Color(0xFF778179), fontSize: 13),
         filled: true,
-        fillColor: const Color(0xFF121F29),
+        fillColor: const Color(0xFF18221B),
         contentPadding: const EdgeInsets.all(14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(11),
@@ -699,7 +699,7 @@ class _SelectionChip extends StatelessWidget {
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF203B45) : _surfaceRaised,
+          color: isSelected ? const Color(0xFF304A38) : _surfaceRaised,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: isSelected ? _accent : _border),
         ),

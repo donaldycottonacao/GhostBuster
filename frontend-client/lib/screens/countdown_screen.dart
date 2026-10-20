@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-const _background = Color(0xFF080D14);
-const _surface = Color(0xFF111A23);
-const _border = Color(0xFF2D4050);
-const _accent = Color(0xFF63D9FF);
-const _muted = Color(0xFFAAB9C6);
+const _background = Color(0xFF080B09);
+const _surface = Color(0xFF151D18);
+const _border = Color(0xFF344138);
+const _accent = Color(0xFF8BD49A);
+const _muted = Color(0xFFA9B4AB);
+
+const _glossyIconShadows = [
+  Shadow(color: Color(0xAAFFFFFF), blurRadius: 2),
+  Shadow(color: Color(0xCC07100B), offset: Offset(0, 2), blurRadius: 3),
+];
 
 class CountdownScreen extends StatelessWidget {
   const CountdownScreen({
@@ -142,7 +147,12 @@ class _CountdownHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Row(
       children: [
-        Icon(Icons.menu_rounded, color: _muted, size: 25),
+        Icon(
+          Icons.menu_rounded,
+          color: _muted,
+          size: 25,
+          shadows: _glossyIconShadows,
+        ),
         SizedBox(width: 14),
         Expanded(
           child: Text.rich(
@@ -165,7 +175,12 @@ class _CountdownHeader extends StatelessWidget {
           ),
         ),
         SizedBox(width: 14),
-        Icon(Icons.more_horiz_rounded, color: _muted, size: 25),
+        Icon(
+          Icons.more_horiz_rounded,
+          color: _muted,
+          size: 25,
+          shadows: _glossyIconShadows,
+        ),
       ],
     );
   }
@@ -187,8 +202,13 @@ class _CallerPreviewCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 31,
-            backgroundColor: Color(0xFF243542),
-            child: Icon(Icons.person_rounded, color: Colors.white70, size: 38),
+            backgroundColor: Color(0xFF385442),
+            child: Icon(
+              Icons.person_rounded,
+              color: Color(0xFFD8F1DC),
+              size: 38,
+              shadows: _glossyIconShadows,
+            ),
           ),
           SizedBox(width: 14),
           Expanded(
@@ -211,7 +231,12 @@ class _CallerPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.equalizer_rounded, color: _accent, size: 24),
+          Icon(
+            Icons.equalizer_rounded,
+            color: Color(0xFFFFC247),
+            size: 24,
+            shadows: _glossyIconShadows,
+          ),
         ],
       ),
     );
