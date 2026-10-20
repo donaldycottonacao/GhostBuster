@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 
-const _background = Color(0xFF0A0D0C);
-const _surface = Color(0xFF171B19);
-const _surfaceRaised = Color(0xFF202623);
-const _border = Color(0xFF39423C);
-const _accent = Color(0xFF8BC49A);
-const _muted = Color(0xFFABB4AD);
-const _orange = Color(0xFFFFA33B);
+const _background = Color(0xFF080D14);
+const _surface = Color(0xFF111A23);
+const _surfaceRaised = Color(0xFF182531);
+const _border = Color(0xFF2D4050);
+const _accent = Color(0xFF63D9FF);
+const _muted = Color(0xFFAAB9C6);
+const _orange = Color(0xFFFF4D4D);
+const _ghostbusterRed = Color(0xFFE53935);
 
 class StealthTriggerScreen extends StatefulWidget {
   const StealthTriggerScreen({
@@ -52,467 +53,467 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return Scaffold(
-      backgroundColor: _background,
-      appBar: AppBar(
-        backgroundColor: _background,
-        foregroundColor: Colors.white,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(text: 'PHANTOM '),
-                  TextSpan(
-                    text: 'EXIT',
-                    style: TextStyle(color: _accent),
-                  ),
-                ],
-              ),
-            ),
-            Text(
-              l10n?.setupTagline ?? 'DISCREET EXITS. BRIGHTER DAYS.',
-              style: const TextStyle(
-                color: _muted,
-                fontSize: 9,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 1.1,
-              ),
-            ),
-          ],
-        ),
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 19,
-          fontWeight: FontWeight.w800,
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 6),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: _surface,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: _accent.withValues(alpha: 0.7)),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.circle, color: _accent, size: 8),
-                const SizedBox(width: 7),
-                Text(
-                  l10n?.setupFieldMode ?? 'FIELD MODE',
-                  style: const TextStyle(
-                    color: _accent,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.7,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.settings_rounded, color: _muted),
-          ),
-        ],
+    return Theme(
+      data: Theme.of(context).copyWith(
+        textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Bell MT'),
+        primaryTextTheme:
+            Theme.of(context).primaryTextTheme.apply(fontFamily: 'Bell MT'),
       ),
-      body: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    l10n?.setupTitle ?? 'Set your exit',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
+      child: Scaffold(
+        backgroundColor: _background,
+        appBar: AppBar(
+          backgroundColor: _background,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(text: 'PHANTOM '),
+                    TextSpan(
+                      text: 'EXIT',
+                      style: TextStyle(color: _accent),
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    l10n?.setupSubtitle ?? 'A convincing call, right on cue.',
-                    style: const TextStyle(
-                      color: _muted,
-                      fontSize: 16,
-                      height: 1.4,
+                  ],
+                ),
+              ),
+              Text(
+                l10n?.setupTagline ?? 'DISCREET EXITS. BRIGHTER DAYS.',
+                style: const TextStyle(
+                  color: _muted,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.1,
+                ),
+              ),
+            ],
+          ),
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 19,
+            fontWeight: FontWeight.w800,
+            letterSpacing: 1.1,
+          ),
+        ),
+        body: SafeArea(
+          top: false,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 560),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 8),
+                    const Center(
+                      child: Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: 'GHOST'),
+                            TextSpan(
+                              text: 'BUSTER',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        style: TextStyle(
+                          color: _accent,
+                          fontSize: 34,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.4,
+                          shadows: [
+                            Shadow(color: _accent, blurRadius: 14),
+                            Shadow(color: _ghostbusterRed, blurRadius: 2),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  _SectionCard(
-                    title: l10n?.setupRingDelay ?? 'RING DELAY',
-                    icon: Icons.schedule_rounded,
-                    trailing: Text(
-                      l10n?.setupRingDelayHelp ??
-                          'Set how long until the call comes in.',
-                      style: const TextStyle(color: _muted, fontSize: 11),
+                    const SizedBox(height: 9),
+                    Text(
+                      l10n?.setupTitle ?? 'Set your exit',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.4,
+                      ),
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _delayOption(
-                            10,
-                            l10n?.setupDelay10Seconds ?? '10 sec',
+                    const SizedBox(height: 24),
+                    _SectionCard(
+                      title: l10n?.setupRingDelay ?? 'RING DELAY',
+                      icon: Icons.schedule_rounded,
+                      trailing: Text(
+                        l10n?.setupRingDelayHelp ??
+                            'Set how long until the call comes in.',
+                        style: const TextStyle(color: _muted, fontSize: 11),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _delayOption(
+                              10,
+                              l10n?.setupDelay10Seconds ?? '10 sec',
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 7),
-                        Expanded(
-                          child: _delayOption(
-                            30,
-                            l10n?.setupDelay30Seconds ?? '30 sec',
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: _delayOption(
+                              30,
+                              l10n?.setupDelay30Seconds ?? '30 sec',
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 7),
-                        Expanded(
-                          child: _delayOption(
-                            60,
-                            l10n?.setupDelay1Minute ?? '1 min',
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: _delayOption(
+                              60,
+                              l10n?.setupDelay1Minute ?? '1 min',
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 7),
-                        Expanded(
-                          child: _delayOption(
-                            180,
-                            l10n?.setupDelay3Minutes ?? '3 min',
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: _delayOption(
+                              180,
+                              l10n?.setupDelay3Minutes ?? '3 min',
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  _SectionCard(
-                    title: l10n?.setupIncomingCall ?? 'INCOMING CALL',
-                    icon: Icons.call_rounded,
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.circle, color: _orange, size: 9),
-                        const SizedBox(width: 6),
-                        Text(
-                          l10n?.setupPreview ?? 'PREVIEW',
-                          style: const TextStyle(
-                            color: _orange,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.8,
+                    _SectionCard(
+                      title: l10n?.setupIncomingCall ?? 'INCOMING CALL',
+                      icon: Icons.call_rounded,
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.circle, color: _orange, size: 9),
+                          const SizedBox(width: 6),
+                          Text(
+                            l10n?.setupPreview ?? 'PREVIEW',
+                            style: const TextStyle(
+                              color: _orange,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.8,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1B211D),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: _border),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 56,
-                                height: 56,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF33483A),
-                                  shape: BoxShape.circle,
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF121F29),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: _border),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 56,
+                                  height: 56,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFF203B45),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.person_rounded,
+                                    color: _accent,
+                                    size: 34,
+                                  ),
                                 ),
-                                child: const Icon(
-                                  Icons.person_rounded,
-                                  color: _accent,
-                                  size: 34,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Riley Morgan',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 3),
-                                    Text(
-                                      l10n?.setupEmergencyContact ??
-                                          'Emergency contact',
-                                      style: const TextStyle(
-                                        color: _muted,
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 7),
-                                    DecoratedBox(
-                                      decoration: const BoxDecoration(
-                                        border: Border.fromBorderSide(
-                                          BorderSide(color: _orange),
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(7),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Riley Morgan',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
+                                      const SizedBox(height: 3),
+                                      Text(
+                                        l10n?.setupEmergencyContact ??
+                                            'Emergency contact',
+                                        style: const TextStyle(
+                                          color: _muted,
+                                          fontSize: 13,
                                         ),
-                                        child: Text(
-                                          l10n?.setupVoicePanicked ??
-                                              'VOICE: PANICKED',
-                                          style: const TextStyle(
-                                            color: _orange,
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w700,
-                                            letterSpacing: 0.8,
+                                      ),
+                                      const SizedBox(height: 7),
+                                      DecoratedBox(
+                                        decoration: const BoxDecoration(
+                                          border: Border.fromBorderSide(
+                                            BorderSide(color: _orange),
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(7),
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          child: Text(
+                                            l10n?.setupVoicePanicked ??
+                                                'VOICE: PANICKED',
+                                            style: const TextStyle(
+                                              color: _orange,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w700,
+                                              letterSpacing: 0.8,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Icon(
-                                Icons.chevron_right_rounded,
-                                color: _muted,
-                                size: 25,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 11,
-                          ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1B211D),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: _border),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.notifications_none_rounded,
-                                color: _muted,
-                                size: 21,
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  l10n?.setupRingtone ?? 'Ringtone',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
+                                    ],
                                   ),
                                 ),
-                              ),
-                              PopupMenuButton<String>(
-                                initialValue: _selectedRingtone,
-                                onSelected: (value) =>
-                                    setState(() => _selectedRingtone = value),
-                                color: _surfaceRaised,
-                                itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    value: 'containment',
-                                    child: Text(
-                                      l10n?.setupRingtoneContainment ??
-                                          'Containment Alarm',
+                                const Icon(
+                                  Icons.chevron_right_rounded,
+                                  color: _muted,
+                                  size: 25,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 11,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF121F29),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: _border),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.notifications_none_rounded,
+                                  color: _muted,
+                                  size: 21,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    l10n?.setupRingtone ?? 'Ringtone',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
                                     ),
                                   ),
-                                  PopupMenuItem(
-                                    value: 'soft',
-                                    child: Text(
-                                      l10n?.setupRingtoneSoft ?? 'Soft Chime',
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    value: 'classic',
-                                    child: Text(
-                                      l10n?.setupRingtoneClassic ??
-                                          'Classic Ringtone',
-                                    ),
-                                  ),
-                                ],
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      _ringtoneLabel(l10n, _selectedRingtone),
-                                      style: const TextStyle(
-                                        color: _muted,
-                                        fontSize: 13,
+                                ),
+                                PopupMenuButton<String>(
+                                  initialValue: _selectedRingtone,
+                                  onSelected: (value) =>
+                                      setState(() => _selectedRingtone = value),
+                                  color: _surfaceRaised,
+                                  itemBuilder: (context) => [
+                                    PopupMenuItem(
+                                      value: 'containment',
+                                      child: Text(
+                                        l10n?.setupRingtoneContainment ??
+                                            'Containment Alarm',
                                       ),
                                     ),
-                                    const SizedBox(width: 4),
-                                    const Icon(
-                                      Icons.chevron_right_rounded,
-                                      color: _muted,
-                                      size: 22,
+                                    PopupMenuItem(
+                                      value: 'soft',
+                                      child: Text(
+                                        l10n?.setupRingtoneSoft ?? 'Soft Chime',
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 'classic',
+                                      child: Text(
+                                        l10n?.setupRingtoneClassic ??
+                                            'Classic Ringtone',
+                                      ),
                                     ),
                                   ],
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        _ringtoneLabel(l10n, _selectedRingtone),
+                                        style: const TextStyle(
+                                          color: _muted,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      const Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: _muted,
+                                        size: 22,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _SectionCard(
+                      title: l10n?.setupScriptLanguage ?? 'SCRIPT LANGUAGE',
+                      icon: Icons.language_rounded,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _languageOption(
+                              'en',
+                              l10n?.english ?? 'English',
+                            ),
+                          ),
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: _languageOption(
+                              'tl',
+                              l10n?.tagalog ?? 'Tagalog',
+                            ),
+                          ),
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: _languageOption(
+                              'ceb',
+                              l10n?.cebuano ?? 'Bisaya',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _SectionCard(
+                      title: l10n?.setupSituationEvent ?? 'SITUATION / EVENT',
+                      icon: Icons.edit_note_rounded,
+                      child: TextField(
+                        controller: _situationController,
+                        minLines: 3,
+                        maxLines: 5,
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 14),
+                        decoration: _fieldDecoration(
+                          l10n?.setupSituationHint ??
+                              'e.g., At a party and ready to head home',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _SectionCard(
+                      title: l10n?.setupVoiceScript ?? 'VOICE SCRIPT',
+                      icon: Icons.notes_rounded,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _modeOption(
+                                  'ai',
+                                  l10n?.setupGenerateWithAI ??
+                                      'Generate with AI',
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: _modeOption(
+                                  'own',
+                                  l10n?.setupWriteMyOwn ?? 'Write my own',
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  _SectionCard(
-                    title: l10n?.setupScriptLanguage ?? 'SCRIPT LANGUAGE',
-                    icon: Icons.language_rounded,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _languageOption(
-                            'en',
-                            l10n?.english ?? 'English',
-                          ),
-                        ),
-                        const SizedBox(width: 7),
-                        Expanded(
-                          child: _languageOption(
-                            'tl',
-                            l10n?.tagalog ?? 'Tagalog',
-                          ),
-                        ),
-                        const SizedBox(width: 7),
-                        Expanded(
-                          child: _languageOption(
-                            'ceb',
-                            l10n?.cebuano ?? 'Bisaya',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  _SectionCard(
-                    title: l10n?.setupSituationEvent ?? 'SITUATION / EVENT',
-                    icon: Icons.edit_note_rounded,
-                    child: TextField(
-                      controller: _situationController,
-                      minLines: 3,
-                      maxLines: 5,
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                      decoration: _fieldDecoration(
-                        l10n?.setupSituationHint ??
-                            'e.g., At a party and ready to head home',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  _SectionCard(
-                    title: l10n?.setupVoiceScript ?? 'VOICE SCRIPT',
-                    icon: Icons.notes_rounded,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _modeOption(
-                                'ai',
-                                l10n?.setupGenerateWithAI ?? 'Generate with AI',
-                              ),
+                          const SizedBox(height: 14),
+                          TextField(
+                            controller: _scriptController,
+                            minLines: 2,
+                            maxLines: 5,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              height: 1.5,
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: _modeOption(
-                                'own',
-                                l10n?.setupWriteMyOwn ?? 'Write my own',
-                              ),
+                            decoration: _fieldDecoration(
+                              l10n?.setupScriptHint ?? 'Write your script...',
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        TextField(
-                          controller: _scriptController,
-                          minLines: 2,
-                          maxLines: 5,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            height: 1.5,
                           ),
-                          decoration: _fieldDecoration(
-                            l10n?.setupScriptHint ?? 'Write your script...',
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Icon(Icons.edit_outlined,
-                                color: _accent, size: 16),
-                            const SizedBox(width: 7),
-                            Expanded(
-                              child: Text(
-                                l10n?.setupReviewNote ??
-                                    'Review and edit before use.',
-                                style: const TextStyle(
-                                  color: _muted,
-                                  fontSize: 12,
+                          const SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.edit_outlined,
+                                  color: _accent, size: 16),
+                              const SizedBox(width: 7),
+                              Expanded(
+                                child: Text(
+                                  l10n?.setupReviewNote ??
+                                      'Review and edit before use.',
+                                  style: const TextStyle(
+                                    color: _muted,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 60,
-                    child: FilledButton.icon(
-                      onPressed: () => widget.onPreviewCountdown(
-                        _selectedDelay,
-                        _scriptController.text,
-                      ),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: _accent,
-                        foregroundColor: const Color(0xFF152019),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      icon: const Icon(
-                        Icons.hearing_rounded,
-                      ),
-                      label: Text(
-                        l10n?.setupArmButton ?? 'ARM STEALTH MODE',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.4,
-                        ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    l10n?.setupDisclaimer ??
-                        'Preview only. No call is scheduled from this screen.',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Color(0xFF7E8981),
-                      fontSize: 11,
-                      height: 1.4,
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: 60,
+                      child: FilledButton.icon(
+                        onPressed: () => widget.onPreviewCountdown(
+                          _selectedDelay,
+                          _scriptController.text,
+                        ),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: _accent,
+                          foregroundColor: const Color(0xFF07151C),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.hearing_rounded,
+                        ),
+                        label: Text(
+                          l10n?.setupArmButton ?? 'ARM STEALTH MODE',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.4,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    Text(
+                      l10n?.setupDisclaimer ??
+                          'Preview only. No call is scheduled from this screen.',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFF778895),
+                        fontSize: 11,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -567,7 +568,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
         constraints: const BoxConstraints(minHeight: 42),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF33483A) : _surfaceRaised,
+          color: isSelected ? const Color(0xFF203B45) : _surfaceRaised,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: isSelected ? _accent : _border),
         ),
@@ -601,9 +602,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
 
   InputDecoration _fieldDecoration(String hint) => InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: Color(0xFF778179), fontSize: 13),
+        hintStyle: const TextStyle(color: Color(0xFF70818F), fontSize: 13),
         filled: true,
-        fillColor: const Color(0xFF1B211D),
+        fillColor: const Color(0xFF121F29),
         contentPadding: const EdgeInsets.all(14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(11),
@@ -698,7 +699,7 @@ class _SelectionChip extends StatelessWidget {
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF33483A) : _surfaceRaised,
+          color: isSelected ? const Color(0xFF203B45) : _surfaceRaised,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: isSelected ? _accent : _border),
         ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-const _background = Color(0xFF0A0D0C);
-const _surface = Color(0xFF171B1D);
-const _border = Color(0xFF33383D);
-const _green = Color(0xFF86D78E);
-const _muted = Color(0xFF9AA1A8);
+const _background = Color(0xFF080D14);
+const _surface = Color(0xFF111A23);
+const _border = Color(0xFF2D4050);
+const _accent = Color(0xFF63D9FF);
+const _muted = Color(0xFFAAB9C6);
 
 class CountdownScreen extends StatelessWidget {
   const CountdownScreen({
@@ -60,7 +60,7 @@ class CountdownScreen extends StatelessWidget {
                               value: 0.5,
                               strokeWidth: 4,
                               backgroundColor: _border,
-                              color: _green,
+                              color: _accent,
                             ),
                           ),
                           Column(
@@ -151,7 +151,7 @@ class _CountdownHeader extends StatelessWidget {
                 TextSpan(text: 'PHANTOM EXIT  ·  '),
                 TextSpan(
                   text: 'STEALTH ACTIVE',
-                  style: TextStyle(color: _green),
+                  style: TextStyle(color: _accent),
                 ),
               ],
             ),
@@ -187,7 +187,7 @@ class _CallerPreviewCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 31,
-            backgroundColor: Color(0xFF343A40),
+            backgroundColor: Color(0xFF243542),
             child: Icon(Icons.person_rounded, color: Colors.white70, size: 38),
           ),
           SizedBox(width: 14),
@@ -211,7 +211,7 @@ class _CallerPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.equalizer_rounded, color: Color(0xFFFFC247), size: 24),
+          Icon(Icons.equalizer_rounded, color: _accent, size: 24),
         ],
       ),
     );
