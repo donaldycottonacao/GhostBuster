@@ -297,6 +297,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Office Dispatch'**
   String get personaOffice;
+
+  /// Setup screen brand tagline
+  ///
+  /// In en, this message translates to:
+  /// **'DISCREET EXITS. BRIGHTER DAYS.'**
+  String get setupTagline;
+
+  /// Setup screen mode badge
+  ///
+  /// In en, this message translates to:
+  /// **'FIELD MODE'**
+  String get setupFieldMode;
+
+  /// Setup screen heading
+  ///
+  /// In en, this message translates to:
+  /// **'Set your exit'**
+  String get setupTitle;
+
+  /// Setup screen introduction
+  ///
+  /// In en, this message translates to:
+  /// **'A convincing call, right on cue.'**
+  String get setupSubtitle;
+
+  /// Ring delay section heading
+  ///
+  /// In en, this message translates to:
+  /// **'RING DELAY'**
+  String get setupRingDelay;
+
+  /// Ring delay helper text
+  ///
+  /// In en, this message translates to:
+  /// **'Set how long until the call comes in.'**
+  String get setupRingDelayHelp;
+
+  /// Ten-second delay choice
+  ///
+  /// In en, this message translates to:
+  /// **'10 sec'**
+  String get setupDelay10Seconds;
+
+  /// Thirty-second delay choice
+  ///
+  /// In en, this message translates to:
+  /// **'30 sec'**
+  String get setupDelay30Seconds;
+
+  /// One-minute delay choice
+  ///
+  /// In en, this message translates to:
+  /// **'1 min'**
+  String get setupDelay1Minute;
+
+  /// Three-minute delay choice
+  ///
+  /// In en, this message translates to:
+  /// **'3 min'**
+  String get setupDelay3Minutes;
+
+  /// Incoming call section heading
+  ///
+  /// In en, this message translates to:
+  /// **'INCOMING CALL'**
+  String get setupIncomingCall;
+
+  /// Incoming call preview badge
+  ///
+  /// In en, this message translates to:
+  /// **'PREVIEW'**
+  String get setupPreview;
+
+  /// Caller relationship label
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency contact'**
+  String get setupEmergencyContact;
+
+  /// Caller voice style label
+  ///
+  /// In en, this message translates to:
+  /// **'VOICE: PANICKED'**
+  String get setupVoicePanicked;
+
+  /// Ringtone setting label
+  ///
+  /// In en, this message translates to:
+  /// **'Ringtone'**
+  String get setupRingtone;
+
+  /// Containment alarm ringtone option
+  ///
+  /// In en, this message translates to:
+  /// **'Containment Alarm'**
+  String get setupRingtoneContainment;
+
+  /// Soft chime ringtone option
+  ///
+  /// In en, this message translates to:
+  /// **'Soft Chime'**
+  String get setupRingtoneSoft;
+
+  /// Classic ringtone option
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Ringtone'**
+  String get setupRingtoneClassic;
+
+  /// Script language section heading
+  ///
+  /// In en, this message translates to:
+  /// **'SCRIPT LANGUAGE'**
+  String get setupScriptLanguage;
+
+  /// Situation input section heading
+  ///
+  /// In en, this message translates to:
+  /// **'SITUATION / EVENT'**
+  String get setupSituationEvent;
+
+  /// Situation input hint
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., At a party and ready to head home'**
+  String get setupSituationHint;
+
+  /// Voice script section heading
+  ///
+  /// In en, this message translates to:
+  /// **'VOICE SCRIPT'**
+  String get setupVoiceScript;
+
+  /// AI script option label
+  ///
+  /// In en, this message translates to:
+  /// **'Generate with AI'**
+  String get setupGenerateWithAI;
+
+  /// Manual script option label
+  ///
+  /// In en, this message translates to:
+  /// **'Write my own'**
+  String get setupWriteMyOwn;
+
+  /// Voice script input hint
+  ///
+  /// In en, this message translates to:
+  /// **'Write your script...'**
+  String get setupScriptHint;
+
+  /// Initial editable script example
+  ///
+  /// In en, this message translates to:
+  /// **'Hey, can you call me? I need a reason to step out.'**
+  String get setupScriptExample;
+
+  /// Reminder to review the script
+  ///
+  /// In en, this message translates to:
+  /// **'Review and edit before use.'**
+  String get setupReviewNote;
+
+  /// Arm button label
+  ///
+  /// In en, this message translates to:
+  /// **'ARM STEALTH MODE'**
+  String get setupArmButton;
+
+  /// Local armed-state button label
+  ///
+  /// In en, this message translates to:
+  /// **'STEALTH MODE ARMED'**
+  String get setupArmedStatus;
+
+  /// Setup screen preview disclaimer
+  ///
+  /// In en, this message translates to:
+  /// **'Preview only. No call is scheduled from this screen.'**
+  String get setupDisclaimer;
 }
 
 class _AppLocalizationsDelegate

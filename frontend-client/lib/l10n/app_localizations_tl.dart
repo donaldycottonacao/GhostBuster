@@ -115,4 +115,96 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get personaOffice => 'Opisina / Dispatch';
+
+  @override
+  String get setupTagline => 'DISKRETONG PAG-ALIS. MAS MAGANDANG ARAW.';
+
+  @override
+  String get setupFieldMode => 'MODE SA LUGAR';
+
+  @override
+  String get setupTitle => 'Ihanda ang pag-alis mo';
+
+  @override
+  String get setupSubtitle => 'Kapani-paniwalang tawag, sa tamang oras.';
+
+  @override
+  String get setupRingDelay => 'ANTALA BAGO TUMAWAG';
+
+  @override
+  String get setupRingDelayHelp => 'Itakda kung kailan papasok ang tawag.';
+
+  @override
+  String get setupDelay10Seconds => '10 seg';
+
+  @override
+  String get setupDelay30Seconds => '30 seg';
+
+  @override
+  String get setupDelay1Minute => '1 min';
+
+  @override
+  String get setupDelay3Minutes => '3 min';
+
+  @override
+  String get setupIncomingCall => 'PAPASOK NA TAWAG';
+
+  @override
+  String get setupPreview => 'SILIPIN';
+
+  @override
+  String get setupEmergencyContact => 'Pang-emergency na contact';
+
+  @override
+  String get setupVoicePanicked => 'BOSES: TARANTA';
+
+  @override
+  String get setupRingtone => 'Tono ng Tawag';
+
+  @override
+  String get setupRingtoneContainment => 'Alarmang Pang-alerto';
+
+  @override
+  String get setupRingtoneSoft => 'Mahinang Tunog';
+
+  @override
+  String get setupRingtoneClassic => 'Klasikong Ringtone';
+
+  @override
+  String get setupScriptLanguage => 'WIKA NG SCRIPT';
+
+  @override
+  String get setupSituationEvent => 'SITWASYON / PANGYAYARI';
+
+  @override
+  String get setupSituationHint => 'hal., Nasa party ako at handa nang umuwi';
+
+  @override
+  String get setupVoiceScript => 'SCRIPT NG SASABIHIN';
+
+  @override
+  String get setupGenerateWithAI => 'Gumawa gamit ang AI';
+
+  @override
+  String get setupWriteMyOwn => 'Ako ang susulat';
+
+  @override
+  String get setupScriptHint => 'Isulat ang script mo...';
+
+  @override
+  String get setupScriptExample =>
+      'Uy, puwede mo ba akong tawagan? Kailangan ko ng dahilan para makalabas.';
+
+  @override
+  String get setupReviewNote => 'Suriin at i-edit bago gamitin.';
+
+  @override
+  String get setupArmButton => 'IHANDA ANG PALIHIM NA MODE';
+
+  @override
+  String get setupArmedStatus => 'NAIHANDA NA ANG PALIHIM NA MODE';
+
+  @override
+  String get setupDisclaimer =>
+      'Preview lang. Walang tawag na itinatakda mula sa screen na ito.';
 }

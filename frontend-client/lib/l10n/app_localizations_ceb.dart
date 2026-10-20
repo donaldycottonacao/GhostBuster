@@ -115,4 +115,97 @@ class AppLocalizationsCeb extends AppLocalizations {
 
   @override
   String get personaOffice => 'Opisina / Dispatch';
+
+  @override
+  String get setupTagline => 'DISKRETONG PAGBIYA. MAS NINDOT NGA ADLAW.';
+
+  @override
+  String get setupFieldMode => 'MODE SA DAPIT';
+
+  @override
+  String get setupTitle => 'Andama imong paggawas';
+
+  @override
+  String get setupSubtitle => 'Matuohon nga tawag, sa saktong oras.';
+
+  @override
+  String get setupRingDelay => 'DELAY SA TAWAG';
+
+  @override
+  String get setupRingDelayHelp => 'Itakda kon kanus-a mosulod ang tawag.';
+
+  @override
+  String get setupDelay10Seconds => '10 seg';
+
+  @override
+  String get setupDelay30Seconds => '30 seg';
+
+  @override
+  String get setupDelay1Minute => '1 min';
+
+  @override
+  String get setupDelay3Minutes => '3 min';
+
+  @override
+  String get setupIncomingCall => 'MOSULOD NGA TAWAG';
+
+  @override
+  String get setupPreview => 'TAN-AWA';
+
+  @override
+  String get setupEmergencyContact => 'Kontak sa emerhensya';
+
+  @override
+  String get setupVoicePanicked => 'TINGOG: NAKALIBANG';
+
+  @override
+  String get setupRingtone => 'Tingog sa Tawag';
+
+  @override
+  String get setupRingtoneContainment => 'Alarmang Pang-alerto';
+
+  @override
+  String get setupRingtoneSoft => 'Hinay nga Chime';
+
+  @override
+  String get setupRingtoneClassic => 'Klasikong Ringtone';
+
+  @override
+  String get setupScriptLanguage => 'PINULONGAN SA SCRIPT';
+
+  @override
+  String get setupSituationEvent => 'SITWASYON / HITABO';
+
+  @override
+  String get setupSituationHint =>
+      'pananglitan, Naa ko sa party ug andam nang mouli';
+
+  @override
+  String get setupVoiceScript => 'SCRIPT SA TINGOG';
+
+  @override
+  String get setupGenerateWithAI => 'Himoa gamit ang AI';
+
+  @override
+  String get setupWriteMyOwn => 'Ako ang mosulat';
+
+  @override
+  String get setupScriptHint => 'Isulat ang imong script...';
+
+  @override
+  String get setupScriptExample =>
+      'Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.';
+
+  @override
+  String get setupReviewNote => 'Susiha ug usba una gamiton.';
+
+  @override
+  String get setupArmButton => 'ANDAMA ANG TAGO NGA MODE';
+
+  @override
+  String get setupArmedStatus => 'ANDAM NA ANG TAGO NGA MODE';
+
+  @override
+  String get setupDisclaimer =>
+      'Preview ra. Walay tawag nga gitakda niini nga screen.';
 }

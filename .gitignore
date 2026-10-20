@@ -495,6 +495,11 @@ frontend-client/assets/fonts/*.otf
 !frontend-client/assets/audio/README.md
 !frontend-client/assets/fonts/README.md
 
+# Databases & local storage
+*.db
+*.sqlite
+*.sqlite3
+
 # Environment variables & secrets
 .env
 *.env.*
