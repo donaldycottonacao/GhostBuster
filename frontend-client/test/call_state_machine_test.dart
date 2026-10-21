@@ -7,12 +7,26 @@ import 'package:frontend_client/services/audio_service.dart';
 class MockAudioService implements AudioServiceBase {
   int ringtonePlayCount = 0;
   int peerAudioPlayCount = 0;
+  int stopRingtoneCount = 0;
+  int stopVoiceCount = 0;
   int stopAllCount = 0;
   bool _isPlaying = false;
+  bool _isRingtonePlaying = false;
+  bool _isVoicePlaying = false;
+  String? _currentAsset;
   final List<String> callLog = [];
 
   @override
   bool get isPlaying => _isPlaying;
+
+  @override
+  bool get isRingtonePlaying => _isRingtonePlaying;
+
+  @override
+  bool get isVoicePlaying => _isVoicePlaying;
+
+  @override
+  String? get currentAsset => _currentAsset;
 
   @override
   Future<void> initialize() async {
@@ -23,21 +37,53 @@ class MockAudioService implements AudioServiceBase {
   Future<void> playRingtone({String? assetPath}) async {
     ringtonePlayCount++;
     _isPlaying = true;
+    _isRingtonePlaying = true;
+    _currentAsset = assetPath ?? 'assets/audio/ringtone_ios.mp3';
     callLog.add('playRingtone');
+  }
+
+  @override
+  Future<void> stopRingtone() async {
+    stopRingtoneCount++;
+    _isRingtonePlaying = false;
+    _isPlaying = _isVoicePlaying;
+    callLog.add('stopRingtone');
   }
 
   @override
   Future<void> playPeerAudio(String assetPath) async {
     peerAudioPlayCount++;
     _isPlaying = true;
+    _isVoicePlaying = true;
+    _currentAsset = assetPath;
     callLog.add('playPeerAudio:$assetPath');
+  }
+
+  @override
+  Future<void> playScenarioVoice(String assetPath) => playPeerAudio(assetPath);
+
+  @override
+  Future<void> stopVoice() async {
+    stopVoiceCount++;
+    _isVoicePlaying = false;
+    _isPlaying = _isRingtonePlaying;
+    callLog.add('stopVoice');
   }
 
   @override
   Future<void> stopAll() async {
     stopAllCount++;
     _isPlaying = false;
+    _isRingtonePlaying = false;
+    _isVoicePlaying = false;
+    _currentAsset = null;
     callLog.add('stopAll');
+  }
+
+  @override
+  Future<void> dispose() async {
+    await stopAll();
+    callLog.add('dispose');
   }
 }
 
