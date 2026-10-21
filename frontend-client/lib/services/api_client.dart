@@ -85,7 +85,8 @@ class GhostBusterApiClient {
         }
       }
     } catch (e) {
-      debugPrint('[ApiClient] Remote script generation offline. Using local template: $e');
+      debugPrint(
+          '[ApiClient] Remote script generation offline. Using local template: $e');
     }
 
     // Safe offline fallback
@@ -100,7 +101,8 @@ class GhostBusterApiClient {
       if (response.statusCode == 200) {
         final list = jsonDecode(response.body) as List<dynamic>;
         return list
-            .map((item) => PersonaApiModel.fromJson(item as Map<String, dynamic>))
+            .map((item) =>
+                PersonaApiModel.fromJson(item as Map<String, dynamic>))
             .toList();
       }
     } catch (e) {
@@ -136,7 +138,8 @@ class GhostBusterApiClient {
 
   static String _localFallbackScript(String language) {
     return switch (language) {
-      'tl' => 'Uy, puwede mo ba akong tawagan? Kailangan ko ng dahilan para makalabas.',
+      'tl' =>
+        'Uy, puwede mo ba akong tawagan? Kailangan ko ng dahilan para makalabas.',
       'ceb' => 'Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.',
       _ => 'Hey, can you call me? I need a reason to step out.',
     };

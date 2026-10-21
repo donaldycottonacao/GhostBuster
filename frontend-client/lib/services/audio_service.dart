@@ -47,14 +47,16 @@ class AudioService implements AudioServiceBase {
     final path = assetPath ?? 'assets/audio/ringtone_ios.mp3';
     _currentAsset = path;
     _isPlaying = true;
-    debugPrint('[AudioService] Ringtone triggered: $path (Simulated Safe Playback)');
+    debugPrint(
+        '[AudioService] Ringtone triggered: $path (Simulated Safe Playback)');
   }
 
   @override
   Future<void> playPeerAudio(String assetPath) async {
     _currentAsset = assetPath;
     _isPlaying = true;
-    debugPrint('[AudioService] Peer audio triggered: $assetPath (Simulated Safe Playback)');
+    debugPrint(
+        '[AudioService] Peer audio triggered: $assetPath (Simulated Safe Playback)');
   }
 
   @override

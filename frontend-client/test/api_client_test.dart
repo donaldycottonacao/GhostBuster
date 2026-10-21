@@ -33,7 +33,8 @@ void main() {
       expect(health.database, 'connected');
     });
 
-    test('checkHealth returns null on network exception without throwing', () async {
+    test('checkHealth returns null on network exception without throwing',
+        () async {
       final mockClient = MockClient((request) async {
         throw Exception('Network unreachable');
       });
@@ -77,7 +78,8 @@ void main() {
       expect(script, 'Pumutok ang tubo sa kusina! Umuwi ka na!');
     });
 
-    test('generateScript returns safe local fallback if backend is offline', () async {
+    test('generateScript returns safe local fallback if backend is offline',
+        () async {
       final mockClient = MockClient((request) async {
         return http.Response('Internal Server Error', 500);
       });
@@ -91,7 +93,8 @@ void main() {
         situation: 'party',
         language: 'ceb',
       );
-      expect(script, 'Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.');
+      expect(script,
+          'Uy, matawagan ko nimo? Kinahanglan kog rason para makagawas.');
     });
 
     test('getPersonas parses remote personas list', () async {

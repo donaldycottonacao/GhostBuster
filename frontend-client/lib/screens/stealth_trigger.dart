@@ -572,16 +572,16 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
         if (situation.isNotEmpty) {
           _apiClient
               .generateScript(
-                situation: situation,
-                language: _selectedLanguage,
-              )
+            situation: situation,
+            language: _selectedLanguage,
+          )
               .then((aiScript) {
-                if (mounted && _selectedMode == 'ai' && aiScript.isNotEmpty) {
-                  setState(() {
-                    _scriptController.text = aiScript;
-                  });
-                }
+            if (mounted && _selectedMode == 'ai' && aiScript.isNotEmpty) {
+              setState(() {
+                _scriptController.text = aiScript;
               });
+            }
+          });
         }
       },
       borderRadius: BorderRadius.circular(10),

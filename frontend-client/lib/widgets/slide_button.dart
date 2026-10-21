@@ -62,7 +62,8 @@ class _SlideButtonState extends State<SlideButton> {
             child: GestureDetector(
               onHorizontalDragUpdate: (details) {
                 setState(() {
-                  _dragPosition = (_dragPosition + details.delta.dx).clamp(0.0, maxDrag);
+                  _dragPosition =
+                      (_dragPosition + details.delta.dx).clamp(0.0, maxDrag);
                 });
               },
               onHorizontalDragEnd: (details) {
