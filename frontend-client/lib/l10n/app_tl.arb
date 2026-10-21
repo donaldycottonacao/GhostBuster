@@ -62,5 +62,18 @@
   "setupReviewNote": "Suriin at i-edit bago gamitin.",
   "setupArmButton": "IHANDA ANG PALIHIM NA MODE",
   "setupArmedStatus": "NAIHANDA NA ANG PALIHIM NA MODE",
-  "setupDisclaimer": "Preview lang. Walang tawag na itinatakda mula sa screen na ito."
+  "setupDisclaimer": "Preview lang. Walang tawag na itinatakda mula sa screen na ito.",
+  "countdownStandingBy": "Nakaantabay...",
+  "countdownSilent": "PALIHIM NA PAGBILANG",
+  "countdownCancelButton": "IKANSELA",
+  "incomingCallTitle": "Papasok na tawag...",
+  "tapToAnswer": "PINDUTIN UPANG SAGUTIN",
+  "callConnected": "Konektado",
+  "activeCallScript": "Script",
+  "callEndedTitle": "Tapos na ang tawag",
+  "callEndedSubtitle": "Natapos na ang iyong tawag.",
+  "callEndedReturnButton": "BUMALIK SA SETUP",
+  "callEndedReady": "Handa na para sa isa pang tawag.",
+  "errorInvalidDelay": "Maling oras ng paghihintay. Dapat ay nasa pagitan ng 10 at 180 segundo.",
+  "errorSimulationActive": "May aktibong tawag na. Maghintay o ikansela ang kasalukuyang tawag."
 }

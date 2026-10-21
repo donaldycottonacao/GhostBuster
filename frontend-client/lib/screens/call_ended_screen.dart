@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/api_models.dart';
 import '../services/api_client.dart';
 
@@ -51,6 +52,7 @@ class _CallEndedScreenState extends State<CallEndedScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: _background,
       body: SafeArea(
@@ -65,20 +67,20 @@ class _CallEndedScreenState extends State<CallEndedScreen> {
                 size: 52,
               ),
               const SizedBox(height: 18),
-              const Text(
-                'Call ended',
+              Text(
+                l10n?.callEndedTitle ?? 'Call ended',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 36,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
-                'Your call has ended.',
+              Text(
+                l10n?.callEndedSubtitle ?? 'Your call has ended.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _muted, fontSize: 17),
+                style: const TextStyle(color: _muted, fontSize: 17),
               ),
               const SizedBox(height: 24),
               Text(
@@ -100,9 +102,9 @@ class _CallEndedScreenState extends State<CallEndedScreen> {
                       backgroundColor: const Color(0xFF24292D),
                       shape: const StadiumBorder(),
                     ),
-                    child: const Text(
-                      'RETURN TO SETUP',
-                      style: TextStyle(
+                    child: Text(
+                      l10n?.callEndedReturnButton ?? 'RETURN TO SETUP',
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.7,
@@ -112,9 +114,9 @@ class _CallEndedScreenState extends State<CallEndedScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Ready for another call.',
-                style: TextStyle(color: _muted, fontSize: 14),
+              Text(
+                l10n?.callEndedReady ?? 'Ready for another call.',
+                style: const TextStyle(color: _muted, fontSize: 14),
               ),
             ],
           ),

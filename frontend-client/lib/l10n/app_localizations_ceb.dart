@@ -208,4 +208,45 @@ class AppLocalizationsCeb extends AppLocalizations {
   @override
   String get setupDisclaimer =>
       'Preview ra. Walay tawag nga gitakda niini nga screen.';
+
+  @override
+  String get countdownStandingBy => 'Naghulat...';
+
+  @override
+  String get countdownSilent => 'TAGO NGA PAG-IHAP';
+
+  @override
+  String get countdownCancelButton => 'IKANSELA';
+
+  @override
+  String get incomingCallTitle => 'Mosulod nga tawag...';
+
+  @override
+  String get tapToAnswer => 'PINDOTA ARON TUBAGON';
+
+  @override
+  String get callConnected => 'Konektado';
+
+  @override
+  String get activeCallScript => 'Script';
+
+  @override
+  String get callEndedTitle => 'Nahuman ang tawag';
+
+  @override
+  String get callEndedSubtitle => 'Nahuman na ang imong tawag.';
+
+  @override
+  String get callEndedReturnButton => 'BALIK SA SETUP';
+
+  @override
+  String get callEndedReady => 'Andam na para sa laing tawag.';
+
+  @override
+  String get errorInvalidDelay =>
+      'Sayop nga delay. Kinahanglan anaa sa taliwala sa 10 ug 180 ka segundo.';
+
+  @override
+  String get errorSimulationActive =>
+      'Naay aktibong tawag. Palihug hulat o ikansela ang kasamtangang tawag.';
 }

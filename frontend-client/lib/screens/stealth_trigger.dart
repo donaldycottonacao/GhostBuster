@@ -157,6 +157,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       trailing: Text(
                         l10n?.setupRingDelayHelp ??
                             'Set how long until the call comes in.',
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
                         style: const TextStyle(color: _muted, fontSize: 11),
                       ),
                       child: Row(
@@ -314,15 +316,20 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                   size: 21,
                                 ),
                                 const SizedBox(width: 12),
-                                Text(
-                                  l10n?.setupRingtone ?? 'Ringtone',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
+                                Expanded(
+                                  flex: 3,
+                                  child: Text(
+                                    l10n?.setupRingtone ?? 'Ringtone',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
+                                  flex: 4,
                                   child: PopupMenuButton<String>(
                                     initialValue: _selectedRingtone,
                                     onSelected: (value) => setState(
@@ -506,9 +513,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                             if (callProvider != null) {
                               if (!callProvider.validateDelay(_selectedDelay)) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                      'Invalid delay. Delay must be between 10 and 180 seconds.',
+                                      l10n?.errorInvalidDelay ??
+                                          'Invalid delay. Delay must be between 10 and 180 seconds.',
                                     ),
                                   ),
                                 );
@@ -516,9 +524,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                               }
                               if (!callProvider.canEditConfiguration) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     content: Text(
-                                      'A simulation is already active. Please wait or cancel the current call.',
+                                      l10n?.errorSimulationActive ??
+                                          'A simulation is already active. Please wait or cancel the current call.',
                                     ),
                                   ),
                                 );
@@ -725,15 +734,29 @@ class _SectionCard extends StatelessWidget {
             children: [
               Icon(icon, color: _accent, size: 17),
               const SizedBox(width: 8),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1,
+              Expanded(
+                flex: trailing != null ? 3 : 1,
+                child: Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1,
+                  ),
                 ),
               ),
+              if (trailing != null) ...[
+                const SizedBox(width: 8),
+                Flexible(
+                  flex: 4,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: trailing!,
+                  ),
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 14),

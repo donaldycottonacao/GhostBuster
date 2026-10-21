@@ -62,5 +62,18 @@
   "setupReviewNote": "Susiha ug usba una gamiton.",
   "setupArmButton": "ANDAMA ANG TAGO NGA MODE",
   "setupArmedStatus": "ANDAM NA ANG TAGO NGA MODE",
-  "setupDisclaimer": "Preview ra. Walay tawag nga gitakda niini nga screen."
+  "setupDisclaimer": "Preview ra. Walay tawag nga gitakda niini nga screen.",
+  "countdownStandingBy": "Naghulat...",
+  "countdownSilent": "TAGO NGA PAG-IHAP",
+  "countdownCancelButton": "IKANSELA",
+  "incomingCallTitle": "Mosulod nga tawag...",
+  "tapToAnswer": "PINDOTA ARON TUBAGON",
+  "callConnected": "Konektado",
+  "activeCallScript": "Script",
+  "callEndedTitle": "Nahuman ang tawag",
+  "callEndedSubtitle": "Nahuman na ang imong tawag.",
+  "callEndedReturnButton": "BALIK SA SETUP",
+  "callEndedReady": "Andam na para sa laing tawag.",
+  "errorInvalidDelay": "Sayop nga delay. Kinahanglan anaa sa taliwala sa 10 ug 180 ka segundo.",
+  "errorSimulationActive": "Naay aktibong tawag. Palihug hulat o ikansela ang kasamtangang tawag."
 }

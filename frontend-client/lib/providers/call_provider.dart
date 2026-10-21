@@ -51,8 +51,11 @@ class CallProvider extends ChangeNotifier {
 
   /// Change active application locale between English, Tagalog, and Cebuano.
   void setLocale(Locale locale) {
-    if (_currentLocale == locale) return;
-    _currentLocale = locale;
+    const supported = {'en', 'tl', 'ceb'};
+    final effectiveLocale =
+        supported.contains(locale.languageCode) ? locale : const Locale('en');
+    if (_currentLocale == effectiveLocale) return;
+    _currentLocale = effectiveLocale;
     notifyListeners();
   }
 

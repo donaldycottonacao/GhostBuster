@@ -207,4 +207,45 @@ class AppLocalizationsTl extends AppLocalizations {
   @override
   String get setupDisclaimer =>
       'Preview lang. Walang tawag na itinatakda mula sa screen na ito.';
+
+  @override
+  String get countdownStandingBy => 'Nakaantabay...';
+
+  @override
+  String get countdownSilent => 'PALIHIM NA PAGBILANG';
+
+  @override
+  String get countdownCancelButton => 'IKANSELA';
+
+  @override
+  String get incomingCallTitle => 'Papasok na tawag...';
+
+  @override
+  String get tapToAnswer => 'PINDUTIN UPANG SAGUTIN';
+
+  @override
+  String get callConnected => 'Konektado';
+
+  @override
+  String get activeCallScript => 'Script';
+
+  @override
+  String get callEndedTitle => 'Tapos na ang tawag';
+
+  @override
+  String get callEndedSubtitle => 'Natapos na ang iyong tawag.';
+
+  @override
+  String get callEndedReturnButton => 'BUMALIK SA SETUP';
+
+  @override
+  String get callEndedReady => 'Handa na para sa isa pang tawag.';
+
+  @override
+  String get errorInvalidDelay =>
+      'Maling oras ng paghihintay. Dapat ay nasa pagitan ng 10 at 180 segundo.';
+
+  @override
+  String get errorSimulationActive =>
+      'May aktibong tawag na. Maghintay o ikansela ang kasalukuyang tawag.';
 }

@@ -78,15 +78,15 @@
   "@decline": {
     "description": "Call decline button label"
   },
-  "mute": "mute",
+  "mute": "Mute",
   "@mute": {
     "description": "Microphone mute button label"
   },
-  "unmute": "unmute",
+  "unmute": "Unmute",
   "@unmute": {
     "description": "Microphone unmute button label"
   },
-  "keypad": "keypad",
+  "keypad": "Keypad",
   "@keypad": {
     "description": "Dial pad toggle button label"
   },
@@ -94,7 +94,7 @@
   "@hideKeypad": {
     "description": "Dismiss dial pad modal label"
   },
-  "speaker": "speaker",
+  "speaker": "Speaker",
   "@speaker": {
     "description": "Speakerphone toggle button label"
   },
@@ -209,5 +209,31 @@
   "setupArmedStatus": "STEALTH MODE ARMED",
   "@setupArmedStatus": { "description": "Local armed-state button label" },
   "setupDisclaimer": "Preview only. No call is scheduled from this screen.",
-  "@setupDisclaimer": { "description": "Setup screen preview disclaimer" }
+  "@setupDisclaimer": { "description": "Setup screen preview disclaimer" },
+  "countdownStandingBy": "Standing by...",
+  "@countdownStandingBy": { "description": "Countdown screen header status" },
+  "countdownSilent": "SILENT COUNTDOWN",
+  "@countdownSilent": { "description": "Countdown screen subtitle badge" },
+  "countdownCancelButton": "CANCEL",
+  "@countdownCancelButton": { "description": "Countdown screen cancel button" },
+  "incomingCallTitle": "Incoming call...",
+  "@incomingCallTitle": { "description": "Incoming call status text" },
+  "tapToAnswer": "TAP TO ANSWER",
+  "@tapToAnswer": { "description": "Accessible incoming call tap answer button" },
+  "callConnected": "Connected",
+  "@callConnected": { "description": "Active call connection status" },
+  "activeCallScript": "Script",
+  "@activeCallScript": { "description": "Active call script control button" },
+  "callEndedTitle": "Call ended",
+  "@callEndedTitle": { "description": "Call ended screen main heading" },
+  "callEndedSubtitle": "Your call has ended.",
+  "@callEndedSubtitle": { "description": "Call ended screen subtitle message" },
+  "callEndedReturnButton": "RETURN TO SETUP",
+  "@callEndedReturnButton": { "description": "Call ended return to setup button" },
+  "callEndedReady": "Ready for another call.",
+  "@callEndedReady": { "description": "Call ended readiness status" },
+  "errorInvalidDelay": "Invalid delay. Delay must be between 10 and 180 seconds.",
+  "@errorInvalidDelay": { "description": "Validation message when countdown delay is out of range" },
+  "errorSimulationActive": "A simulation is already active. Please wait or cancel the current call.",
+  "@errorSimulationActive": { "description": "Warning message when user tries to arm while call is active" }
 }

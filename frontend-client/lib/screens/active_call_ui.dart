@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../widgets/call_screen_components.dart';
 import '../widgets/dial_pad_button.dart';
 
@@ -41,6 +42,7 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: callScreenBackground,
       body: SafeArea(
@@ -67,9 +69,9 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                         ),
                       ),
                       const SizedBox(height: 28),
-                      const Text(
-                        'Connected',
-                        style: TextStyle(
+                      Text(
+                        l10n?.callConnected ?? 'Connected',
+                        style: const TextStyle(
                           color: callScreenGreen,
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
@@ -95,7 +97,9 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                             icon: _muted
                                 ? Icons.mic_off_rounded
                                 : Icons.mic_none_rounded,
-                            label: _muted ? 'Unmute' : 'Mute',
+                            label: _muted
+                                ? (l10n?.unmute ?? 'Unmute')
+                                : (l10n?.mute ?? 'Mute'),
                             isSelected: _muted,
                             onTap: () {
                               if (widget.onToggleMute != null) {
@@ -107,7 +111,7 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                           ),
                           CallControlButton(
                             icon: Icons.dialpad_rounded,
-                            label: 'Keypad',
+                            label: l10n?.keypad ?? 'Keypad',
                             isSelected: _keypadVisible,
                             onTap: () => setState(
                               () => _keypadVisible = !_keypadVisible,
@@ -117,7 +121,7 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                             icon: _speakerOn
                                 ? Icons.volume_up_rounded
                                 : Icons.volume_down_rounded,
-                            label: 'Speaker',
+                            label: l10n?.speaker ?? 'Speaker',
                             isSelected: _speakerOn,
                             onTap: () {
                               if (widget.onToggleSpeaker != null) {
@@ -131,7 +135,7 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                           ),
                           CallControlButton(
                             icon: Icons.notes_rounded,
-                            label: 'Script',
+                            label: l10n?.activeCallScript ?? 'Script',
                             isSelected: _scriptSelected,
                             onTap: () => setState(
                               () => _scriptSelected = !_scriptSelected,
@@ -203,7 +207,10 @@ class _PreviewKeypad extends StatelessWidget {
           ],
           TextButton(
             onPressed: onClose,
-            child: const Text('HIDE KEYPAD'),
+            child: Text(
+              AppLocalizations.of(context)?.hideKeypad.toUpperCase() ??
+                  'HIDE KEYPAD',
+            ),
           ),
         ],
       ),
@@ -240,9 +247,9 @@ class _EndCallButton extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
-            'END CALL',
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(context)?.endCall.toUpperCase() ?? 'END CALL',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w700,

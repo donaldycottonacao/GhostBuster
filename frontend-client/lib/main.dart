@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -38,8 +39,21 @@ class GhostBusterApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             locale: callProvider.currentLocale,
             supportedLocales: AppLocalizations.supportedLocales,
+            localeResolutionCallback: (deviceLocale, supportedLocales) {
+              if (deviceLocale != null) {
+                for (final supportedLocale in supportedLocales) {
+                  if (supportedLocale.languageCode ==
+                      deviceLocale.languageCode) {
+                    return supportedLocale;
+                  }
+                }
+              }
+              return const Locale('en');
+            },
             localizationsDelegates: const [
               AppLocalizations.delegate,
+              FallbackMaterialLocalizationsDelegate(),
+              FallbackCupertinoLocalizationsDelegate(),
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
@@ -75,4 +89,38 @@ class GhostBusterApp extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Fallback material localizations delegate for locales (such as Cebuano)
+/// not natively bundled in Flutter's `GlobalMaterialLocalizations`.
+class FallbackMaterialLocalizationsDelegate
+    extends LocalizationsDelegate<MaterialLocalizations> {
+  const FallbackMaterialLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) => locale.languageCode == 'ceb';
+
+  @override
+  Future<MaterialLocalizations> load(Locale locale) async =>
+      const DefaultMaterialLocalizations();
+
+  @override
+  bool shouldReload(FallbackMaterialLocalizationsDelegate old) => false;
+}
+
+/// Fallback cupertino localizations delegate for locales (such as Cebuano)
+/// not natively bundled in Flutter's `GlobalCupertinoLocalizations`.
+class FallbackCupertinoLocalizationsDelegate
+    extends LocalizationsDelegate<CupertinoLocalizations> {
+  const FallbackCupertinoLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) => locale.languageCode == 'ceb';
+
+  @override
+  Future<CupertinoLocalizations> load(Locale locale) =>
+      DefaultCupertinoLocalizations.load(locale);
+
+  @override
+  bool shouldReload(FallbackCupertinoLocalizationsDelegate old) => false;
 }

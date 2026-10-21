@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 const _background = Color(0xFF080B09);
 const _surface = Color(0xFF151D18);
 const _border = Color(0xFF344138);
@@ -29,6 +31,7 @@ class CountdownScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final effectiveRemaining = remainingSeconds ?? delaySeconds;
     final minutes = (effectiveRemaining ~/ 60).toString().padLeft(2, '0');
     final seconds = (effectiveRemaining % 60).toString().padLeft(2, '0');
@@ -49,10 +52,10 @@ class CountdownScreen extends StatelessWidget {
                 children: [
                   const _CountdownHeader(),
                   const SizedBox(height: 42),
-                  const Text(
-                    'Standing by...',
+                  Text(
+                    l10n?.countdownStandingBy ?? 'Standing by...',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
@@ -86,9 +89,9 @@ class CountdownScreen extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 8),
-                              const Text(
-                                'SILENT COUNTDOWN',
-                                style: TextStyle(
+                              Text(
+                                l10n?.countdownSilent ?? 'SILENT COUNTDOWN',
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
@@ -121,9 +124,9 @@ class CountdownScreen extends StatelessWidget {
                         side: const BorderSide(color: _muted),
                         shape: const StadiumBorder(),
                       ),
-                      child: const Text(
-                        'CANCEL',
-                        style: TextStyle(
+                      child: Text(
+                        l10n?.countdownCancelButton ?? 'CANCEL',
+                        style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 2,
@@ -239,9 +242,10 @@ class _CallerPreviewCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Emergency contact',
-                  style: TextStyle(color: _muted, fontSize: 14),
+                Text(
+                  AppLocalizations.of(context)?.setupEmergencyContact ??
+                      'Emergency contact',
+                  style: const TextStyle(color: _muted, fontSize: 14),
                 ),
               ],
             ),

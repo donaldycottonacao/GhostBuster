@@ -62,19 +62,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get decline => 'Decline';
 
   @override
-  String get mute => 'mute';
+  String get mute => 'Mute';
 
   @override
-  String get unmute => 'unmute';
+  String get unmute => 'Unmute';
 
   @override
-  String get keypad => 'keypad';
+  String get keypad => 'Keypad';
 
   @override
   String get hideKeypad => 'Hide Keypad';
 
   @override
-  String get speaker => 'speaker';
+  String get speaker => 'Speaker';
 
   @override
   String get addCall => 'add call';
@@ -207,4 +207,45 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get setupDisclaimer =>
       'Preview only. No call is scheduled from this screen.';
+
+  @override
+  String get countdownStandingBy => 'Standing by...';
+
+  @override
+  String get countdownSilent => 'SILENT COUNTDOWN';
+
+  @override
+  String get countdownCancelButton => 'CANCEL';
+
+  @override
+  String get incomingCallTitle => 'Incoming call...';
+
+  @override
+  String get tapToAnswer => 'TAP TO ANSWER';
+
+  @override
+  String get callConnected => 'Connected';
+
+  @override
+  String get activeCallScript => 'Script';
+
+  @override
+  String get callEndedTitle => 'Call ended';
+
+  @override
+  String get callEndedSubtitle => 'Your call has ended.';
+
+  @override
+  String get callEndedReturnButton => 'RETURN TO SETUP';
+
+  @override
+  String get callEndedReady => 'Ready for another call.';
+
+  @override
+  String get errorInvalidDelay =>
+      'Invalid delay. Delay must be between 10 and 180 seconds.';
+
+  @override
+  String get errorSimulationActive =>
+      'A simulation is already active. Please wait or cancel the current call.';
 }

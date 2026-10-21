@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../widgets/call_screen_components.dart';
 import '../widgets/slide_button.dart';
 
@@ -18,6 +19,7 @@ class IncomingCallScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: callScreenBackground,
       body: SafeArea(
@@ -52,10 +54,12 @@ class IncomingCallScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 96),
-                        const Text(
-                          'Incoming call...',
-                          style:
-                              TextStyle(color: callScreenMuted, fontSize: 16),
+                        Text(
+                          l10n?.incomingCallTitle ?? 'Incoming call...',
+                          style: const TextStyle(
+                            color: callScreenMuted,
+                            fontSize: 16,
+                          ),
                         ),
                       ],
                     ),
@@ -63,7 +67,8 @@ class IncomingCallScreen extends StatelessWidget {
                     Column(
                       children: [
                         SlideButton(
-                          label: 'SLIDE TO ANSWER',
+                          label: l10n?.slideToAnswer.toUpperCase() ??
+                              'SLIDE TO ANSWER',
                           onSlideComplete: onAnswer,
                           width: sliderWidth,
                           height: 76,
@@ -81,9 +86,9 @@ class IncomingCallScreen extends StatelessWidget {
                               color: callScreenGreen,
                               size: 20,
                             ),
-                            label: const Text(
-                              'TAP TO ANSWER',
-                              style: TextStyle(
+                            label: Text(
+                              l10n?.tapToAnswer ?? 'TAP TO ANSWER',
+                              style: const TextStyle(
                                 color: callScreenGreen,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
@@ -117,9 +122,9 @@ class IncomingCallScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          const Text(
-                            'DECLINE',
-                            style: TextStyle(
+                          Text(
+                            l10n?.decline.toUpperCase() ?? 'DECLINE',
+                            style: const TextStyle(
                               color: callScreenMuted,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,

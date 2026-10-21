@@ -193,19 +193,19 @@ abstract class AppLocalizations {
   /// Microphone mute button label
   ///
   /// In en, this message translates to:
-  /// **'mute'**
+  /// **'Mute'**
   String get mute;
 
   /// Microphone unmute button label
   ///
   /// In en, this message translates to:
-  /// **'unmute'**
+  /// **'Unmute'**
   String get unmute;
 
   /// Dial pad toggle button label
   ///
   /// In en, this message translates to:
-  /// **'keypad'**
+  /// **'Keypad'**
   String get keypad;
 
   /// Dismiss dial pad modal label
@@ -217,7 +217,7 @@ abstract class AppLocalizations {
   /// Speakerphone toggle button label
   ///
   /// In en, this message translates to:
-  /// **'speaker'**
+  /// **'Speaker'**
   String get speaker;
 
   /// Add call placeholder button label
@@ -477,6 +477,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Preview only. No call is scheduled from this screen.'**
   String get setupDisclaimer;
+
+  /// Countdown screen header status
+  ///
+  /// In en, this message translates to:
+  /// **'Standing by...'**
+  String get countdownStandingBy;
+
+  /// Countdown screen subtitle badge
+  ///
+  /// In en, this message translates to:
+  /// **'SILENT COUNTDOWN'**
+  String get countdownSilent;
+
+  /// Countdown screen cancel button
+  ///
+  /// In en, this message translates to:
+  /// **'CANCEL'**
+  String get countdownCancelButton;
+
+  /// Incoming call status text
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming call...'**
+  String get incomingCallTitle;
+
+  /// Accessible incoming call tap answer button
+  ///
+  /// In en, this message translates to:
+  /// **'TAP TO ANSWER'**
+  String get tapToAnswer;
+
+  /// Active call connection status
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get callConnected;
+
+  /// Active call script control button
+  ///
+  /// In en, this message translates to:
+  /// **'Script'**
+  String get activeCallScript;
+
+  /// Call ended screen main heading
+  ///
+  /// In en, this message translates to:
+  /// **'Call ended'**
+  String get callEndedTitle;
+
+  /// Call ended screen subtitle message
+  ///
+  /// In en, this message translates to:
+  /// **'Your call has ended.'**
+  String get callEndedSubtitle;
+
+  /// Call ended return to setup button
+  ///
+  /// In en, this message translates to:
+  /// **'RETURN TO SETUP'**
+  String get callEndedReturnButton;
+
+  /// Call ended readiness status
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for another call.'**
+  String get callEndedReady;
+
+  /// Validation message when countdown delay is out of range
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid delay. Delay must be between 10 and 180 seconds.'**
+  String get errorInvalidDelay;
+
+  /// Warning message when user tries to arm while call is active
+  ///
+  /// In en, this message translates to:
+  /// **'A simulation is already active. Please wait or cancel the current call.'**
+  String get errorSimulationActive;
 }
 
 class _AppLocalizationsDelegate
