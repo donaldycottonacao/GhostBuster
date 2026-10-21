@@ -107,3 +107,6 @@ class CallSession {
     );
   }
 }
+
+/// Architectural alias for CallLifecycleState.
+typedef CallState = CallLifecycleState;
