@@ -9,20 +9,35 @@ class ActiveCallScreen extends StatefulWidget {
     super.key,
     required this.script,
     required this.onEndCall,
+    this.callerName = 'Riley Morgan',
+    this.durationText = '00:18',
+    this.isMuted,
+    this.isSpeakerOn,
+    this.onToggleMute,
+    this.onToggleSpeaker,
   });
 
   final String script;
   final VoidCallback onEndCall;
+  final String callerName;
+  final String? durationText;
+  final bool? isMuted;
+  final bool? isSpeakerOn;
+  final VoidCallback? onToggleMute;
+  final VoidCallback? onToggleSpeaker;
 
   @override
   State<ActiveCallScreen> createState() => _ActiveCallScreenState();
 }
 
 class _ActiveCallScreenState extends State<ActiveCallScreen> {
-  bool _muted = false;
+  bool _localMuted = false;
   bool _keypadVisible = false;
-  bool _speakerOn = false;
+  bool _localSpeakerOn = false;
   bool _scriptSelected = false;
+
+  bool get _muted => widget.isMuted ?? _localMuted;
+  bool get _speakerOn => widget.isSpeakerOn ?? _localSpeakerOn;
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +57,10 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                       const SizedBox(height: 34),
                       const CallAvatar(diameter: 138),
                       const SizedBox(height: 20),
-                      const Text(
-                        'Riley Morgan',
+                      Text(
+                        widget.callerName,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 32,
                           fontWeight: FontWeight.w600,
@@ -61,9 +76,9 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        '00:18',
-                        style: TextStyle(
+                      Text(
+                        widget.durationText ?? '00:18',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 44,
                           fontWeight: FontWeight.w300,
@@ -82,7 +97,13 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                                 : Icons.mic_none_rounded,
                             label: _muted ? 'Unmute' : 'Mute',
                             isSelected: _muted,
-                            onTap: () => setState(() => _muted = !_muted),
+                            onTap: () {
+                              if (widget.onToggleMute != null) {
+                                widget.onToggleMute!();
+                              } else {
+                                setState(() => _localMuted = !_localMuted);
+                              }
+                            },
                           ),
                           CallControlButton(
                             icon: Icons.dialpad_rounded,
@@ -98,8 +119,15 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                                 : Icons.volume_down_rounded,
                             label: 'Speaker',
                             isSelected: _speakerOn,
-                            onTap: () =>
-                                setState(() => _speakerOn = !_speakerOn),
+                            onTap: () {
+                              if (widget.onToggleSpeaker != null) {
+                                widget.onToggleSpeaker!();
+                              } else {
+                                setState(
+                                  () => _localSpeakerOn = !_localSpeakerOn,
+                                );
+                              }
+                            },
                           ),
                           CallControlButton(
                             icon: Icons.notes_rounded,
@@ -190,35 +218,39 @@ class _EndCallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox.square(
-          dimension: 86,
-          child: Material(
-            color: callScreenRed,
-            shape: const CircleBorder(),
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: onPressed,
-              child: const Icon(
-                Icons.call_end_rounded,
-                color: Colors.white,
-                size: 36,
+    return Semantics(
+      label: 'End Call',
+      button: true,
+      child: Column(
+        children: [
+          SizedBox.square(
+            dimension: 86,
+            child: Material(
+              color: callScreenRed,
+              shape: const CircleBorder(),
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onPressed,
+                child: const Icon(
+                  Icons.call_end_rounded,
+                  color: Colors.white,
+                  size: 36,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          'END CALL',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+          const SizedBox(height: 10),
+          const Text(
+            'END CALL',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.5,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

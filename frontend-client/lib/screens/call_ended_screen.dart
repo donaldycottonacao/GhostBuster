@@ -13,12 +13,14 @@ class CallEndedScreen extends StatefulWidget {
     required this.onReturnToSetup,
     this.callerName = 'Riley Morgan',
     this.durationSeconds = 18,
+    this.durationText,
     this.apiClient,
   });
 
   final VoidCallback onReturnToSetup;
   final String callerName;
   final int durationSeconds;
+  final String? durationText;
   final GhostBusterApiClient? apiClient;
 
   @override
@@ -39,6 +41,12 @@ class _CallEndedScreenState extends State<CallEndedScreen> {
         language: 'en',
       ),
     );
+  }
+
+  String _formatDuration(int seconds) {
+    final mins = (seconds ~/ 60).toString().padLeft(2, '0');
+    final secs = (seconds % 60).toString().padLeft(2, '0');
+    return '$mins:$secs';
   }
 
   @override
@@ -73,28 +81,32 @@ class _CallEndedScreenState extends State<CallEndedScreen> {
                 style: TextStyle(color: _muted, fontSize: 17),
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Riley Morgan  ·  00:18',
+              Text(
+                '${widget.callerName}  ·  ${widget.durationText ?? _formatDuration(widget.durationSeconds)}',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _muted, fontSize: 15),
+                style: const TextStyle(color: _muted, fontSize: 15),
               ),
               const Spacer(flex: 2),
-              SizedBox(
-                width: double.infinity,
-                height: 58,
-                child: FilledButton(
-                  onPressed: widget.onReturnToSetup,
-                  style: FilledButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF24292D),
-                    shape: const StadiumBorder(),
-                  ),
-                  child: const Text(
-                    'RETURN TO SETUP',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.7,
+              Semantics(
+                label: 'Return to setup',
+                button: true,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 58,
+                  child: FilledButton(
+                    onPressed: widget.onReturnToSetup,
+                    style: FilledButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: const Color(0xFF24292D),
+                      shape: const StadiumBorder(),
+                    ),
+                    child: const Text(
+                      'RETURN TO SETUP',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.7,
+                      ),
                     ),
                   ),
                 ),

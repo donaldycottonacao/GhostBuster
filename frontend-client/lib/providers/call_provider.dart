@@ -113,6 +113,9 @@ class CallProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Whether the session is in a state where configuration can be modified.
+  bool get canEditConfiguration => _canEditConfiguration;
+
   bool get _canEditConfiguration =>
       _session.state == CallLifecycleState.configuration ||
       _session.state == CallLifecycleState.ended;
@@ -194,6 +197,23 @@ class CallProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Immediately transitions to ringing state (useful for instant triggers or preview flows).
+  void triggerRinging() {
+    if (_session.state != CallLifecycleState.configuration &&
+        _session.state != CallLifecycleState.countdown) {
+      return;
+    }
+    _operationGeneration++;
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+    _session = _session.copyWith(
+      state: CallLifecycleState.ringing,
+      remainingCountdown: 0,
+    );
+    _audioService.playRingtone();
+    notifyListeners();
+  }
+
   /// Answer incoming call, transition to active state, and start elapsed timer.
   ///
   /// Halts ringtone prior to starting peer dialogue playback.
@@ -249,7 +269,7 @@ class CallProvider extends ChangeNotifier {
     declineCall();
   }
 
-  /// Terminate active call and reset session back to configuration state.
+  /// Terminate active call and transition to ended state.
   void endCall() {
     if (_session.state != CallLifecycleState.active) return;
     _operationGeneration++;
@@ -258,10 +278,19 @@ class CallProvider extends ChangeNotifier {
     _elapsedTimer = null;
 
     _session = _session.copyWith(
-      state: CallLifecycleState.configuration,
-      activeDurationSeconds: 0,
+      state: CallLifecycleState.ended,
       isMuted: false,
       isSpeakerOn: false,
+    );
+    notifyListeners();
+  }
+
+  /// Return from ended state back to configuration state.
+  void returnToSetup() {
+    _session = _session.copyWith(
+      state: CallLifecycleState.configuration,
+      activeDurationSeconds: 0,
+      remainingCountdown: _session.countdownSeconds,
     );
     notifyListeners();
   }

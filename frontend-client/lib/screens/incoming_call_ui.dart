@@ -9,10 +9,12 @@ class IncomingCallScreen extends StatelessWidget {
     super.key,
     required this.onAnswer,
     required this.onDecline,
+    this.callerName = 'Riley Morgan',
   });
 
   final VoidCallback onAnswer;
   final VoidCallback onDecline;
+  final String callerName;
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +42,10 @@ class IncomingCallScreen extends StatelessWidget {
                       children: [
                         CallAvatar(diameter: avatarDiameter),
                         const SizedBox(height: 34),
-                        const Text(
-                          'Riley Morgan',
+                        Text(
+                          callerName,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 34,
                             fontWeight: FontWeight.w600,
@@ -57,45 +59,75 @@ class IncomingCallScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 54),
-                    SlideButton(
-                      label: 'SLIDE TO ANSWER',
-                      onSlideComplete: onAnswer,
-                      width: sliderWidth,
-                      height: 76,
-                      backgroundColor: callScreenSurface,
-                      sliderColor: callScreenGreen,
-                    ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 40),
                     Column(
                       children: [
-                        SizedBox.square(
-                          dimension: 84,
-                          child: Material(
-                            color: callScreenRed,
-                            shape: const CircleBorder(),
-                            child: InkWell(
-                              customBorder: const CircleBorder(),
-                              onTap: onDecline,
-                              child: const Icon(
-                                Icons.call_end_rounded,
-                                color: Colors.white,
-                                size: 34,
+                        SlideButton(
+                          label: 'SLIDE TO ANSWER',
+                          onSlideComplete: onAnswer,
+                          width: sliderWidth,
+                          height: 76,
+                          backgroundColor: callScreenSurface,
+                          sliderColor: callScreenGreen,
+                        ),
+                        const SizedBox(height: 8),
+                        Semantics(
+                          label: 'Tap to answer call',
+                          button: true,
+                          child: TextButton.icon(
+                            onPressed: onAnswer,
+                            icon: const Icon(
+                              Icons.call_rounded,
+                              color: callScreenGreen,
+                              size: 20,
+                            ),
+                            label: const Text(
+                              'TAP TO ANSWER',
+                              style: TextStyle(
+                                color: callScreenGreen,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 1.5,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'DECLINE',
-                          style: TextStyle(
-                            color: callScreenMuted,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 2.5,
-                          ),
-                        ),
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                    Semantics(
+                      label: 'Decline call',
+                      button: true,
+                      child: Column(
+                        children: [
+                          SizedBox.square(
+                            dimension: 84,
+                            child: Material(
+                              color: callScreenRed,
+                              shape: const CircleBorder(),
+                              child: InkWell(
+                                customBorder: const CircleBorder(),
+                                onTap: onDecline,
+                                child: const Icon(
+                                  Icons.call_end_rounded,
+                                  color: Colors.white,
+                                  size: 34,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'DECLINE',
+                            style: TextStyle(
+                              color: callScreenMuted,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 2.5,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 12),
                   ],

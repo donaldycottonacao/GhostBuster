@@ -31,8 +31,8 @@ class CallerPersona {
   });
 
   static const CallerPersona defaultPersona = CallerPersona(
-    id: 'mom',
-    name: 'Mom',
+    id: 'riley_morgan',
+    name: 'Riley Morgan',
     number: '+1 (555) 234-5678',
     audioTrackAsset: 'assets/audio/peer_mom.mp3',
   );

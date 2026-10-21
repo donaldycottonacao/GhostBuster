@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
+import '../providers/call_provider.dart';
 import '../services/api_client.dart';
 
 const _background = Color(0xFF080B09);
@@ -15,11 +17,11 @@ const _ghostbusterRed = Color(0xFFE53935);
 class StealthTriggerScreen extends StatefulWidget {
   const StealthTriggerScreen({
     super.key,
-    required this.onPreviewCountdown,
+    this.onPreviewCountdown,
     this.apiClient,
   });
 
-  final void Function(int delaySeconds, String script) onPreviewCountdown;
+  final void Function(int delaySeconds, String script)? onPreviewCountdown;
   final GhostBusterApiClient? apiClient;
 
   @override
@@ -312,58 +314,66 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                   size: 21,
                                 ),
                                 const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    l10n?.setupRingtone ?? 'Ringtone',
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
+                                Text(
+                                  l10n?.setupRingtone ?? 'Ringtone',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
                                   ),
                                 ),
-                                PopupMenuButton<String>(
-                                  initialValue: _selectedRingtone,
-                                  onSelected: (value) =>
-                                      setState(() => _selectedRingtone = value),
-                                  color: _surfaceRaised,
-                                  itemBuilder: (context) => [
-                                    PopupMenuItem(
-                                      value: 'containment',
-                                      child: Text(
-                                        l10n?.setupRingtoneContainment ??
-                                            'Containment Alarm',
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'soft',
-                                      child: Text(
-                                        l10n?.setupRingtoneSoft ?? 'Soft Chime',
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'classic',
-                                      child: Text(
-                                        l10n?.setupRingtoneClassic ??
-                                            'Classic Ringtone',
-                                      ),
-                                    ),
-                                  ],
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        ringtoneLabel(l10n, _selectedRingtone),
-                                        style: const TextStyle(
-                                          color: _muted,
-                                          fontSize: 13,
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: PopupMenuButton<String>(
+                                    initialValue: _selectedRingtone,
+                                    onSelected: (value) => setState(
+                                        () => _selectedRingtone = value),
+                                    color: _surfaceRaised,
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                        value: 'containment',
+                                        child: Text(
+                                          l10n?.setupRingtoneContainment ??
+                                              'Containment Alarm',
                                         ),
                                       ),
-                                      const SizedBox(width: 4),
-                                      const Icon(
-                                        Icons.chevron_right_rounded,
-                                        color: _muted,
-                                        size: 22,
+                                      PopupMenuItem(
+                                        value: 'soft',
+                                        child: Text(
+                                          l10n?.setupRingtoneSoft ??
+                                              'Soft Chime',
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        value: 'classic',
+                                        child: Text(
+                                          l10n?.setupRingtoneClassic ??
+                                              'Classic Ringtone',
+                                        ),
                                       ),
                                     ],
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Flexible(
+                                          child: Text(
+                                            ringtoneLabel(
+                                                l10n, _selectedRingtone),
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.end,
+                                            style: const TextStyle(
+                                              color: _muted,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        const Icon(
+                                          Icons.chevron_right_rounded,
+                                          color: _muted,
+                                          size: 22,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -479,29 +489,73 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    SizedBox(
-                      height: 60,
-                      child: FilledButton.icon(
-                        onPressed: () => widget.onPreviewCountdown(
-                          _selectedDelay,
-                          _scriptController.text,
-                        ),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: _accent,
-                          foregroundColor: const Color(0xFF102017),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                    Semantics(
+                      label: 'Arm Stealth Mode',
+                      button: true,
+                      child: SizedBox(
+                        height: 60,
+                        child: FilledButton.icon(
+                          onPressed: () {
+                            CallProvider? callProvider;
+                            try {
+                              callProvider = context.read<CallProvider>();
+                            } catch (_) {
+                              callProvider = null;
+                            }
+
+                            if (callProvider != null) {
+                              if (!callProvider.validateDelay(_selectedDelay)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Invalid delay. Delay must be between 10 and 180 seconds.',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              if (!callProvider.canEditConfiguration) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'A simulation is already active. Please wait or cancel the current call.',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+                              callProvider.setDelaySeconds(_selectedDelay);
+                              callProvider
+                                  .setSituationText(_situationController.text);
+                              callProvider
+                                  .setVoiceScriptText(_scriptController.text);
+                              callProvider.startCountdown(
+                                delaySeconds: _selectedDelay,
+                              );
+                            }
+
+                            widget.onPreviewCountdown?.call(
+                              _selectedDelay,
+                              _scriptController.text,
+                            );
+                          },
+                          style: FilledButton.styleFrom(
+                            backgroundColor: _accent,
+                            foregroundColor: const Color(0xFF102017),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
                           ),
-                        ),
-                        icon: const Icon(
-                          Icons.hearing_rounded,
-                        ),
-                        label: Text(
-                          l10n?.setupArmButton ?? 'ARM STEALTH MODE',
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.4,
+                          icon: const Icon(
+                            Icons.hearing_rounded,
+                          ),
+                          label: Text(
+                            l10n?.setupArmButton ?? 'ARM STEALTH MODE',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.4,
+                            ),
                           ),
                         ),
                       ),
