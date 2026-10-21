@@ -137,15 +137,22 @@ class AudioService implements AudioServiceBase {
 
   @override
   Future<void> stopRingtone() async {
-    _isRingtonePlaying = false;
-    if (_ringtonePlayer != null) {
-      try {
-        await _ringtonePlayer?.stop();
-      } catch (e) {
-        debugPrint('[AudioService] Error stopping ringtone player: $e');
-      }
-    }
+    await _stopRingtonePlayer();
     debugPrint('[AudioService] Ringtone stopped');
+  }
+
+  /// Stops the ringtone player. Returns `false` if the platform stop threw,
+  /// meaning the ringtone may still be audible.
+  Future<bool> _stopRingtonePlayer() async {
+    _isRingtonePlaying = false;
+    if (_ringtonePlayer == null) return true;
+    try {
+      await _ringtonePlayer?.stop();
+      return true;
+    } catch (e) {
+      debugPrint('[AudioService] Error stopping ringtone player: $e');
+      return false;
+    }
   }
 
   @override
@@ -154,7 +161,16 @@ class AudioService implements AudioServiceBase {
     final generation = ++_operationGeneration;
 
     // Invariant: Ringtone must be stopped before voice audio begins
-    await stopRingtone();
+    final ringtoneStopped = await _stopRingtonePlayer();
+
+    // A hang-up, reset or dispose may have happened while the stop was in
+    // flight; do not mark a superseded voice request as playing.
+    if (_isDisposed || generation != _operationGeneration) return;
+    if (!ringtoneStopped) {
+      debugPrint(
+          '[AudioService] Voice not started: ringtone stop failed (avoids overlap)');
+      return;
+    }
 
     _currentAsset = assetPath;
     _isVoicePlaying = true;

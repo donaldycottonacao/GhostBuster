@@ -472,10 +472,10 @@ abstract class AppLocalizations {
   /// **'STEALTH MODE ARMED'**
   String get setupArmedStatus;
 
-  /// Setup screen preview disclaimer
+  /// Setup screen disclaimer: the call is simulated and needs the app in the foreground
   ///
   /// In en, this message translates to:
-  /// **'Preview only. No call is scheduled from this screen.'**
+  /// **'Simulated call only. Nothing is dialed and no phone network is used. Keep the app open until the call rings.'**
   String get setupDisclaimer;
 
   /// Countdown screen header status
@@ -555,6 +555,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A simulation is already active. Please wait or cancel the current call.'**
   String get errorSimulationActive;
+
+  /// Language picker option that follows the device language
+  ///
+  /// In en, this message translates to:
+  /// **'Device language'**
+  String get languageSystem;
+
+  /// Title of the caller persona picker
+  ///
+  /// In en, this message translates to:
+  /// **'Choose caller'**
+  String get setupChooseCaller;
+
+  /// Relationship label for the landlord persona
+  ///
+  /// In en, this message translates to:
+  /// **'Property manager'**
+  String get personaRelationshipLandlord;
+
+  /// Relationship label for the office persona
+  ///
+  /// In en, this message translates to:
+  /// **'Workplace support'**
+  String get personaRelationshipOffice;
+
+  /// Voice style badge for the landlord persona
+  ///
+  /// In en, this message translates to:
+  /// **'VOICE: URGENT'**
+  String get personaVoiceUrgent;
+
+  /// Badge for a persona that has no voice recording
+  ///
+  /// In en, this message translates to:
+  /// **'SCRIPT ONLY'**
+  String get personaVoiceNone;
+
+  /// Setup warning when the selected ringtone file is missing
+  ///
+  /// In en, this message translates to:
+  /// **'Ringtone audio isn\'t installed. The call screen will appear, but it won\'t ring out loud.'**
+  String get setupAudioMissingRingtone;
+
+  /// Setup warning when the caller's voice file is missing
+  ///
+  /// In en, this message translates to:
+  /// **'No voice recording for this caller. Only the on-screen script will be shown.'**
+  String get setupAudioMissingVoice;
+
+  /// Countdown hint: the countdown only runs in the foreground
+  ///
+  /// In en, this message translates to:
+  /// **'Keep GhostBuster open. Leaving the app cancels the call.'**
+  String get countdownKeepOpen;
+
+  /// Countdown button that skips the wait and rings immediately
+  ///
+  /// In en, this message translates to:
+  /// **'Preview incoming call screen'**
+  String get countdownRingNow;
+
+  /// Heading of the script card on the active call screen
+  ///
+  /// In en, this message translates to:
+  /// **'EMERGENCY SCRIPT'**
+  String get activeCallScriptTitle;
 }
 
 class _AppLocalizationsDelegate

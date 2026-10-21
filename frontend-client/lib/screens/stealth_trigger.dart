@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
+import '../models/call_state.dart';
 import '../providers/call_provider.dart';
 import '../services/api_client.dart';
 
@@ -37,8 +38,35 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   int _selectedDelay = 30;
   String _selectedLanguage = 'en';
   String _selectedMode = 'own';
-  String _selectedRingtone = 'containment';
+  String _selectedRingtone = RingtoneOption.defaultId;
   bool _hasInitializedScript = false;
+
+  /// The provider is optional so the screen still works in preview harnesses.
+  CallProvider? _readProvider() {
+    try {
+      return context.read<CallProvider>();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Restore the previous setup so a finished call doesn't reset everything.
+    final provider = _readProvider();
+    if (provider != null) {
+      _selectedDelay = provider.validateDelay(provider.delaySeconds)
+          ? provider.delaySeconds
+          : 30;
+      _selectedLanguage = provider.languageCode;
+      _selectedRingtone = provider.ringtoneId;
+      _situationController.text = provider.situationText;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _readProvider()?.refreshAudioReadiness();
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -51,14 +79,144 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_hasInitializedScript) return;
-    _scriptController.text = AppLocalizations.of(context)?.setupScriptExample ??
-        'Hey, can you call me? I need a reason to step out.';
+    final providerScript = _readProvider()?.voiceScriptText;
+    final hasCustomScript = providerScript != null &&
+        providerScript != const CallSession().voiceScriptText;
+    _scriptController.text = hasCustomScript
+        ? providerScript
+        : AppLocalizations.of(context)?.setupScriptExample ??
+            'Hey, can you call me? I need a reason to step out.';
     _hasInitializedScript = true;
+  }
+
+  String _personaRelationship(AppLocalizations? l10n, CallerPersona persona) =>
+      switch (persona.id) {
+        'landlord' => l10n?.personaRelationshipLandlord ?? 'Property manager',
+        'work_boss' => l10n?.personaRelationshipOffice ?? 'Workplace support',
+        _ => l10n?.setupEmergencyContact ?? 'Emergency contact',
+      };
+
+  String _personaVoiceBadge(AppLocalizations? l10n, CallerPersona persona) {
+    if (persona.audioTrackAsset == null || persona.audioTrackAsset!.isEmpty) {
+      return l10n?.personaVoiceNone ?? 'SCRIPT ONLY';
+    }
+    return switch (persona.id) {
+      'landlord' => l10n?.personaVoiceUrgent ?? 'VOICE: URGENT',
+      _ => l10n?.setupVoicePanicked ?? 'VOICE: PANICKED',
+    };
+  }
+
+  Future<void> _choosePersona(CallProvider provider) async {
+    final l10n = AppLocalizations.of(context);
+    final chosen = await showModalBottomSheet<CallerPersona>(
+      context: context,
+      backgroundColor: _surface,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+              child: Text(
+                l10n?.setupChooseCaller ?? 'Choose caller',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            for (final persona in CallerPersona.defaultPersonas)
+              ListTile(
+                minTileHeight: 64,
+                leading: const CircleAvatar(
+                  backgroundColor: Color(0xFF304A38),
+                  child: Icon(Icons.person_rounded, color: _accent),
+                ),
+                title: Text(
+                  persona.name,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                subtitle: Text(
+                  '${_personaRelationship(l10n, persona)} · '
+                  '${_personaVoiceBadge(l10n, persona)}',
+                  style: const TextStyle(color: _muted),
+                ),
+                trailing: persona.id == provider.persona.id
+                    ? const Icon(Icons.check_rounded, color: _accent)
+                    : null,
+                selected: persona.id == provider.persona.id,
+                onTap: () => Navigator.of(sheetContext).pop(persona),
+              ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+    if (chosen != null && mounted) provider.setPersona(chosen);
+  }
+
+  Future<void> _chooseAppLanguage(CallProvider provider) async {
+    final l10n = AppLocalizations.of(context);
+    final current = provider.localeOverride?.languageCode;
+    final options = <(String?, String)>[
+      (null, l10n?.languageSystem ?? 'Device language'),
+      ('en', l10n?.english ?? 'English'),
+      ('tl', l10n?.tagalog ?? 'Tagalog'),
+      ('ceb', l10n?.cebuano ?? 'Cebuano / Bisaya'),
+    ];
+    final picked = await showDialog<(String?,)>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        backgroundColor: _surface,
+        title: Text(
+          l10n?.selectLanguage ?? 'Select Language',
+          style: const TextStyle(color: Colors.white),
+        ),
+        children: [
+          for (final (code, label) in options)
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(dialogContext).pop((code,)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        label,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    if (code == current)
+                      const Icon(Icons.check_rounded, color: _accent),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (picked == null || !mounted) return;
+    final code = picked.$1;
+    if (code == null) {
+      provider.useSystemLocale();
+    } else {
+      provider.setLocale(Locale(code));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    CallProvider? callProvider;
+    try {
+      callProvider = context.watch<CallProvider>();
+    } catch (_) {
+      callProvider = null;
+    }
+    final persona = callProvider?.persona ?? CallerPersona.defaultPersona;
 
     return Theme(
       data: Theme.of(context).copyWith(
@@ -104,6 +262,14 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
             fontWeight: FontWeight.w800,
             letterSpacing: 1.1,
           ),
+          actions: [
+            if (callProvider != null)
+              IconButton(
+                tooltip: l10n?.language ?? 'Language',
+                icon: const Icon(Icons.translate_rounded, color: _muted),
+                onPressed: () => _chooseAppLanguage(callProvider!),
+              ),
+          ],
         ),
         body: SafeArea(
           top: false,
@@ -214,87 +380,101 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       ),
                       child: Column(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF18221B),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: _border),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF304A38),
-                                    shape: BoxShape.circle,
+                          Semantics(
+                            button: callProvider != null,
+                            label: l10n?.setupChooseCaller ?? 'Choose caller',
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                onTap: callProvider == null
+                                    ? null
+                                    : () => _choosePersona(callProvider!),
+                                child: Ink(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF18221B),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: _border),
                                   ),
-                                  child: const Icon(
-                                    Icons.person_rounded,
-                                    color: _accent,
-                                    size: 34,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: Row(
                                     children: [
-                                      const Text(
-                                        'Riley Morgan',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 3),
-                                      Text(
-                                        l10n?.setupEmergencyContact ??
-                                            'Emergency contact',
-                                        style: const TextStyle(
-                                          color: _muted,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 7),
-                                      DecoratedBox(
+                                      Container(
+                                        width: 56,
+                                        height: 56,
                                         decoration: const BoxDecoration(
-                                          border: Border.fromBorderSide(
-                                            BorderSide(color: _orange),
-                                          ),
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(7),
-                                          ),
+                                          color: Color(0xFF304A38),
+                                          shape: BoxShape.circle,
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                            vertical: 4,
-                                          ),
-                                          child: Text(
-                                            l10n?.setupVoicePanicked ??
-                                                'VOICE: PANICKED',
-                                            style: const TextStyle(
-                                              color: _orange,
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.w700,
-                                              letterSpacing: 0.8,
+                                        child: const Icon(
+                                          Icons.person_rounded,
+                                          color: _accent,
+                                          size: 34,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              persona.name,
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                              ),
                                             ),
-                                          ),
+                                            const SizedBox(height: 3),
+                                            Text(
+                                              _personaRelationship(
+                                                  l10n, persona),
+                                              style: const TextStyle(
+                                                color: _muted,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 7),
+                                            DecoratedBox(
+                                              decoration: const BoxDecoration(
+                                                border: Border.fromBorderSide(
+                                                  BorderSide(color: _orange),
+                                                ),
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(7),
+                                                ),
+                                              ),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 4,
+                                                ),
+                                                child: Text(
+                                                  _personaVoiceBadge(
+                                                      l10n, persona),
+                                                  style: const TextStyle(
+                                                    color: _orange,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w700,
+                                                    letterSpacing: 0.8,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                      ),
+                                      const Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: _muted,
+                                        size: 25,
                                       ),
                                     ],
                                   ),
                                 ),
-                                const Icon(
-                                  Icons.chevron_right_rounded,
-                                  color: _muted,
-                                  size: 25,
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: 12),
@@ -332,8 +512,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                   flex: 4,
                                   child: PopupMenuButton<String>(
                                     initialValue: _selectedRingtone,
-                                    onSelected: (value) => setState(
-                                        () => _selectedRingtone = value),
+                                    onSelected: (value) {
+                                      setState(() => _selectedRingtone = value);
+                                      callProvider?.setRingtone(value);
+                                    },
                                     color: _surfaceRaised,
                                     itemBuilder: (context) => [
                                       PopupMenuItem(
@@ -495,6 +677,21 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                         ],
                       ),
                     ),
+                    if (callProvider != null &&
+                        (callProvider.ringtoneMissing ||
+                            callProvider.voiceMissing)) ...[
+                      const SizedBox(height: 14),
+                      _AudioWarning(
+                        messages: [
+                          if (callProvider.ringtoneMissing)
+                            l10n?.setupAudioMissingRingtone ??
+                                "Ringtone audio isn't installed. The call screen will appear, but it won't ring out loud.",
+                          if (callProvider.voiceMissing)
+                            l10n?.setupAudioMissingVoice ??
+                                'No voice recording for this caller. Only the on-screen script will be shown.',
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 20),
                     Semantics(
                       label: 'Arm Stealth Mode',
@@ -604,7 +801,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
     return _SelectionChip(
       label: label,
       isSelected: isSelected,
-      onTap: () => setState(() => _selectedLanguage = code),
+      onTap: () {
+        setState(() => _selectedLanguage = code);
+        _readProvider()?.setScriptLanguage(code);
+      },
     );
   }
 
@@ -762,6 +962,54 @@ class _SectionCard extends StatelessWidget {
           const SizedBox(height: 14),
           child,
         ],
+      ),
+    );
+  }
+}
+
+/// Non-blocking notice shown when bundled call audio is missing.
+class _AudioWarning extends StatelessWidget {
+  const _AudioWarning({required this.messages});
+
+  final List<String> messages;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      liveRegion: true,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: const Color(0xFF2A2214),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: _orange.withValues(alpha: 0.6)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Icon(Icons.volume_off_rounded, color: _orange, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final message in messages)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2),
+                      child: Text(
+                        message,
+                        style: const TextStyle(
+                          color: Color(0xFFF3DDB8),
+                          fontSize: 12.5,
+                          height: 1.35,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -105,10 +105,11 @@ class CountdownScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 26),
-                  const Text(
-                    'Static countdown preview',
+                  Text(
+                    l10n?.countdownKeepOpen ??
+                        'Keep GhostBuster open. Leaving the app cancels the call.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: _muted, fontSize: 15),
+                    style: const TextStyle(color: _muted, fontSize: 15),
                   ),
                   const SizedBox(height: 24),
                   _CallerPreviewCard(callerName: callerName),
@@ -140,9 +141,11 @@ class CountdownScreen extends StatelessWidget {
                     button: true,
                     child: TextButton(
                       onPressed: onPreviewIncoming,
-                      child: const Text(
-                        'Preview incoming call screen',
-                        style: TextStyle(color: _muted),
+                      child: Text(
+                        l10n?.countdownRingNow ??
+                            'Preview incoming call screen',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(color: _muted),
                       ),
                     ),
                   ),

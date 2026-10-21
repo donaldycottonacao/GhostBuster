@@ -54,6 +54,25 @@ class CallerPersona {
   ];
 }
 
+/// Ringtone choices offered on the setup screen, mapped to bundled asset paths.
+///
+/// Only licensed audio may be placed at these paths (see assets/audio/README.md).
+/// A missing file is handled safely: the call screen still appears, silently.
+class RingtoneOption {
+  RingtoneOption._();
+
+  static const String defaultId = 'containment';
+
+  static const Map<String, String> assetPaths = {
+    'containment': 'assets/audio/ringtone_ios.mp3',
+    'classic': 'assets/audio/ringtone_android.mp3',
+    'soft': 'assets/audio/ringtone_soft.mp3',
+  };
+
+  /// Asset path for [id], falling back to the default ringtone.
+  static String assetFor(String id) => assetPaths[id] ?? assetPaths[defaultId]!;
+}
+
 /// State model tracking the current simulated call session.
 class CallSession {
   final CallLifecycleState state;
@@ -66,6 +85,7 @@ class CallSession {
   final int activeDurationSeconds;
   final bool isMuted;
   final bool isSpeakerOn;
+  final String ringtoneId;
 
   const CallSession({
     this.state = CallLifecycleState.configuration,
@@ -78,6 +98,7 @@ class CallSession {
     this.activeDurationSeconds = 0,
     this.isMuted = false,
     this.isSpeakerOn = false,
+    this.ringtoneId = RingtoneOption.defaultId,
   });
 
   CallSession copyWith({
@@ -91,6 +112,7 @@ class CallSession {
     int? activeDurationSeconds,
     bool? isMuted,
     bool? isSpeakerOn,
+    String? ringtoneId,
   }) {
     return CallSession(
       state: state ?? this.state,
@@ -104,6 +126,7 @@ class CallSession {
           activeDurationSeconds ?? this.activeDurationSeconds,
       isMuted: isMuted ?? this.isMuted,
       isSpeakerOn: isSpeakerOn ?? this.isSpeakerOn,
+      ringtoneId: ringtoneId ?? this.ringtoneId,
     );
   }
 }

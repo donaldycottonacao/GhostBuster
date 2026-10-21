@@ -37,7 +37,9 @@ class GhostBusterApp extends StatelessWidget {
           return MaterialApp(
             title: 'GhostBuster',
             debugShowCheckedModeBanner: false,
-            locale: callProvider.currentLocale,
+            // null follows the device language (Tagalog/Cebuano/English, else
+            // English); the setup screen's language button can override it.
+            locale: callProvider.localeOverride,
             supportedLocales: AppLocalizations.supportedLocales,
             localeResolutionCallback: (deviceLocale, supportedLocales) {
               if (deviceLocale != null) {

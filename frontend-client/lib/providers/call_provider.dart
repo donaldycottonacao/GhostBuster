@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/call_state.dart';
 import '../services/audio_service.dart';
+import '../services/device_services.dart';
 
 /// Centralized state provider for the GhostBuster simulated call lifecycle.
 ///
@@ -9,11 +10,20 @@ import '../services/audio_service.dart';
 /// audio triggers, in-call audio toggles, and current application locale.
 class CallProvider extends ChangeNotifier {
   final AudioServiceBase _audioService;
+  final ScreenWakeController _screenWake;
+  final AssetProbe _assetProbe;
 
   CallSession _session = const CallSession();
   Timer? _countdownTimer;
   Timer? _elapsedTimer;
-  Locale _currentLocale = const Locale('en');
+
+  /// In-app language choice; `null` follows the device language.
+  Locale? _localeOverride;
+
+  bool _screenKeptOn = false;
+  bool? _ringtoneAvailable;
+  bool? _voiceAvailable;
+  int _readinessCheck = 0;
 
   /// Tracks active operation generation to invalidate stale asynchronous callbacks.
   int _operationGeneration = 0;
@@ -23,8 +33,13 @@ class CallProvider extends ChangeNotifier {
   static const int minCountdownDelay = 10;
   static const int maxCountdownDelay = 180;
 
-  CallProvider({AudioServiceBase? audioService})
-      : _audioService = audioService ?? AudioService();
+  CallProvider({
+    AudioServiceBase? audioService,
+    ScreenWakeController? screenWake,
+    AssetProbe? assetProbe,
+  })  : _audioService = audioService ?? AudioService(),
+        _screenWake = screenWake ?? const PlatformScreenWakeController(),
+        _assetProbe = assetProbe ?? bundleAssetExists;
 
   CallSession get session => _session;
   CallLifecycleState get state => _session.state;
@@ -38,7 +53,23 @@ class CallProvider extends ChangeNotifier {
   bool get isMuted => _session.isMuted;
   bool get isSpeakerOn => _session.isSpeakerOn;
   bool get isCountdownActive => _session.state == CallLifecycleState.countdown;
-  Locale get currentLocale => _currentLocale;
+  String get ringtoneId => _session.ringtoneId;
+  String get ringtoneAsset => RingtoneOption.assetFor(_session.ringtoneId);
+
+  /// Selected in-app language, or English when following the device.
+  Locale get currentLocale => _localeOverride ?? const Locale('en');
+
+  /// Locale passed to MaterialApp; `null` means "use the device language".
+  Locale? get localeOverride => _localeOverride;
+
+  /// True once a readiness check found the selected ringtone file missing.
+  bool get ringtoneMissing => _ringtoneAvailable == false;
+
+  /// True once a readiness check found no playable voice for the persona.
+  bool get voiceMissing => _voiceAvailable == false;
+
+  /// Whether the screen is currently being held awake.
+  bool get isScreenKeptOn => _screenKeptOn;
 
   /// Formatted call duration string (mm:ss).
   String get formattedElapsedTime {
@@ -54,8 +85,56 @@ class CallProvider extends ChangeNotifier {
     const supported = {'en', 'tl', 'ceb'};
     final effectiveLocale =
         supported.contains(locale.languageCode) ? locale : const Locale('en');
-    if (_currentLocale == effectiveLocale) return;
-    _currentLocale = effectiveLocale;
+    if (_localeOverride == effectiveLocale) return;
+    _localeOverride = effectiveLocale;
+    notifyListeners();
+  }
+
+  /// Follow the device language again (resolved by MaterialApp).
+  void useSystemLocale() {
+    if (_localeOverride == null) return;
+    _localeOverride = null;
+    notifyListeners();
+  }
+
+  /// Select one of [RingtoneOption.assetPaths] for the next call.
+  void setRingtone(String ringtoneId) {
+    if (!_canEditConfiguration ||
+        !RingtoneOption.assetPaths.containsKey(ringtoneId) ||
+        _session.ringtoneId == ringtoneId) {
+      return;
+    }
+    _session = _session.copyWith(ringtoneId: ringtoneId);
+    _ringtoneAvailable = null;
+    notifyListeners();
+    unawaited(refreshAudioReadiness());
+  }
+
+  /// Checks whether the selected ringtone and persona voice are bundled.
+  ///
+  /// Missing audio never blocks a call; the setup screen warns instead.
+  /// Later checks supersede earlier ones that are still in flight.
+  Future<void> refreshAudioReadiness() async {
+    final check = ++_readinessCheck;
+    final ringtonePath = ringtoneAsset;
+    final voicePath = _session.persona.audioTrackAsset;
+
+    bool ringtoneOk;
+    bool voiceOk;
+    try {
+      ringtoneOk = await _assetProbe(ringtonePath);
+      voiceOk = voicePath != null &&
+          voicePath.isNotEmpty &&
+          await _assetProbe(voicePath);
+    } catch (error) {
+      debugPrint('[CallProvider] Audio readiness check failed: $error');
+      return;
+    }
+
+    if (_isDisposed || check != _readinessCheck) return;
+    if (_ringtoneAvailable == ringtoneOk && _voiceAvailable == voiceOk) return;
+    _ringtoneAvailable = ringtoneOk;
+    _voiceAvailable = voiceOk;
     notifyListeners();
   }
 
@@ -77,8 +156,24 @@ class CallProvider extends ChangeNotifier {
         _session.state != CallLifecycleState.ended) {
       return;
     }
+    if (_session.persona.id == persona.id) return;
     _session = _session.copyWith(persona: persona);
+    _voiceAvailable = null;
     notifyListeners();
+    unawaited(refreshAudioReadiness());
+  }
+
+  /// Runs one fire-and-forget audio operation and contains its failure.
+  ///
+  /// Audio is best-effort: a missing asset or player error (synchronous or
+  /// asynchronous) is logged and never escapes into timers or the UI. The
+  /// visual simulation continues and decline/hang-up/reset still clean up.
+  void _runAudio(String operation, Future<void> Function() action) {
+    unawaited(
+      Future<void>.sync(action).catchError((Object error) {
+        debugPrint('[CallProvider] Audio "$operation" failed: $error');
+      }),
+    );
   }
 
   /// Validates whether a delay in seconds falls within the allowed range [10, 180].
@@ -172,7 +267,7 @@ class CallProvider extends ChangeNotifier {
           state: CallLifecycleState.ringing,
           remainingCountdown: 0,
         );
-        _audioService.playRingtone();
+        _startRingtone();
         notifyListeners();
         onTriggered?.call();
       } else {
@@ -213,8 +308,14 @@ class CallProvider extends ChangeNotifier {
       state: CallLifecycleState.ringing,
       remainingCountdown: 0,
     );
-    _audioService.playRingtone();
+    _startRingtone();
     notifyListeners();
+  }
+
+  void _startRingtone() {
+    final asset = ringtoneAsset;
+    _runAudio(
+        'playRingtone', () => _audioService.playRingtone(assetPath: asset));
   }
 
   /// Answer incoming call, transition to active state, and start elapsed timer.
@@ -225,7 +326,7 @@ class CallProvider extends ChangeNotifier {
     final generation = ++_operationGeneration;
 
     // Sequence: Stop ringtone before starting peer dialogue audio
-    _audioService.stopAll();
+    _runAudio('stopAll', _audioService.stopAll);
     _session = _session.copyWith(
       state: CallLifecycleState.active,
       activeDurationSeconds: 0,
@@ -246,7 +347,7 @@ class CallProvider extends ChangeNotifier {
 
     final audioTrack = _session.persona.audioTrackAsset;
     if (audioTrack != null && audioTrack.isNotEmpty) {
-      _audioService.playPeerAudio(audioTrack);
+      _runAudio('playPeerAudio', () => _audioService.playPeerAudio(audioTrack));
     }
   }
 
@@ -254,7 +355,7 @@ class CallProvider extends ChangeNotifier {
   void declineCall() {
     if (_session.state != CallLifecycleState.ringing) return;
     _operationGeneration++;
-    _audioService.stopAll();
+    _runAudio('stopAll', _audioService.stopAll);
     _countdownTimer?.cancel();
     _countdownTimer = null;
     _elapsedTimer?.cancel();
@@ -276,7 +377,7 @@ class CallProvider extends ChangeNotifier {
   void endCall() {
     if (_session.state != CallLifecycleState.active) return;
     _operationGeneration++;
-    _audioService.stopAll();
+    _runAudio('stopAll', _audioService.stopAll);
     _elapsedTimer?.cancel();
     _elapsedTimer = null;
 
@@ -289,7 +390,15 @@ class CallProvider extends ChangeNotifier {
   }
 
   /// Return from ended state back to configuration state.
+  ///
+  /// Ignored in any other state: leaving countdown/ringing/active this way would
+  /// skip timer and audio cleanup (use [cancelCountdown], [declineCall],
+  /// [endCall] or [reset] instead).
   void returnToSetup() {
+    if (_session.state != CallLifecycleState.ended) return;
+    // Media was already stopped on decline/hang-up; repeat it idempotently so
+    // configuration is always silent even if that earlier stop failed.
+    _runAudio('stopAll', _audioService.stopAll);
     _session = _session.copyWith(
       state: CallLifecycleState.configuration,
       activeDurationSeconds: 0,
@@ -321,7 +430,7 @@ class CallProvider extends ChangeNotifier {
     _countdownTimer = null;
     _elapsedTimer?.cancel();
     _elapsedTimer = null;
-    _audioService.stopAll();
+    _runAudio('stopAll', _audioService.stopAll);
 
     _session = const CallSession();
     notifyListeners();
@@ -331,7 +440,9 @@ class CallProvider extends ChangeNotifier {
   ///
   /// Foreground-first MVP policy:
   /// - Suspended/paused/hidden while in countdown: cancels countdown safely.
-  /// - Suspended/paused/hidden while in ringing or active call: stops audio and resets.
+  /// - Suspended/paused/hidden while in ringing or active call: stops audio and
+  ///   returns to configuration, keeping the user's setup (caller, delay,
+  ///   script, ringtone, language).
   void handleAppLifecycle(AppLifecycleState lifecycle) {
     if (lifecycle == AppLifecycleState.paused ||
         lifecycle == AppLifecycleState.detached ||
@@ -340,16 +451,62 @@ class CallProvider extends ChangeNotifier {
         cancelCountdown();
       } else if (_session.state == CallLifecycleState.ringing ||
           _session.state == CallLifecycleState.active) {
-        reset();
+        _abortToConfiguration();
       }
     }
+  }
+
+  /// Stops every timer and player and returns to configuration without
+  /// discarding the user's configuration (unlike [reset]).
+  void _abortToConfiguration() {
+    _operationGeneration++;
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
+    _elapsedTimer?.cancel();
+    _elapsedTimer = null;
+    _runAudio('stopAll', _audioService.stopAll);
+    _session = _session.copyWith(
+      state: CallLifecycleState.configuration,
+      remainingCountdown: _session.countdownSeconds,
+      activeDurationSeconds: 0,
+      isMuted: false,
+      isSpeakerOn: false,
+    );
+    notifyListeners();
   }
 
   @override
   void notifyListeners() {
     if (!_isDisposed) {
+      _syncScreenWake();
       super.notifyListeners();
     }
+  }
+
+  /// Holds the screen on only while a simulation is countdown/ringing/active.
+  void _syncScreenWake() {
+    final shouldKeepOn = _session.state == CallLifecycleState.countdown ||
+        _session.state == CallLifecycleState.ringing ||
+        _session.state == CallLifecycleState.active;
+    if (shouldKeepOn == _screenKeptOn) return;
+    _screenKeptOn = shouldKeepOn;
+    _runPlatform(
+      'setKeepScreenOn($shouldKeepOn)',
+      () => _screenWake.setKeepScreenOn(shouldKeepOn),
+    );
+  }
+
+  static bool _loggedPlatformFailure = false;
+
+  void _runPlatform(String operation, Future<void> Function() action) {
+    unawaited(
+      Future<void>.sync(action).catchError((Object error) {
+        if (_loggedPlatformFailure) return;
+        _loggedPlatformFailure = true;
+        debugPrint(
+            '[CallProvider] Platform "$operation" unavailable (best-effort): $error');
+      }),
+    );
   }
 
   @override
@@ -361,7 +518,12 @@ class CallProvider extends ChangeNotifier {
     _countdownTimer = null;
     _elapsedTimer?.cancel();
     _elapsedTimer = null;
-    _audioService.stopAll();
+    _runAudio('stopAll', _audioService.stopAll);
+    if (_screenKeptOn) {
+      _screenKeptOn = false;
+      _runPlatform(
+          'setKeepScreenOn(false)', () => _screenWake.setKeepScreenOn(false));
+    }
     super.dispose();
   }
 }

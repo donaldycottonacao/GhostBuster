@@ -35,7 +35,10 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
   bool _localMuted = false;
   bool _keypadVisible = false;
   bool _localSpeakerOn = false;
-  bool _scriptSelected = false;
+
+  /// The Script button shows/hides the script card (e.g. before showing the
+  /// screen to someone). Visible by default, as in the original design.
+  bool _scriptVisible = true;
 
   bool get _muted => widget.isMuted ?? _localMuted;
   bool get _speakerOn => widget.isSpeakerOn ?? _localSpeakerOn;
@@ -55,8 +58,14 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                   constraints: const BoxConstraints(maxWidth: 500),
                   child: Column(
                     children: [
-                      EmergencyScriptCard(script: widget.script),
-                      const SizedBox(height: 34),
+                      if (_scriptVisible) ...[
+                        EmergencyScriptCard(
+                          script: widget.script,
+                          title:
+                              l10n?.activeCallScriptTitle ?? 'EMERGENCY SCRIPT',
+                        ),
+                        const SizedBox(height: 34),
+                      ],
                       const CallAvatar(diameter: 138),
                       const SizedBox(height: 20),
                       Text(
@@ -136,9 +145,9 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                           CallControlButton(
                             icon: Icons.notes_rounded,
                             label: l10n?.activeCallScript ?? 'Script',
-                            isSelected: _scriptSelected,
+                            isSelected: _scriptVisible,
                             onTap: () => setState(
-                              () => _scriptSelected = !_scriptSelected,
+                              () => _scriptVisible = !_scriptVisible,
                             ),
                           ),
                         ],

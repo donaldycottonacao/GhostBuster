@@ -206,7 +206,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setupDisclaimer =>
-      'Preview only. No call is scheduled from this screen.';
+      'Simulated call only. Nothing is dialed and no phone network is used. Keep the app open until the call rings.';
 
   @override
   String get countdownStandingBy => 'Standing by...';
@@ -248,4 +248,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorSimulationActive =>
       'A simulation is already active. Please wait or cancel the current call.';
+
+  @override
+  String get languageSystem => 'Device language';
+
+  @override
+  String get setupChooseCaller => 'Choose caller';
+
+  @override
+  String get personaRelationshipLandlord => 'Property manager';
+
+  @override
+  String get personaRelationshipOffice => 'Workplace support';
+
+  @override
+  String get personaVoiceUrgent => 'VOICE: URGENT';
+
+  @override
+  String get personaVoiceNone => 'SCRIPT ONLY';
+
+  @override
+  String get setupAudioMissingRingtone =>
+      'Ringtone audio isn\'t installed. The call screen will appear, but it won\'t ring out loud.';
+
+  @override
+  String get setupAudioMissingVoice =>
+      'No voice recording for this caller. Only the on-screen script will be shown.';
+
+  @override
+  String get countdownKeepOpen =>
+      'Keep GhostBuster open. Leaving the app cancels the call.';
+
+  @override
+  String get countdownRingNow => 'Preview incoming call screen';
+
+  @override
+  String get activeCallScriptTitle => 'EMERGENCY SCRIPT';
 }

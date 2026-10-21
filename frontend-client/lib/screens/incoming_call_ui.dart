@@ -11,11 +11,15 @@ class IncomingCallScreen extends StatelessWidget {
     required this.onAnswer,
     required this.onDecline,
     this.callerName = 'Riley Morgan',
+    this.callerNumber,
   });
 
   final VoidCallback onAnswer;
   final VoidCallback onDecline;
   final String callerName;
+
+  /// Optional caller number shown under the name, as real call screens do.
+  final String? callerNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +57,24 @@ class IncomingCallScreen extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 96),
+                        if (callerNumber != null &&
+                            callerNumber!.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            callerNumber!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: callScreenMuted,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ],
+                        SizedBox(
+                          height:
+                              callerNumber != null && callerNumber!.isNotEmpty
+                                  ? 64
+                                  : 96,
+                        ),
                         Text(
                           l10n?.incomingCallTitle ?? 'Incoming call...',
                           style: const TextStyle(

@@ -207,7 +207,7 @@ class AppLocalizationsCeb extends AppLocalizations {
 
   @override
   String get setupDisclaimer =>
-      'Preview ra. Walay tawag nga gitakda niini nga screen.';
+      'Peke nga tawag ra. Walay gi-dial ug walay network sa telepono nga gigamit. Ablihi lang ang app hangtod motingog ang tawag.';
 
   @override
   String get countdownStandingBy => 'Naghulat...';
@@ -249,4 +249,40 @@ class AppLocalizationsCeb extends AppLocalizations {
   @override
   String get errorSimulationActive =>
       'Naay aktibong tawag. Palihug hulat o ikansela ang kasamtangang tawag.';
+
+  @override
+  String get languageSystem => 'Pinulongan sa device';
+
+  @override
+  String get setupChooseCaller => 'Pilia ang motawag';
+
+  @override
+  String get personaRelationshipLandlord => 'Tigdumala sa paabangan';
+
+  @override
+  String get personaRelationshipOffice => 'Suporta sa trabaho';
+
+  @override
+  String get personaVoiceUrgent => 'TINGOG: DINALIAN';
+
+  @override
+  String get personaVoiceNone => 'SCRIPT RA';
+
+  @override
+  String get setupAudioMissingRingtone =>
+      'Walay na-install nga ringtone. Mogawas ang tawag apan dili kini motingog og kusog.';
+
+  @override
+  String get setupAudioMissingVoice =>
+      'Walay recording sa tingog alang niini nga motawag. Ang script ra sa screen ang ipakita.';
+
+  @override
+  String get countdownKeepOpen =>
+      'Ablihi lang ang GhostBuster. Ma-kansela ang tawag kung mobiya ka sa app.';
+
+  @override
+  String get countdownRingNow => 'Ipakita na ang umaabot nga tawag';
+
+  @override
+  String get activeCallScriptTitle => 'EMERGENCY NGA SCRIPT';
 }

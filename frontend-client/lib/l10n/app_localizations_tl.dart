@@ -206,7 +206,7 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get setupDisclaimer =>
-      'Preview lang. Walang tawag na itinatakda mula sa screen na ito.';
+      'Huwad na tawag lamang. Walang dina-dial at walang network ng telepono na ginagamit. Panatilihing bukas ang app hanggang tumunog ang tawag.';
 
   @override
   String get countdownStandingBy => 'Nakaantabay...';
@@ -248,4 +248,40 @@ class AppLocalizationsTl extends AppLocalizations {
   @override
   String get errorSimulationActive =>
       'May aktibong tawag na. Maghintay o ikansela ang kasalukuyang tawag.';
+
+  @override
+  String get languageSystem => 'Wika ng device';
+
+  @override
+  String get setupChooseCaller => 'Pumili ng tatawag';
+
+  @override
+  String get personaRelationshipLandlord => 'Tagapamahala ng paupahan';
+
+  @override
+  String get personaRelationshipOffice => 'Suporta sa trabaho';
+
+  @override
+  String get personaVoiceUrgent => 'BOSES: MADALIAN';
+
+  @override
+  String get personaVoiceNone => 'SCRIPT LANG';
+
+  @override
+  String get setupAudioMissingRingtone =>
+      'Walang naka-install na ringtone. Lalabas ang tawag pero hindi ito tutunog nang malakas.';
+
+  @override
+  String get setupAudioMissingVoice =>
+      'Walang recording ng boses para sa tumatawag na ito. Ang script lang sa screen ang ipapakita.';
+
+  @override
+  String get countdownKeepOpen =>
+      'Panatilihing bukas ang GhostBuster. Makakansela ang tawag kapag umalis ka sa app.';
+
+  @override
+  String get countdownRingNow => 'Ipakita na ang papasok na tawag';
+
+  @override
+  String get activeCallScriptTitle => 'EMERGENCY NA SCRIPT';
 }

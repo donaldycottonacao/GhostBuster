@@ -60,12 +60,13 @@ class _ScreenPreviewHostState extends State<ScreenPreviewHost>
     // If CallProvider is available, state-machine lifecycle is the single source of truth
     if (callProvider != null) {
       return switch (callProvider.state) {
+        // StealthTriggerScreen already validates, stores the script and calls
+        // startCountdown on the provider; starting it again here was a
+        // duplicate (rejected) trigger on every ARM press.
         CallLifecycleState.configuration => StealthTriggerScreen(
             onPreviewCountdown: (delaySeconds, script) {
               _selectedDelay = delaySeconds;
               _script = script;
-              callProvider?.setVoiceScriptText(script);
-              callProvider?.startCountdown(delaySeconds: delaySeconds);
             },
           ),
         CallLifecycleState.countdown => CountdownScreen(
@@ -77,30 +78,29 @@ class _ScreenPreviewHostState extends State<ScreenPreviewHost>
           ),
         CallLifecycleState.ringing => IncomingCallScreen(
             callerName: callProvider.persona.name,
+            callerNumber: callProvider.persona.number,
             onAnswer: () => callProvider?.answerCall(),
             onDecline: () => callProvider?.declineCall(),
           ),
+        // Live flow shows the provider's simulated duration (starts at 00:00);
+        // the 00:18 placeholder is only for the provider-less preview below.
         CallLifecycleState.active => ActiveCallScreen(
             script: callProvider.voiceScriptText,
             callerName: callProvider.persona.name,
-            durationText: callProvider.activeDurationSeconds > 0
-                ? callProvider.formattedElapsedTime
-                : '00:18',
+            durationText: callProvider.formattedElapsedTime,
             isMuted: callProvider.isMuted,
             isSpeakerOn: callProvider.isSpeakerOn,
             onToggleMute: () => callProvider?.toggleMute(),
             onToggleSpeaker: () => callProvider?.toggleSpeaker(),
             onEndCall: () => callProvider?.endCall(),
           ),
+        // returnToSetup keeps the user's caller/delay/script/ringtone so the
+        // next simulation is one tap away (reset() would discard them).
         CallLifecycleState.ended => CallEndedScreen(
             callerName: callProvider.persona.name,
-            durationSeconds: callProvider.activeDurationSeconds > 0
-                ? callProvider.activeDurationSeconds
-                : 18,
-            durationText: callProvider.activeDurationSeconds > 0
-                ? callProvider.formattedElapsedTime
-                : '00:18',
-            onReturnToSetup: () => callProvider?.reset(),
+            durationSeconds: callProvider.activeDurationSeconds,
+            durationText: callProvider.formattedElapsedTime,
+            onReturnToSetup: () => callProvider?.returnToSetup(),
           ),
       };
     }

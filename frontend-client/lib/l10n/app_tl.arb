@@ -62,7 +62,7 @@
   "setupReviewNote": "Suriin at i-edit bago gamitin.",
   "setupArmButton": "IHANDA ANG PALIHIM NA MODE",
   "setupArmedStatus": "NAIHANDA NA ANG PALIHIM NA MODE",
-  "setupDisclaimer": "Preview lang. Walang tawag na itinatakda mula sa screen na ito.",
+  "setupDisclaimer": "Huwad na tawag lamang. Walang dina-dial at walang network ng telepono na ginagamit. Panatilihing bukas ang app hanggang tumunog ang tawag.",
   "countdownStandingBy": "Nakaantabay...",
   "countdownSilent": "PALIHIM NA PAGBILANG",
   "countdownCancelButton": "IKANSELA",
@@ -75,5 +75,16 @@
   "callEndedReturnButton": "BUMALIK SA SETUP",
   "callEndedReady": "Handa na para sa isa pang tawag.",
   "errorInvalidDelay": "Maling oras ng paghihintay. Dapat ay nasa pagitan ng 10 at 180 segundo.",
-  "errorSimulationActive": "May aktibong tawag na. Maghintay o ikansela ang kasalukuyang tawag."
+  "errorSimulationActive": "May aktibong tawag na. Maghintay o ikansela ang kasalukuyang tawag.",
+  "languageSystem": "Wika ng device",
+  "setupChooseCaller": "Pumili ng tatawag",
+  "personaRelationshipLandlord": "Tagapamahala ng paupahan",
+  "personaRelationshipOffice": "Suporta sa trabaho",
+  "personaVoiceUrgent": "BOSES: MADALIAN",
+  "personaVoiceNone": "SCRIPT LANG",
+  "setupAudioMissingRingtone": "Walang naka-install na ringtone. Lalabas ang tawag pero hindi ito tutunog nang malakas.",
+  "setupAudioMissingVoice": "Walang recording ng boses para sa tumatawag na ito. Ang script lang sa screen ang ipapakita.",
+  "countdownKeepOpen": "Panatilihing bukas ang GhostBuster. Makakansela ang tawag kapag umalis ka sa app.",
+  "countdownRingNow": "Ipakita na ang papasok na tawag",
+  "activeCallScriptTitle": "EMERGENCY NA SCRIPT"
 }
