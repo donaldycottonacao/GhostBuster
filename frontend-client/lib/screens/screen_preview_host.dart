@@ -23,7 +23,7 @@ class ScreenPreviewHost extends StatefulWidget {
 class _ScreenPreviewHostState extends State<ScreenPreviewHost>
     with WidgetsBindingObserver {
   _PreviewPage _page = _PreviewPage.setup;
-  int _selectedDelay = 30;
+  int _selectedDelay = 10;
   String _script = 'Hey, can you call me? I need a reason to step out.';
 
   @override

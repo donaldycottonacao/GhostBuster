@@ -147,6 +147,33 @@ class AppLocalizationsCeb extends AppLocalizations {
   String get setupDelay3Minutes => '3 min';
 
   @override
+  String get ringtoneTelephone => 'Telepono';
+
+  @override
+  String get ringtoneRinging => 'Klasikong Tingog';
+
+  @override
+  String get ringtoneClassic => 'Klasikong Telepono';
+
+  @override
+  String get ringtoneModern1 => 'Moderno 1';
+
+  @override
+  String get ringtoneModern2 => 'Moderno 2';
+
+  @override
+  String get setupDelayCustom => 'Pasahon';
+
+  @override
+  String get setupDelayCustomTitle => 'Pinasahi nga delay sa tawag';
+
+  @override
+  String get setupDelayCustomRange => 'Tali sa 10 segundo ug 3 minuto.';
+
+  @override
+  String get setupDelaySet => 'I-SET';
+
+  @override
   String get setupIncomingCall => 'MOSULOD NGA TAWAG';
 
   @override

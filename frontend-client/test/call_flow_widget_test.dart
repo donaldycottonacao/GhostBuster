@@ -13,7 +13,7 @@ import 'package:frontend_client/widgets/slide_button.dart';
 import 'helpers/audio_fakes.dart';
 import 'helpers/real_fonts.dart';
 
-const _setupTitle = 'Set your exit';
+const _setupTitle = 'ARM STEALTH MODE';
 const _incomingTitle = 'Incoming call...';
 
 /// Counts startCountdown invocations so duplicate triggers are visible.
@@ -140,9 +140,9 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(provider.remainingCountdown, 30);
+      expect(provider.remainingCountdown, 10);
 
-      await tester.pump(const Duration(seconds: 30));
+      await tester.pump(const Duration(seconds: 10));
       expect(find.text(_incomingTitle), findsOneWidget);
       expect(audio.count('playRingtone'), 1);
     });

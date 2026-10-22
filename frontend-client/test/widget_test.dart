@@ -10,7 +10,7 @@ void main() {
     await tester.pumpWidget(const GhostBusterApp());
     await tester.pumpAndSettle();
 
-    expect(find.text('Set your exit'), findsOneWidget);
+    expect(find.text('ARM STEALTH MODE'), findsOneWidget);
     await tester.tap(find.text('1 min'));
     await tester.pump();
 
@@ -26,7 +26,7 @@ void main() {
     await tester.ensureVisible(cancelButton);
     await tester.tap(cancelButton);
     await tester.pumpAndSettle();
-    expect(find.text('Set your exit'), findsOneWidget);
+    expect(find.text('ARM STEALTH MODE'), findsOneWidget);
   });
 
   testWidgets('preview flow shows incoming, active, ended, and setup screens', (
@@ -85,7 +85,7 @@ void main() {
     await tester.ensureVisible(returnButton);
     await tester.tap(returnButton);
     await tester.pumpAndSettle();
-    expect(find.text('Set your exit'), findsOneWidget);
+    expect(find.text('ARM STEALTH MODE'), findsOneWidget);
   });
 
   testWidgets('AI button inserts a local sample that remains editable', (

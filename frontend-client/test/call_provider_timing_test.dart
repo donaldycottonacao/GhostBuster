@@ -78,7 +78,7 @@ void main() {
         runFake((async, provider, audio) {
           expect(provider.startCountdown(delaySeconds: delay), isFalse);
           expect(provider.state, CallLifecycleState.configuration);
-          expect(provider.remainingCountdown, 30);
+          expect(provider.remainingCountdown, 10);
           expect(timers(async), 0);
           async.elapse(const Duration(minutes: 4));
           expect(audio.log, isEmpty);
@@ -483,7 +483,7 @@ void main() {
 
           expect(provider.state, CallLifecycleState.configuration);
           expect(provider.session.persona, CallerPersona.defaultPersona);
-          expect(provider.delaySeconds, 30);
+          expect(provider.delaySeconds, 10);
           expect(provider.activeDurationSeconds, 0);
           expect(timers(async), 0);
           final logLength = audio.log.length;

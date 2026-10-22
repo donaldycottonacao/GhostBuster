@@ -27,7 +27,7 @@ void main() {
       expect(audioService.isPlaying, isTrue);
       expect(audioService.isRingtonePlaying, isTrue);
       expect(audioService.isVoicePlaying, isFalse);
-      expect(audioService.currentAsset, 'assets/audio/hangouts_call.mp3');
+      expect(audioService.currentAsset, 'assets/audio/ringtone_telephone.mp3');
     });
 
     test('playRingtone supports custom asset path', () async {

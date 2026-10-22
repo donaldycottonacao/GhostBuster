@@ -504,6 +504,12 @@ frontend-client/assets/fonts/*.ttf
 frontend-client/assets/fonts/*.otf
 !frontend-client/assets/audio/README.md
 !frontend-client/assets/fonts/README.md
+# Licensed ringtones (Pixabay, free to use) — approved for commit.
+!frontend-client/assets/audio/ringtone_telephone.mp3
+!frontend-client/assets/audio/ringtone_ringing.mp3
+!frontend-client/assets/audio/ringtone_classic.mp3
+!frontend-client/assets/audio/ringtone_modern1.mp3
+!frontend-client/assets/audio/ringtone_modern2.mp3
 
 # Databases & local storage
 *.db

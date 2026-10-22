@@ -358,6 +358,60 @@ abstract class AppLocalizations {
   /// **'3 min'**
   String get setupDelay3Minutes;
 
+  /// Ringtone option: telephone
+  ///
+  /// In en, this message translates to:
+  /// **'Telephone'**
+  String get ringtoneTelephone;
+
+  /// Ringtone option: classic ring
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Ring'**
+  String get ringtoneRinging;
+
+  /// Ringtone option: classic phone
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Phone'**
+  String get ringtoneClassic;
+
+  /// Ringtone option: modern 1
+  ///
+  /// In en, this message translates to:
+  /// **'Modern 1'**
+  String get ringtoneModern1;
+
+  /// Ringtone option: modern 2
+  ///
+  /// In en, this message translates to:
+  /// **'Modern 2'**
+  String get ringtoneModern2;
+
+  /// Custom ring-delay chip label
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get setupDelayCustom;
+
+  /// Title of the custom delay dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Custom ring delay'**
+  String get setupDelayCustomTitle;
+
+  /// Allowed range hint in the custom delay dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Between 10 seconds and 3 minutes.'**
+  String get setupDelayCustomRange;
+
+  /// Confirm button in the custom delay dialog
+  ///
+  /// In en, this message translates to:
+  /// **'SET'**
+  String get setupDelaySet;
+
   /// Incoming call section heading
   ///
   /// In en, this message translates to:
