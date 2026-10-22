@@ -6,6 +6,8 @@ import 'package:frontend_client/providers/call_provider.dart';
 import 'package:frontend_client/services/audio_service.dart';
 import 'package:frontend_client/widgets/slide_button.dart';
 
+import 'helpers/real_fonts.dart';
+
 class MockAudioService implements AudioServiceBase {
   int ringtonePlayCount = 0;
   int peerAudioPlayCount = 0;
@@ -295,6 +297,13 @@ void main() {
     testWidgets(
       'responsive layout: renders cleanly on compact 320x568 screen without overflow',
       (tester) async {
+        // Measure with real Roboto metrics. The default flutter_test font draws
+        // every glyph as a wide box, so overflow depends on the host platform
+        // (this test passed on Windows but overflowed on the Linux CI runner).
+        // Loading real fonts makes the check deterministic across platforms.
+        expect(await loadSdkRoboto(), isTrue,
+            reason: 'Roboto from the Flutter SDK is required for layout tests');
+
         tester.view.physicalSize = const Size(320, 568);
         tester.view.devicePixelRatio = 1.0;
         addTearDown(() => tester.view.resetPhysicalSize());
