@@ -46,7 +46,7 @@ void main() {
 
       expect(log, [
         'ringtone.setReleaseMode:loop',
-        'ringtone.play:audio/ringtone_ios.mp3',
+        'ringtone.play:audio/hangouts_call.mp3',
         'ringtone.stop', // ringtone stopped before the voice is touched
         'voice.setReleaseMode:stop',
         'voice.play:audio/peer_mom.mp3',

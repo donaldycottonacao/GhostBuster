@@ -530,35 +530,13 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                         value: 'tskk',
                                         child: Text('TSKK Ringtone'),
                                       ),
-                                      PopupMenuItem(
-                                        value: 'containment',
-                                        child: Text(
-                                          l10n?.setupRingtoneContainment ??
-                                              'Containment Alarm',
-                                        ),
-                                      ),
-                                      PopupMenuItem(
-                                        value: 'soft',
-                                        child: Text(
-                                          l10n?.setupRingtoneSoft ??
-                                              'Soft Chime',
-                                        ),
-                                      ),
-                                      PopupMenuItem(
-                                        value: 'classic',
-                                        child: Text(
-                                          l10n?.setupRingtoneClassic ??
-                                              'Classic Ringtone',
-                                        ),
-                                      ),
                                     ],
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Flexible(
                                           child: Text(
-                                            ringtoneLabel(
-                                                l10n, _selectedRingtone),
+                                            ringtoneLabel(_selectedRingtone),
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.end,
                                             style: const TextStyle(
@@ -820,14 +798,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
     );
   }
 
-  String ringtoneLabel(AppLocalizations? l10n, String ringtone) =>
-      switch (ringtone) {
-        'hangouts' => 'Hangouts',
+  String ringtoneLabel(String ringtone) => switch (ringtone) {
         'living' => 'Living Tune',
         'tskk' => 'TSKK Ringtone',
-        'soft' => l10n?.setupRingtoneSoft ?? 'Soft Chime',
-        'classic' => l10n?.setupRingtoneClassic ?? 'Classic Ringtone',
-        'containment' => l10n?.setupRingtoneContainment ?? 'Containment Alarm',
         _ => 'Hangouts',
       };
 

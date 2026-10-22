@@ -67,9 +67,6 @@ class RingtoneOption {
     'hangouts': 'assets/audio/hangouts_call.mp3',
     'living': 'assets/audio/living_tune.mp3',
     'tskk': 'assets/audio/tskk_ringtone.mp3',
-    'containment': 'assets/audio/ringtone_ios.mp3',
-    'classic': 'assets/audio/ringtone_android.mp3',
-    'soft': 'assets/audio/ringtone_soft.mp3',
   };
 
   /// Asset path for [id], falling back to the default ringtone.

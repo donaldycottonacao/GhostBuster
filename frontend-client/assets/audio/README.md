@@ -11,9 +11,6 @@ The application architecture supports the following optional audio tracks:
 | `hangouts_call.mp3` | `hangouts` (default) | Hangouts-style incoming call ringtone | MP3 / WAV, 44.1 kHz, Stereo |
 | `living_tune.mp3` | `living` | "Living Tune" incoming call ringtone | MP3 / WAV, 44.1 kHz, Stereo |
 | `tskk_ringtone.mp3` | `tskk` | "TSKK" incoming call ringtone | MP3 / WAV, 44.1 kHz, Stereo |
-| `ringtone_ios.mp3` | `containment` | Simulated iOS incoming call ringtone | MP3 / WAV, 44.1 kHz, Stereo |
-| `ringtone_android.mp3` | `classic` | Simulated Android incoming call ringtone | MP3 / WAV, 44.1 kHz, Stereo |
-| `ringtone_soft.mp3` | `soft` | Soft chime incoming call ringtone | MP3 / WAV, 44.1 kHz, Stereo |
 | `peer_mom.mp3` | — | Simulated dialogue audio track ("Mom" persona) | MP3, 44.1 kHz, Mono/Stereo |
 | `peer_landlord.mp3` | — | Simulated dialogue audio track ("Landlord" persona) | MP3, 44.1 kHz, Mono/Stereo |
 

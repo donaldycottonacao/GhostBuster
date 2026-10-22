@@ -96,13 +96,13 @@ void main() {
             CallProvider(audioService: audio, assetProbe: _allPresent);
 
         provider.triggerRinging();
-        expect(audio.lastRingtoneAsset, 'assets/audio/ringtone_ios.mp3');
+        expect(audio.lastRingtoneAsset, 'assets/audio/hangouts_call.mp3');
         provider.declineCall();
         provider.returnToSetup();
 
-        provider.setRingtone('soft');
+        provider.setRingtone('living');
         provider.triggerRinging();
-        expect(audio.lastRingtoneAsset, 'assets/audio/ringtone_soft.mp3');
+        expect(audio.lastRingtoneAsset, 'assets/audio/living_tune.mp3');
         provider.dispose();
       });
     });
@@ -115,7 +115,7 @@ void main() {
         expect(provider.ringtoneId, RingtoneOption.defaultId);
 
         provider.startCountdown(delaySeconds: 10);
-        provider.setRingtone('classic');
+        provider.setRingtone('tskk');
         expect(provider.ringtoneId, RingtoneOption.defaultId);
         provider.dispose();
       });
@@ -173,7 +173,7 @@ void main() {
     void configure(CallProvider p) {
       p
         ..setPersona(_landlord)
-        ..setRingtone('classic')
+        ..setRingtone('tskk')
         ..setScriptLanguage('tl')
         ..setVoiceScriptText('Custom script')
         ..setSituationText('Dinner');
@@ -181,7 +181,7 @@ void main() {
 
     void expectConfigured(CallProvider p) {
       expect(p.persona.id, 'landlord');
-      expect(p.ringtoneId, 'classic');
+      expect(p.ringtoneId, 'tskk');
       expect(p.languageCode, 'tl');
       expect(p.voiceScriptText, 'Custom script');
       expect(p.situationText, 'Dinner');
@@ -310,10 +310,10 @@ void main() {
     testWidgets('ringtone menu and script language reach the provider',
         (tester) async {
       await pumpApp(tester);
-      await tapText(tester, 'Containment Alarm');
-      await tester.tap(find.text('Soft Chime').last);
+      await tapText(tester, 'Hangouts');
+      await tester.tap(find.text('Living Tune').last);
       await tester.pumpAndSettle();
-      expect(provider.ringtoneId, 'soft');
+      expect(provider.ringtoneId, 'living');
 
       await tapText(tester, 'Tagalog');
       expect(provider.languageCode, 'tl');
