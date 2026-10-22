@@ -518,6 +518,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                     },
                                     color: _surfaceRaised,
                                     itemBuilder: (context) => [
+                                      const PopupMenuItem(
+                                        value: 'hangouts',
+                                        child: Text('Hangouts'),
+                                      ),
                                       PopupMenuItem(
                                         value: 'containment',
                                         child: Text(
@@ -810,9 +814,11 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
 
   String ringtoneLabel(AppLocalizations? l10n, String ringtone) =>
       switch (ringtone) {
+        'hangouts' => 'Hangouts',
         'soft' => l10n?.setupRingtoneSoft ?? 'Soft Chime',
         'classic' => l10n?.setupRingtoneClassic ?? 'Classic Ringtone',
-        _ => l10n?.setupRingtoneContainment ?? 'Containment Alarm',
+        'containment' => l10n?.setupRingtoneContainment ?? 'Containment Alarm',
+        _ => 'Hangouts',
       };
 
   Widget modeOption(String mode, String label) {

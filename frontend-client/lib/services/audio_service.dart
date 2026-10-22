@@ -118,7 +118,7 @@ class AudioService implements AudioServiceBase {
   Future<void> playRingtone({String? assetPath}) async {
     if (_isDisposed) return;
     final generation = ++_operationGeneration;
-    final path = assetPath ?? 'assets/audio/ringtone_ios.mp3';
+    final path = assetPath ?? 'assets/audio/hangouts_call.mp3';
 
     _currentAsset = path;
     _isRingtonePlaying = true;

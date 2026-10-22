@@ -61,9 +61,10 @@ class CallerPersona {
 class RingtoneOption {
   RingtoneOption._();
 
-  static const String defaultId = 'containment';
+  static const String defaultId = 'hangouts';
 
   static const Map<String, String> assetPaths = {
+    'hangouts': 'assets/audio/hangouts_call.mp3',
     'containment': 'assets/audio/ringtone_ios.mp3',
     'classic': 'assets/audio/ringtone_android.mp3',
     'soft': 'assets/audio/ringtone_soft.mp3',
