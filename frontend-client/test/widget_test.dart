@@ -56,7 +56,9 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(find.text('Connected'), findsOneWidget);
-    expect(find.text('00:18'), findsOneWidget);
+    // Phase 9: the live flow shows the provider's real simulated duration,
+    // which starts at 00:00 (previously a hard-coded 00:18 placeholder).
+    expect(find.text('00:00'), findsOneWidget);
 
     final muteButton = find.text('Mute');
     await tester.ensureVisible(muteButton);

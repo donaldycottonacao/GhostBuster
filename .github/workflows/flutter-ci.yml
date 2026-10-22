@@ -1,59 +1,101 @@
 name: GhostBuster CI
 
+# Runs on pushes to the shared branches and on PRs targeting them, plus a
+# manual trigger. The Flutter app lives in frontend-client/, so every Flutter
+# step sets that working directory.
 on:
   push:
-    branches: [ main, master, development, develop ]
+    branches: [main, master, development, develop]
   pull_request:
-    branches: [ main, master, development, develop ]
+    branches: [main, master, development, develop]
+  workflow_dispatch:
+
+# Least privilege: CI only needs to read the repository.
+permissions:
+  contents: read
+
+# A newer run for the same branch/PR cancels the one still in progress.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pinned to match the version verified locally (see docs/phase-10).
+  FLUTTER_VERSION: 3.47.7
 
 jobs:
-    flutter-ci:
-    name: Flutter Frontend Verification
+  flutter-verify:
+    name: Flutter format, analyze, test
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: frontend-client
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 1. Nag-a-add ng audio libraries para sa headless Linux environment
-      - name: Install Linux audio dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libasound2-dev libpulse-dev
-
       - name: Set up Flutter SDK
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@v2.23.0
         with:
-          channel: 'stable'
-          # Ginawa nating 3.47.7 para tugma sa iyong local machine
-          flutter-version: '3.47.7' 
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
 
-      - name: Verify Flutter installation
-        run: flutter doctor -v
+      - name: Show Flutter and Dart versions
+        run: flutter --version
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze Dart code
-        run: flutter analyze --no-fatal-infos
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed lib test
 
-      - name: Run widget and unit tests
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests
         run: flutter test
 
-
-  python-ci:
-    name: Python Backend Tools Verification
+  android-build:
+    name: Android debug build
     runs-on: ubuntu-latest
+    # Only build the APK once the code checks pass, to save runner minutes.
+    needs: flutter-verify
+    defaults:
+      run:
+        working-directory: frontend-client
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2.23.0
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build debug APK
+        # record -> record_linux -> jni triggers a native NDK/CMake build; the
+        # Android SDK on the runner provides the NDK. This is the slowest and
+        # most infra-sensitive step. It does not sign or upload the APK.
+        run: flutter build apk --debug
+
+  python-verify:
+    name: Python backend-tools check
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: backend-tools
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -62,16 +104,18 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
-          cache-dependency-path: backend-tools/requirements.txt
 
       - name: Install dependencies
+        # requirements.txt currently declares no third-party packages; this
+        # stays correct if that changes.
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Validate Python script syntax
+      - name: Byte-compile scripts and tests
         run: python -m compileall scripts tests
 
-      - name: Run Python CLI smoke tests
-        run: python -m unittest tests/test_cli.py
+      - name: Run backend-tools tests
+        # Offline tests only (mocked recorder/engine); the real-SAPI test is
+        # Windows-only and skips itself on Linux.
+        run: python -m unittest discover -s tests -v

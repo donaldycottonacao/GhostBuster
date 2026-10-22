@@ -1,15 +1,18 @@
-# GhostBuster Backend Audio Processing Tools - Core Dependencies
-# Minimal requirements for starter CLI scaffolding and validation.
-# Heavyweight neural voice modeling libraries are deferred until model training/inference is configured.
-
-# Core utilities and basic audio format inspection (pure Python / lightweight wheels)
-# Uncomment when audio wave manipulation is needed:
-# numpy>=1.24.0,<2.0.0
-# soundfile>=0.12.1
-
-# Future / Optional Heavyweight ML Dependencies (deferred):
+# GhostBuster Backend Audio Tools - Dependencies
+#
+# The current tools need NO third-party Python packages:
+#   - text_to_speech.py  -> Python standard library + Windows PowerShell (System.Speech / SAPI5)
+#   - audio_validation.py -> Python standard library (wave, array)
+#   - stage_asset.py      -> Python standard library
+#   - clone_peer.py       -> Python standard library (voice cloning is NOT implemented)
+#
+# Requires Python 3.10+ (verified on 3.11.9) on Windows 10/11 for speech generation.
+# Validation, staging and tests run on any OS with Python 3.10+ (SAPI test is skipped
+# off Windows).
+#
+# Deferred / not installed. Do not uncomment without reviewing model licences, disk
+# size (multi-GB for torch/TTS), GPU/CUDA needs and consent requirements first:
 # torch>=2.2.0
 # torchaudio>=2.2.0
-# TTS>=0.22.0          # Coqui TTS engine (requires explicit speaker model consent)
-# edge-tts>=6.1.12     # Lightweight text-to-speech fallback
-# scipy>=1.11.0
+# TTS>=0.22.0          # Coqui TTS (model weights carry their own licences)
+# edge-tts>=6.1.12     # Sends text to a Microsoft online service - NOT offline

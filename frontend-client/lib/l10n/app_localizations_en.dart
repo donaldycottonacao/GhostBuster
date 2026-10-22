@@ -62,19 +62,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get decline => 'Decline';
 
   @override
-  String get mute => 'mute';
+  String get mute => 'Mute';
 
   @override
-  String get unmute => 'unmute';
+  String get unmute => 'Unmute';
 
   @override
-  String get keypad => 'keypad';
+  String get keypad => 'Keypad';
 
   @override
   String get hideKeypad => 'Hide Keypad';
 
   @override
-  String get speaker => 'speaker';
+  String get speaker => 'Speaker';
 
   @override
   String get addCall => 'add call';
@@ -206,5 +206,187 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get setupDisclaimer =>
-      'Preview only. No call is scheduled from this screen.';
+      'Simulated call only. Nothing is dialed and no phone network is used. Keep the app open until the call rings.';
+
+  @override
+  String get countdownStandingBy => 'Standing by...';
+
+  @override
+  String get countdownSilent => 'SILENT COUNTDOWN';
+
+  @override
+  String get countdownCancelButton => 'CANCEL';
+
+  @override
+  String get incomingCallTitle => 'Incoming call...';
+
+  @override
+  String get tapToAnswer => 'TAP TO ANSWER';
+
+  @override
+  String get callConnected => 'Connected';
+
+  @override
+  String get activeCallScript => 'Script';
+
+  @override
+  String get callEndedTitle => 'Call ended';
+
+  @override
+  String get callEndedSubtitle => 'Your call has ended.';
+
+  @override
+  String get callEndedReturnButton => 'RETURN TO SETUP';
+
+  @override
+  String get callEndedReady => 'Ready for another call.';
+
+  @override
+  String get errorInvalidDelay =>
+      'Invalid delay. Delay must be between 10 and 180 seconds.';
+
+  @override
+  String get errorSimulationActive =>
+      'A simulation is already active. Please wait or cancel the current call.';
+
+  @override
+  String get languageSystem => 'Device language';
+
+  @override
+  String get setupChooseCaller => 'Choose caller';
+
+  @override
+  String get personaRelationshipLandlord => 'Property manager';
+
+  @override
+  String get personaRelationshipOffice => 'Workplace support';
+
+  @override
+  String get personaVoiceUrgent => 'VOICE: URGENT';
+
+  @override
+  String get personaVoiceNone => 'SCRIPT ONLY';
+
+  @override
+  String get setupAudioMissingRingtone =>
+      'Ringtone audio isn\'t installed. The call screen will appear, but it won\'t ring out loud.';
+
+  @override
+  String get setupAudioMissingVoice =>
+      'No voice recording for this caller. Only the on-screen script will be shown.';
+
+  @override
+  String get countdownKeepOpen =>
+      'Keep GhostBuster open. Leaving the app cancels the call.';
+
+  @override
+  String get countdownRingNow => 'Preview incoming call screen';
+
+  @override
+  String get activeCallScriptTitle => 'EMERGENCY SCRIPT';
+
+  @override
+  String get voiceManagerTitle => 'Voice Script Manager';
+
+  @override
+  String get voiceManagerEntry => 'Voice scripts';
+
+  @override
+  String get voiceCreateRecording => 'Create Recording';
+
+  @override
+  String get voiceEmptyTitle => 'No voice scripts yet';
+
+  @override
+  String get voiceEmptyBody =>
+      'Record your own emergency voice script to play during a simulated call.';
+
+  @override
+  String get voiceRecordingNow => 'Recording...';
+
+  @override
+  String get voicePaused => 'Paused';
+
+  @override
+  String get voicePause => 'Pause';
+
+  @override
+  String get voiceResume => 'Resume';
+
+  @override
+  String get voiceStop => 'Stop';
+
+  @override
+  String get voiceCancel => 'Cancel';
+
+  @override
+  String get voiceReviewTitle => 'Recording captured';
+
+  @override
+  String get voicePreview => 'Preview';
+
+  @override
+  String get voiceStopPreview => 'Stop preview';
+
+  @override
+  String get voiceRetake => 'Retake';
+
+  @override
+  String get voiceSave => 'Save';
+
+  @override
+  String get voiceSaveTitle => 'Save recording';
+
+  @override
+  String get voiceRename => 'Rename';
+
+  @override
+  String get voiceRenameTitle => 'Rename';
+
+  @override
+  String get voiceDelete => 'Delete';
+
+  @override
+  String get voiceDeleteTitle => 'Delete recording?';
+
+  @override
+  String get voiceDeleteBody =>
+      'This permanently removes the recording from this device.';
+
+  @override
+  String get voiceNameLabel => 'Scenario name';
+
+  @override
+  String get voiceDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get voiceUseForCall => 'Use for call';
+
+  @override
+  String get voiceSelectedForCall => 'Selected for call';
+
+  @override
+  String get voiceSavedSuccess => 'Voice script saved.';
+
+  @override
+  String get voiceDeletedSuccess => 'Recording deleted.';
+
+  @override
+  String get voiceMicDenied => 'Microphone permission is required to record.';
+
+  @override
+  String get voiceMicDeniedForever =>
+      'Microphone access is blocked. Enable it in system settings.';
+
+  @override
+  String get voiceRecordFailed => 'Recording failed. Please try again.';
+
+  @override
+  String get voiceSaveFailed => 'Could not save the recording.';
+
+  @override
+  String get voiceEmptyRecording => 'The recording file is missing or empty.';
+
+  @override
+  String get voiceRecordBlocked => 'Finish the current call before recording.';
 }

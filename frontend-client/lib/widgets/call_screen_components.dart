@@ -95,9 +95,11 @@ class EmergencyScriptCard extends StatelessWidget {
   const EmergencyScriptCard({
     super.key,
     required this.script,
+    this.title = 'EMERGENCY SCRIPT',
   });
 
   final String script;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -112,9 +114,9 @@ class EmergencyScriptCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'EMERGENCY SCRIPT',
-            style: TextStyle(
+          Text(
+            title,
+            style: const TextStyle(
               color: callScreenMuted,
               fontSize: 11,
               fontWeight: FontWeight.w600,

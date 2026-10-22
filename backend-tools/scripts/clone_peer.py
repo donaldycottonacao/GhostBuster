@@ -15,9 +15,16 @@ for consensual simulation within the GhostBuster social escape app.
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 from pathlib import Path
+
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+REPO_ROOT = BACKEND_DIR.parent
+FLUTTER_ASSETS_DIR = (REPO_ROOT / "frontend-client" / "assets").resolve()
+
+EXIT_OK = 0
+EXIT_INVALID = 1
+EXIT_NOT_IMPLEMENTED = 3
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -26,11 +33,11 @@ def parse_arguments() -> argparse.Namespace:
         description="GhostBuster - Consensual Voice Cloning Scaffolding Tool",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Example Usage:
-  python clone_peer.py --sample-path ../voice_samples/peer_voice.wav \\
-                       --speaker-name "Alex" \\
-                       --authorized-consent \\
-                       --output-dir ../output_assets/
+Example Usage (from backend-tools/; validation only, cloning is NOT implemented):
+  python scripts/clone_peer.py --sample-path voice_samples/peer_voice.wav \\
+                               --speaker-name "Alex" \\
+                               --authorized-consent \\
+                               --output-dir output_assets/ --dry-run
         """,
     )
 
@@ -49,7 +56,7 @@ Example Usage:
     parser.add_argument(
         "--output-dir",
         type=str,
-        default="../output_assets",
+        default=str(BACKEND_DIR / "output_assets"),
         help="Directory where processed voice model weights/assets should be saved.",
     )
     parser.add_argument(
@@ -92,41 +99,59 @@ def validate_environment(args: argparse.Namespace) -> bool:
         )
         return False
 
+    if sample_path.stat().st_size == 0:
+        sys.stderr.write(f"\n[EMPTY FILE] The voice sample '{sample_path.name}' is empty.\n\n")
+        return False
+
+    output_dir = Path(args.output_dir).resolve()
+    try:
+        output_dir.relative_to(FLUTTER_ASSETS_DIR)
+    except ValueError:
+        pass
+    else:
+        sys.stderr.write(
+            "\n[POLICY ERROR] Refusing to write into frontend-client/assets. "
+            "Use backend-tools/output_assets/ and the review/staging process.\n\n"
+        )
+        return False
+
     return True
 
 
 def run_scaffold(args: argparse.Namespace) -> int:
-    """Scaffold execution entry point."""
+    """Scaffold execution entry point.
+
+    Voice cloning is NOT implemented. Only pre-flight validation is available;
+    a real (non dry-run) invocation exits with EXIT_NOT_IMPLEMENTED.
+    """
     print("=" * 60)
-    print("GhostBuster - Peer Voice Cloning Pipeline [SCAFFOLD]")
+    print("GhostBuster - Peer Voice Cloning Pipeline [NOT IMPLEMENTED]")
     print("=" * 60)
     print(f"[*] Speaker Identifier : {args.speaker_name}")
     print(f"[*] Input Audio Sample : {args.sample_path}")
     print(f"[*] Target Output Dir  : {args.output_dir}")
-    print(f"[*] Consent Verified   : {args.authorized_consent}")
+    print(f"[*] Consent Flag Given : {args.authorized_consent}")
     print("-" * 60)
 
     if not validate_environment(args):
-        return 1
+        return EXIT_INVALID
 
-    output_dir = Path(args.output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    print("\n[INFO] Pre-flight checks passed successfully.")
+    print("\n[INFO] Pre-flight checks passed (consent flag, sample file, output location).")
     print(
-        "[INFO] NOTE: Heavyweight neural model fine-tuning (e.g., Coqui TTS / Tortoise) "
-        "is deferred during initial project scaffolding."
-    )
-    print(
-        f"[INFO] Ready for model training integration. Target destination: {output_dir.resolve()}"
+        "[INFO] Note: the consent flag is a self-declaration; keep written consent records "
+        "outside Git (see backend-tools/README.md)."
     )
 
     if args.dry_run:
-        print("[INFO] Dry run complete. No models invoked or files generated.")
-        return 0
+        print("[INFO] Dry run complete. Nothing was processed or written.")
+        return EXIT_OK
 
-    print("[SUCCESS] Voice clone scaffold completed successfully.")
-    return 0
+    sys.stderr.write(
+        "\n[NOT IMPLEMENTED] Voice cloning is not implemented in this project. No model is "
+        "installed or invoked and no output was produced. Use text_to_speech.py with an "
+        "installed, licensed voice, or supply an authorized recording.\n\n"
+    )
+    return EXIT_NOT_IMPLEMENTED
 
 
 def main() -> None:

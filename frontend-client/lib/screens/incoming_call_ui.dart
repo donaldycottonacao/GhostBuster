@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../widgets/call_screen_components.dart';
 import '../widgets/slide_button.dart';
 
@@ -9,13 +10,20 @@ class IncomingCallScreen extends StatelessWidget {
     super.key,
     required this.onAnswer,
     required this.onDecline,
+    this.callerName = 'Riley Morgan',
+    this.callerNumber,
   });
 
   final VoidCallback onAnswer;
   final VoidCallback onDecline;
+  final String callerName;
+
+  /// Optional caller number shown under the name, as real call screens do.
+  final String? callerNumber;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: callScreenBackground,
       body: SafeArea(
@@ -40,62 +48,112 @@ class IncomingCallScreen extends StatelessWidget {
                       children: [
                         CallAvatar(diameter: avatarDiameter),
                         const SizedBox(height: 34),
-                        const Text(
-                          'Riley Morgan',
+                        Text(
+                          callerName,
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 34,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 96),
-                        const Text(
-                          'Incoming call...',
-                          style:
-                              TextStyle(color: callScreenMuted, fontSize: 16),
+                        if (callerNumber != null &&
+                            callerNumber!.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            callerNumber!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: callScreenMuted,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ],
+                        SizedBox(
+                          height:
+                              callerNumber != null && callerNumber!.isNotEmpty
+                                  ? 64
+                                  : 96,
+                        ),
+                        Text(
+                          l10n?.incomingCallTitle ?? 'Incoming call...',
+                          style: const TextStyle(
+                            color: callScreenMuted,
+                            fontSize: 16,
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 54),
-                    SlideButton(
-                      label: 'SLIDE TO ANSWER',
-                      onSlideComplete: onAnswer,
-                      width: sliderWidth,
-                      height: 76,
-                      backgroundColor: callScreenSurface,
-                      sliderColor: callScreenGreen,
-                    ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 40),
                     Column(
                       children: [
-                        SizedBox.square(
-                          dimension: 84,
-                          child: Material(
-                            color: callScreenRed,
-                            shape: const CircleBorder(),
-                            child: InkWell(
-                              customBorder: const CircleBorder(),
-                              onTap: onDecline,
-                              child: const Icon(
-                                Icons.call_end_rounded,
-                                color: Colors.white,
-                                size: 34,
+                        SlideButton(
+                          label: l10n?.slideToAnswer.toUpperCase() ??
+                              'SLIDE TO ANSWER',
+                          onSlideComplete: onAnswer,
+                          width: sliderWidth,
+                          height: 76,
+                          backgroundColor: callScreenSurface,
+                          sliderColor: callScreenGreen,
+                        ),
+                        const SizedBox(height: 8),
+                        Semantics(
+                          label: 'Tap to answer call',
+                          button: true,
+                          child: TextButton.icon(
+                            onPressed: onAnswer,
+                            icon: const Icon(
+                              Icons.call_rounded,
+                              color: callScreenGreen,
+                              size: 20,
+                            ),
+                            label: Text(
+                              l10n?.tapToAnswer ?? 'TAP TO ANSWER',
+                              style: const TextStyle(
+                                color: callScreenGreen,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 1.5,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'DECLINE',
-                          style: TextStyle(
-                            color: callScreenMuted,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 2.5,
-                          ),
-                        ),
                       ],
+                    ),
+                    const SizedBox(height: 20),
+                    Semantics(
+                      label: 'Decline call',
+                      button: true,
+                      child: Column(
+                        children: [
+                          SizedBox.square(
+                            dimension: 84,
+                            child: Material(
+                              color: callScreenRed,
+                              shape: const CircleBorder(),
+                              child: InkWell(
+                                customBorder: const CircleBorder(),
+                                onTap: onDecline,
+                                child: const Icon(
+                                  Icons.call_end_rounded,
+                                  color: Colors.white,
+                                  size: 34,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            l10n?.decline.toUpperCase() ?? 'DECLINE',
+                            style: const TextStyle(
+                              color: callScreenMuted,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 2.5,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 12),
                   ],

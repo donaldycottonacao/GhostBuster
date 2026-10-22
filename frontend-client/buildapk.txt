@@ -1,0 +1,49 @@
+﻿[1/1] Android SDK
+  Γö£ΓöÇ [1/6] android-arm-profile/windows-x64                         13.1s
+  Γö£ΓöÇ [2/6] android-arm-release/windows-x64                          4.9s
+  Γö£ΓöÇ [3/6] android-arm64-profile/windows-x64                        6.2s
+  Γö£ΓöÇ [4/6] android-arm64-release/windows-x64                        5.6s
+  Γö£ΓöÇ [5/6] android-x64-profile/windows-x64                          6.1s
+  ΓööΓöÇ [6/6] android-x64-release/windows-x64                          5.1s
+Running Gradle task 'assembleDebug'...                          
+flutter : Exception in thread "main" java.net.SocketException: An established connection was 
+aborted by the software in your host machine
+At line:1 char:1
++ flutter build apk --debug 2>&1 | Out-File -FilePath buildapk.txt -Enc ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Exception in th...ur host machine:String) [], Rem 
+   oteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+	at java.base/sun.nio.ch.SocketDispatcher.read0(Native Method)
+	at java.base/sun.nio.ch.SocketDispatcher.read(Unknown Source)
+	at java.base/sun.nio.ch.NioSocketImpl.tryRead(Unknown Source)
+	at java.base/sun.nio.ch.NioSocketImpl.implRead(Unknown Source)
+	at java.base/sun.nio.ch.NioSocketImpl.read(Unknown Source)
+	at java.base/sun.nio.ch.NioSocketImpl$1.read(Unknown Source)
+	at java.base/java.net.Socket$SocketInputStream.implRead(Unknown Source)
+	at java.base/java.net.Socket$SocketInputStream.read(Unknown Source)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.read(Unknown Source)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.readFully(Unknown Source)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.decodeInputRecord(Unknown Source)
+	at java.base/sun.security.ssl.SSLSocketInputRecord.decode(Unknown Source)
+	at java.base/sun.security.ssl.SSLTransport.decode(Unknown Source)
+	at java.base/sun.security.ssl.SSLSocketImpl.decode(Unknown Source)
+	at java.base/sun.security.ssl.SSLSocketImpl.readApplicationRecord(Unknown Source)
+	at java.base/sun.security.ssl.SSLSocketImpl$AppInputStream.read(Unknown Source)
+	at java.base/java.io.BufferedInputStream.read1(Unknown Source)
+	at java.base/java.io.BufferedInputStream.read(Unknown Source)
+	at java.base/sun.net.www.MeteredStream.read(Unknown Source)
+	at java.base/java.io.FilterInputStream.read(Unknown Source)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(Unknown Source)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection$HttpInputStream.read(Unknown Source)
+	at org.gradle.wrapper.Download.downloadInternal(Download.java:62)
+	at org.gradle.wrapper.Download.download(Download.java:44)
+	at org.gradle.wrapper.Install$1.call(Install.java:61)
+	at org.gradle.wrapper.Install$1.call(Install.java:48)
+	at org.gradle.wrapper.ExclusiveFileAccessManager.access(ExclusiveFileAccessManager.java:65)
+	at org.gradle.wrapper.Install.createDist(Install.java:48)
+	at org.gradle.wrapper.WrapperExecutor.execute(WrapperExecutor.java:128)
+	at org.gradle.wrapper.GradleWrapperMain.main(GradleWrapperMain.java:61)
+Running Gradle task 'assembleDebug'...                           4350.0s
+Gradle task assembleDebug failed with exit code 1

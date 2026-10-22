@@ -487,6 +487,16 @@ backend-tools/voice_samples/*
 backend-tools/output_assets/*
 !backend-tools/output_assets/.gitkeep
 
+# Python tooling: local venv, model weights and temp synthesis files (never commit)
+backend-tools/.venv/
+backend-tools/**/*.partial.wav
+backend-tools/**/*.pt
+backend-tools/**/*.pth
+backend-tools/**/*.ckpt
+backend-tools/**/*.onnx
+backend-tools/**/*.safetensors
+backend-tools/models/
+
 # Optional local binary media assets (Ringtones & proprietary fonts)
 frontend-client/assets/audio/*.mp3
 frontend-client/assets/audio/*.wav
@@ -494,6 +504,11 @@ frontend-client/assets/fonts/*.ttf
 frontend-client/assets/fonts/*.otf
 !frontend-client/assets/audio/README.md
 !frontend-client/assets/fonts/README.md
+
+# Databases & local storage
+*.db
+*.sqlite
+*.sqlite3
 
 # Environment variables & secrets
 .env

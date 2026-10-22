@@ -16,11 +16,23 @@ dependencies:
   provider: ^6.1.2
   cupertino_icons: ^1.0.8
   audioplayers: ^6.8.1
+  http: ^1.2.0
+  # In-app voice recording + local-only persistence (no cloud, no backend).
+  record: ^7.1.2
+  path_provider: ^2.1.4
+  shared_preferences: ^2.3.2
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # Deterministic fake clock for timer tests. Already a transitive dependency of
+  # flutter_test; `any` keeps the version the Flutter SDK pins (currently 1.3.3).
+  fake_async: any
   flutter_lints: ^3.0.0
+
+dependency_overrides:
+  path_provider_android: 2.2.15
 
 flutter:
   uses-material-design: true

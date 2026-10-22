@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../widgets/call_screen_components.dart';
 import '../widgets/dial_pad_button.dart';
 
@@ -9,23 +10,42 @@ class ActiveCallScreen extends StatefulWidget {
     super.key,
     required this.script,
     required this.onEndCall,
+    this.callerName = 'Riley Morgan',
+    this.durationText = '00:18',
+    this.isMuted,
+    this.isSpeakerOn,
+    this.onToggleMute,
+    this.onToggleSpeaker,
   });
 
   final String script;
   final VoidCallback onEndCall;
+  final String callerName;
+  final String? durationText;
+  final bool? isMuted;
+  final bool? isSpeakerOn;
+  final VoidCallback? onToggleMute;
+  final VoidCallback? onToggleSpeaker;
 
   @override
   State<ActiveCallScreen> createState() => _ActiveCallScreenState();
 }
 
 class _ActiveCallScreenState extends State<ActiveCallScreen> {
-  bool _muted = false;
+  bool _localMuted = false;
   bool _keypadVisible = false;
-  bool _speakerOn = false;
-  bool _scriptSelected = false;
+  bool _localSpeakerOn = false;
+
+  /// The Script button shows/hides the script card (e.g. before showing the
+  /// screen to someone). Visible by default, as in the original design.
+  bool _scriptVisible = true;
+
+  bool get _muted => widget.isMuted ?? _localMuted;
+  bool get _speakerOn => widget.isSpeakerOn ?? _localSpeakerOn;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: callScreenBackground,
       body: SafeArea(
@@ -38,32 +58,38 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                   constraints: const BoxConstraints(maxWidth: 500),
                   child: Column(
                     children: [
-                      EmergencyScriptCard(script: widget.script),
-                      const SizedBox(height: 34),
+                      if (_scriptVisible) ...[
+                        EmergencyScriptCard(
+                          script: widget.script,
+                          title:
+                              l10n?.activeCallScriptTitle ?? 'EMERGENCY SCRIPT',
+                        ),
+                        const SizedBox(height: 34),
+                      ],
                       const CallAvatar(diameter: 138),
                       const SizedBox(height: 20),
-                      const Text(
-                        'Riley Morgan',
+                      Text(
+                        widget.callerName,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 32,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 28),
-                      const Text(
-                        'Connected',
-                        style: TextStyle(
+                      Text(
+                        l10n?.callConnected ?? 'Connected',
+                        style: const TextStyle(
                           color: callScreenGreen,
                           fontSize: 15,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        '00:18',
-                        style: TextStyle(
+                      Text(
+                        widget.durationText ?? '00:18',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 44,
                           fontWeight: FontWeight.w300,
@@ -80,13 +106,21 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                             icon: _muted
                                 ? Icons.mic_off_rounded
                                 : Icons.mic_none_rounded,
-                            label: _muted ? 'Unmute' : 'Mute',
+                            label: _muted
+                                ? (l10n?.unmute ?? 'Unmute')
+                                : (l10n?.mute ?? 'Mute'),
                             isSelected: _muted,
-                            onTap: () => setState(() => _muted = !_muted),
+                            onTap: () {
+                              if (widget.onToggleMute != null) {
+                                widget.onToggleMute!();
+                              } else {
+                                setState(() => _localMuted = !_localMuted);
+                              }
+                            },
                           ),
                           CallControlButton(
                             icon: Icons.dialpad_rounded,
-                            label: 'Keypad',
+                            label: l10n?.keypad ?? 'Keypad',
                             isSelected: _keypadVisible,
                             onTap: () => setState(
                               () => _keypadVisible = !_keypadVisible,
@@ -96,17 +130,24 @@ class _ActiveCallScreenState extends State<ActiveCallScreen> {
                             icon: _speakerOn
                                 ? Icons.volume_up_rounded
                                 : Icons.volume_down_rounded,
-                            label: 'Speaker',
+                            label: l10n?.speaker ?? 'Speaker',
                             isSelected: _speakerOn,
-                            onTap: () =>
-                                setState(() => _speakerOn = !_speakerOn),
+                            onTap: () {
+                              if (widget.onToggleSpeaker != null) {
+                                widget.onToggleSpeaker!();
+                              } else {
+                                setState(
+                                  () => _localSpeakerOn = !_localSpeakerOn,
+                                );
+                              }
+                            },
                           ),
                           CallControlButton(
                             icon: Icons.notes_rounded,
-                            label: 'Script',
-                            isSelected: _scriptSelected,
+                            label: l10n?.activeCallScript ?? 'Script',
+                            isSelected: _scriptVisible,
                             onTap: () => setState(
-                              () => _scriptSelected = !_scriptSelected,
+                              () => _scriptVisible = !_scriptVisible,
                             ),
                           ),
                         ],
@@ -175,7 +216,10 @@ class _PreviewKeypad extends StatelessWidget {
           ],
           TextButton(
             onPressed: onClose,
-            child: const Text('HIDE KEYPAD'),
+            child: Text(
+              AppLocalizations.of(context)?.hideKeypad.toUpperCase() ??
+                  'HIDE KEYPAD',
+            ),
           ),
         ],
       ),
@@ -190,35 +234,39 @@ class _EndCallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox.square(
-          dimension: 86,
-          child: Material(
-            color: callScreenRed,
-            shape: const CircleBorder(),
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: onPressed,
-              child: const Icon(
-                Icons.call_end_rounded,
-                color: Colors.white,
-                size: 36,
+    return Semantics(
+      label: 'End Call',
+      button: true,
+      child: Column(
+        children: [
+          SizedBox.square(
+            dimension: 86,
+            child: Material(
+              color: callScreenRed,
+              shape: const CircleBorder(),
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: onPressed,
+                child: const Icon(
+                  Icons.call_end_rounded,
+                  color: Colors.white,
+                  size: 36,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          'END CALL',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 1.5,
+          const SizedBox(height: 10),
+          Text(
+            AppLocalizations.of(context)?.endCall.toUpperCase() ?? 'END CALL',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 1.5,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

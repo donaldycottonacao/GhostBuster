@@ -193,19 +193,19 @@ abstract class AppLocalizations {
   /// Microphone mute button label
   ///
   /// In en, this message translates to:
-  /// **'mute'**
+  /// **'Mute'**
   String get mute;
 
   /// Microphone unmute button label
   ///
   /// In en, this message translates to:
-  /// **'unmute'**
+  /// **'Unmute'**
   String get unmute;
 
   /// Dial pad toggle button label
   ///
   /// In en, this message translates to:
-  /// **'keypad'**
+  /// **'Keypad'**
   String get keypad;
 
   /// Dismiss dial pad modal label
@@ -217,7 +217,7 @@ abstract class AppLocalizations {
   /// Speakerphone toggle button label
   ///
   /// In en, this message translates to:
-  /// **'speaker'**
+  /// **'Speaker'**
   String get speaker;
 
   /// Add call placeholder button label
@@ -472,11 +472,359 @@ abstract class AppLocalizations {
   /// **'STEALTH MODE ARMED'**
   String get setupArmedStatus;
 
-  /// Setup screen preview disclaimer
+  /// Setup screen disclaimer: the call is simulated and needs the app in the foreground
   ///
   /// In en, this message translates to:
-  /// **'Preview only. No call is scheduled from this screen.'**
+  /// **'Simulated call only. Nothing is dialed and no phone network is used. Keep the app open until the call rings.'**
   String get setupDisclaimer;
+
+  /// Countdown screen header status
+  ///
+  /// In en, this message translates to:
+  /// **'Standing by...'**
+  String get countdownStandingBy;
+
+  /// Countdown screen subtitle badge
+  ///
+  /// In en, this message translates to:
+  /// **'SILENT COUNTDOWN'**
+  String get countdownSilent;
+
+  /// Countdown screen cancel button
+  ///
+  /// In en, this message translates to:
+  /// **'CANCEL'**
+  String get countdownCancelButton;
+
+  /// Incoming call status text
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming call...'**
+  String get incomingCallTitle;
+
+  /// Accessible incoming call tap answer button
+  ///
+  /// In en, this message translates to:
+  /// **'TAP TO ANSWER'**
+  String get tapToAnswer;
+
+  /// Active call connection status
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get callConnected;
+
+  /// Active call script control button
+  ///
+  /// In en, this message translates to:
+  /// **'Script'**
+  String get activeCallScript;
+
+  /// Call ended screen main heading
+  ///
+  /// In en, this message translates to:
+  /// **'Call ended'**
+  String get callEndedTitle;
+
+  /// Call ended screen subtitle message
+  ///
+  /// In en, this message translates to:
+  /// **'Your call has ended.'**
+  String get callEndedSubtitle;
+
+  /// Call ended return to setup button
+  ///
+  /// In en, this message translates to:
+  /// **'RETURN TO SETUP'**
+  String get callEndedReturnButton;
+
+  /// Call ended readiness status
+  ///
+  /// In en, this message translates to:
+  /// **'Ready for another call.'**
+  String get callEndedReady;
+
+  /// Validation message when countdown delay is out of range
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid delay. Delay must be between 10 and 180 seconds.'**
+  String get errorInvalidDelay;
+
+  /// Warning message when user tries to arm while call is active
+  ///
+  /// In en, this message translates to:
+  /// **'A simulation is already active. Please wait or cancel the current call.'**
+  String get errorSimulationActive;
+
+  /// Language picker option that follows the device language
+  ///
+  /// In en, this message translates to:
+  /// **'Device language'**
+  String get languageSystem;
+
+  /// Title of the caller persona picker
+  ///
+  /// In en, this message translates to:
+  /// **'Choose caller'**
+  String get setupChooseCaller;
+
+  /// Relationship label for the landlord persona
+  ///
+  /// In en, this message translates to:
+  /// **'Property manager'**
+  String get personaRelationshipLandlord;
+
+  /// Relationship label for the office persona
+  ///
+  /// In en, this message translates to:
+  /// **'Workplace support'**
+  String get personaRelationshipOffice;
+
+  /// Voice style badge for the landlord persona
+  ///
+  /// In en, this message translates to:
+  /// **'VOICE: URGENT'**
+  String get personaVoiceUrgent;
+
+  /// Badge for a persona that has no voice recording
+  ///
+  /// In en, this message translates to:
+  /// **'SCRIPT ONLY'**
+  String get personaVoiceNone;
+
+  /// Setup warning when the selected ringtone file is missing
+  ///
+  /// In en, this message translates to:
+  /// **'Ringtone audio isn\'t installed. The call screen will appear, but it won\'t ring out loud.'**
+  String get setupAudioMissingRingtone;
+
+  /// Setup warning when the caller's voice file is missing
+  ///
+  /// In en, this message translates to:
+  /// **'No voice recording for this caller. Only the on-screen script will be shown.'**
+  String get setupAudioMissingVoice;
+
+  /// Countdown hint: the countdown only runs in the foreground
+  ///
+  /// In en, this message translates to:
+  /// **'Keep GhostBuster open. Leaving the app cancels the call.'**
+  String get countdownKeepOpen;
+
+  /// Countdown button that skips the wait and rings immediately
+  ///
+  /// In en, this message translates to:
+  /// **'Preview incoming call screen'**
+  String get countdownRingNow;
+
+  /// Heading of the script card on the active call screen
+  ///
+  /// In en, this message translates to:
+  /// **'EMERGENCY SCRIPT'**
+  String get activeCallScriptTitle;
+
+  /// Voice Script Manager screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Voice Script Manager'**
+  String get voiceManagerTitle;
+
+  /// Setup entry label opening the Voice Script Manager
+  ///
+  /// In en, this message translates to:
+  /// **'Voice scripts'**
+  String get voiceManagerEntry;
+
+  /// Create recording action
+  ///
+  /// In en, this message translates to:
+  /// **'Create Recording'**
+  String get voiceCreateRecording;
+
+  /// Empty-state heading
+  ///
+  /// In en, this message translates to:
+  /// **'No voice scripts yet'**
+  String get voiceEmptyTitle;
+
+  /// Empty-state body
+  ///
+  /// In en, this message translates to:
+  /// **'Record your own emergency voice script to play during a simulated call.'**
+  String get voiceEmptyBody;
+
+  /// Recording-in-progress status
+  ///
+  /// In en, this message translates to:
+  /// **'Recording...'**
+  String get voiceRecordingNow;
+
+  /// Paused status
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get voicePaused;
+
+  /// Pause control
+  ///
+  /// In en, this message translates to:
+  /// **'Pause'**
+  String get voicePause;
+
+  /// Resume control
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get voiceResume;
+
+  /// Stop control
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get voiceStop;
+
+  /// Cancel control
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get voiceCancel;
+
+  /// Review heading after a recording is captured
+  ///
+  /// In en, this message translates to:
+  /// **'Recording captured'**
+  String get voiceReviewTitle;
+
+  /// Preview control
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get voicePreview;
+
+  /// Stop preview control
+  ///
+  /// In en, this message translates to:
+  /// **'Stop preview'**
+  String get voiceStopPreview;
+
+  /// Retake control
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get voiceRetake;
+
+  /// Save control
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get voiceSave;
+
+  /// Save sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Save recording'**
+  String get voiceSaveTitle;
+
+  /// Rename action
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get voiceRename;
+
+  /// Rename sheet title
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get voiceRenameTitle;
+
+  /// Delete action
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get voiceDelete;
+
+  /// Delete confirmation title
+  ///
+  /// In en, this message translates to:
+  /// **'Delete recording?'**
+  String get voiceDeleteTitle;
+
+  /// Delete confirmation body
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently removes the recording from this device.'**
+  String get voiceDeleteBody;
+
+  /// Scenario name field label
+  ///
+  /// In en, this message translates to:
+  /// **'Scenario name'**
+  String get voiceNameLabel;
+
+  /// Scenario description field label
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get voiceDescriptionLabel;
+
+  /// Use-for-call action
+  ///
+  /// In en, this message translates to:
+  /// **'Use for call'**
+  String get voiceUseForCall;
+
+  /// Selected-for-call state label
+  ///
+  /// In en, this message translates to:
+  /// **'Selected for call'**
+  String get voiceSelectedForCall;
+
+  /// Saved success message
+  ///
+  /// In en, this message translates to:
+  /// **'Voice script saved.'**
+  String get voiceSavedSuccess;
+
+  /// Deleted success message
+  ///
+  /// In en, this message translates to:
+  /// **'Recording deleted.'**
+  String get voiceDeletedSuccess;
+
+  /// Microphone denied error
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is required to record.'**
+  String get voiceMicDenied;
+
+  /// Microphone permanently denied error
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone access is blocked. Enable it in system settings.'**
+  String get voiceMicDeniedForever;
+
+  /// Recording failed error
+  ///
+  /// In en, this message translates to:
+  /// **'Recording failed. Please try again.'**
+  String get voiceRecordFailed;
+
+  /// Save failed error
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the recording.'**
+  String get voiceSaveFailed;
+
+  /// Empty/missing recording error
+  ///
+  /// In en, this message translates to:
+  /// **'The recording file is missing or empty.'**
+  String get voiceEmptyRecording;
+
+  /// Recording blocked during an active call
+  ///
+  /// In en, this message translates to:
+  /// **'Finish the current call before recording.'**
+  String get voiceRecordBlocked;
 }
 
 class _AppLocalizationsDelegate

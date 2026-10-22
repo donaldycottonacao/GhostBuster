@@ -206,5 +206,190 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get setupDisclaimer =>
-      'Preview lang. Walang tawag na itinatakda mula sa screen na ito.';
+      'Huwad na tawag lamang. Walang dina-dial at walang network ng telepono na ginagamit. Panatilihing bukas ang app hanggang tumunog ang tawag.';
+
+  @override
+  String get countdownStandingBy => 'Nakaantabay...';
+
+  @override
+  String get countdownSilent => 'PALIHIM NA PAGBILANG';
+
+  @override
+  String get countdownCancelButton => 'IKANSELA';
+
+  @override
+  String get incomingCallTitle => 'Papasok na tawag...';
+
+  @override
+  String get tapToAnswer => 'PINDUTIN UPANG SAGUTIN';
+
+  @override
+  String get callConnected => 'Konektado';
+
+  @override
+  String get activeCallScript => 'Script';
+
+  @override
+  String get callEndedTitle => 'Tapos na ang tawag';
+
+  @override
+  String get callEndedSubtitle => 'Natapos na ang iyong tawag.';
+
+  @override
+  String get callEndedReturnButton => 'BUMALIK SA SETUP';
+
+  @override
+  String get callEndedReady => 'Handa na para sa isa pang tawag.';
+
+  @override
+  String get errorInvalidDelay =>
+      'Maling oras ng paghihintay. Dapat ay nasa pagitan ng 10 at 180 segundo.';
+
+  @override
+  String get errorSimulationActive =>
+      'May aktibong tawag na. Maghintay o ikansela ang kasalukuyang tawag.';
+
+  @override
+  String get languageSystem => 'Wika ng device';
+
+  @override
+  String get setupChooseCaller => 'Pumili ng tatawag';
+
+  @override
+  String get personaRelationshipLandlord => 'Tagapamahala ng paupahan';
+
+  @override
+  String get personaRelationshipOffice => 'Suporta sa trabaho';
+
+  @override
+  String get personaVoiceUrgent => 'BOSES: MADALIAN';
+
+  @override
+  String get personaVoiceNone => 'SCRIPT LANG';
+
+  @override
+  String get setupAudioMissingRingtone =>
+      'Walang naka-install na ringtone. Lalabas ang tawag pero hindi ito tutunog nang malakas.';
+
+  @override
+  String get setupAudioMissingVoice =>
+      'Walang recording ng boses para sa tumatawag na ito. Ang script lang sa screen ang ipapakita.';
+
+  @override
+  String get countdownKeepOpen =>
+      'Panatilihing bukas ang GhostBuster. Makakansela ang tawag kapag umalis ka sa app.';
+
+  @override
+  String get countdownRingNow => 'Ipakita na ang papasok na tawag';
+
+  @override
+  String get activeCallScriptTitle => 'EMERGENCY NA SCRIPT';
+
+  @override
+  String get voiceManagerTitle => 'Tagapamahala ng Voice Script';
+
+  @override
+  String get voiceManagerEntry => 'Mga voice script';
+
+  @override
+  String get voiceCreateRecording => 'Gumawa ng Recording';
+
+  @override
+  String get voiceEmptyTitle => 'Wala pang voice script';
+
+  @override
+  String get voiceEmptyBody =>
+      'Mag-record ng sarili mong emergency voice script na tutugtog sa simulated na tawag.';
+
+  @override
+  String get voiceRecordingNow => 'Nagre-record...';
+
+  @override
+  String get voicePaused => 'Naka-pause';
+
+  @override
+  String get voicePause => 'I-pause';
+
+  @override
+  String get voiceResume => 'Ituloy';
+
+  @override
+  String get voiceStop => 'Itigil';
+
+  @override
+  String get voiceCancel => 'Kanselahin';
+
+  @override
+  String get voiceReviewTitle => 'Nakuha ang recording';
+
+  @override
+  String get voicePreview => 'I-preview';
+
+  @override
+  String get voiceStopPreview => 'Itigil ang preview';
+
+  @override
+  String get voiceRetake => 'Ulitin';
+
+  @override
+  String get voiceSave => 'I-save';
+
+  @override
+  String get voiceSaveTitle => 'I-save ang recording';
+
+  @override
+  String get voiceRename => 'Palitan ng pangalan';
+
+  @override
+  String get voiceRenameTitle => 'Palitan ng pangalan';
+
+  @override
+  String get voiceDelete => 'Burahin';
+
+  @override
+  String get voiceDeleteTitle => 'Burahin ang recording?';
+
+  @override
+  String get voiceDeleteBody =>
+      'Permanenteng aalisin nito ang recording sa device na ito.';
+
+  @override
+  String get voiceNameLabel => 'Pangalan ng senaryo';
+
+  @override
+  String get voiceDescriptionLabel => 'Paglalarawan (opsyonal)';
+
+  @override
+  String get voiceUseForCall => 'Gamitin sa tawag';
+
+  @override
+  String get voiceSelectedForCall => 'Napili para sa tawag';
+
+  @override
+  String get voiceSavedSuccess => 'Na-save ang voice script.';
+
+  @override
+  String get voiceDeletedSuccess => 'Nabura ang recording.';
+
+  @override
+  String get voiceMicDenied =>
+      'Kailangan ng pahintulot sa mikropono para makapag-record.';
+
+  @override
+  String get voiceMicDeniedForever =>
+      'Naka-block ang mikropono. I-enable ito sa system settings.';
+
+  @override
+  String get voiceRecordFailed => 'Nabigo ang pag-record. Subukan ulit.';
+
+  @override
+  String get voiceSaveFailed => 'Hindi ma-save ang recording.';
+
+  @override
+  String get voiceEmptyRecording =>
+      'Nawawala o walang laman ang recording file.';
+
+  @override
+  String get voiceRecordBlocked =>
+      'Tapusin muna ang kasalukuyang tawag bago mag-record.';
 }
