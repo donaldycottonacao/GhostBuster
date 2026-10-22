@@ -337,7 +337,7 @@ void main() {
       await tester.pumpAndSettle();
       await tapText(tester, 'RETURN TO SETUP');
 
-      expect(find.text('Set your exit'), findsOneWidget);
+      expect(find.text('ARM STEALTH MODE'), findsOneWidget);
       expect(find.text('Landlord (Maintenance)'), findsOneWidget);
       expect(
         tester.widget<TextField>(find.byType(TextField).last).controller!.text,
@@ -376,13 +376,15 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Tagalog').last);
       await tester.pumpAndSettle();
-      expect(find.text('Ihanda ang pag-alis mo'), findsOneWidget);
+      // The Tagalog ARM button confirms the locale switch (the "Set your exit"
+      // heading was removed from the UI).
+      expect(find.text('IHANDA ANG PALIHIM NA MODE'), findsOneWidget);
 
       await tester.tap(find.byTooltip('Wika'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Wika ng device'));
       await tester.pumpAndSettle();
-      expect(find.text('Set your exit'), findsOneWidget);
+      expect(find.text('ARM STEALTH MODE'), findsOneWidget);
     });
 
     testWidgets('honest copy on setup and countdown', (tester) async {

@@ -202,7 +202,7 @@ void main() {
       await tester.pumpWidget(GhostBusterApp(provider: provider));
       await tester.pumpAndSettle();
 
-      expect(find.text('Set your exit'), findsOneWidget);
+      // Setup screen marker (the "Set your exit" heading was removed from the UI).
       expect(find.text('ARM STEALTH MODE'), findsOneWidget);
 
       provider.dispose();

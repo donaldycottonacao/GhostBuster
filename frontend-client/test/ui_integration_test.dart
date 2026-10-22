@@ -126,7 +126,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // 1. Initial configuration screen
-        expect(find.text('Set your exit'), findsOneWidget);
+        expect(find.text('ARM STEALTH MODE'), findsOneWidget);
         expect(callProvider.state, CallLifecycleState.configuration);
 
         // 2. Select 30s delay and arm stealth mode
@@ -187,7 +187,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(callProvider.state, CallLifecycleState.configuration);
-        expect(find.text('Set your exit'), findsOneWidget);
+        expect(find.text('ARM STEALTH MODE'), findsOneWidget);
       },
     );
 
@@ -211,7 +211,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(callProvider.state, CallLifecycleState.configuration);
-        expect(find.text('Set your exit'), findsOneWidget);
+        expect(find.text('ARM STEALTH MODE'), findsOneWidget);
         expect(mockAudio.ringtonePlayCount, 0);
       },
     );
@@ -311,7 +311,7 @@ void main() {
         await tester.pumpWidget(GhostBusterApp(provider: callProvider));
         await tester.pumpAndSettle();
 
-        expect(find.text('Set your exit'), findsOneWidget);
+        expect(find.text('ARM STEALTH MODE'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );

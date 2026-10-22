@@ -337,17 +337,6 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 9),
-                    Text(
-                      l10n?.setupTitle ?? 'Set your exit',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.4,
-                      ),
-                    ),
                     const SizedBox(height: 24),
                     _SectionCard(
                       title: l10n?.setupRingDelay ?? 'RING DELAY',
