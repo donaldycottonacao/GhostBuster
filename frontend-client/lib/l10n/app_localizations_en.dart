@@ -147,6 +147,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupDelay3Minutes => '3 min';
 
   @override
+  String get ringtoneTelephone => 'Telephone';
+
+  @override
+  String get ringtoneRinging => 'Classic Ring';
+
+  @override
+  String get ringtoneClassic => 'Classic Phone';
+
+  @override
+  String get ringtoneModern1 => 'Modern 1';
+
+  @override
+  String get ringtoneModern2 => 'Modern 2';
+
+  @override
   String get setupDelayCustom => 'Custom';
 
   @override

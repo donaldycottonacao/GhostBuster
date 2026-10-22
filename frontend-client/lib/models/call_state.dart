@@ -61,13 +61,24 @@ class CallerPersona {
 class RingtoneOption {
   RingtoneOption._();
 
-  static const String defaultId = 'hangouts';
+  static const String defaultId = 'telephone';
 
   static const Map<String, String> assetPaths = {
-    'hangouts': 'assets/audio/hangouts_call.mp3',
-    'living': 'assets/audio/living_tune.mp3',
-    'tskk': 'assets/audio/tskk_ringtone.mp3',
+    'telephone': 'assets/audio/ringtone_telephone.mp3',
+    'ringing': 'assets/audio/ringtone_ringing.mp3',
+    'classic': 'assets/audio/ringtone_classic.mp3',
+    'modern1': 'assets/audio/ringtone_modern1.mp3',
+    'modern2': 'assets/audio/ringtone_modern2.mp3',
   };
+
+  /// Stable display order for the ringtone picker.
+  static const List<String> ids = [
+    'telephone',
+    'ringing',
+    'classic',
+    'modern1',
+    'modern2',
+  ];
 
   /// Asset path for [id], falling back to the default ringtone.
   static String assetFor(String id) => assetPaths[id] ?? assetPaths[defaultId]!;

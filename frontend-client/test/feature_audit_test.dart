@@ -96,13 +96,13 @@ void main() {
             CallProvider(audioService: audio, assetProbe: _allPresent);
 
         provider.triggerRinging();
-        expect(audio.lastRingtoneAsset, 'assets/audio/hangouts_call.mp3');
+        expect(audio.lastRingtoneAsset, 'assets/audio/ringtone_telephone.mp3');
         provider.declineCall();
         provider.returnToSetup();
 
-        provider.setRingtone('living');
+        provider.setRingtone('classic');
         provider.triggerRinging();
-        expect(audio.lastRingtoneAsset, 'assets/audio/living_tune.mp3');
+        expect(audio.lastRingtoneAsset, 'assets/audio/ringtone_classic.mp3');
         provider.dispose();
       });
     });
@@ -115,7 +115,7 @@ void main() {
         expect(provider.ringtoneId, RingtoneOption.defaultId);
 
         provider.startCountdown(delaySeconds: 10);
-        provider.setRingtone('tskk');
+        provider.setRingtone('classic');
         expect(provider.ringtoneId, RingtoneOption.defaultId);
         provider.dispose();
       });
@@ -127,7 +127,7 @@ void main() {
       final provider = CallProvider(
         audioService: RecordingAudioService(),
         // Treat the ringtone asset as missing, voice assets as present.
-        assetProbe: (path) async => !path.contains('hangouts'),
+        assetProbe: (path) async => !path.contains('ringtone_telephone'),
       );
       await provider.refreshAudioReadiness();
       expect(provider.ringtoneMissing, isTrue);
@@ -174,7 +174,7 @@ void main() {
     void configure(CallProvider p) {
       p
         ..setPersona(_landlord)
-        ..setRingtone('tskk')
+        ..setRingtone('classic')
         ..setScriptLanguage('tl')
         ..setVoiceScriptText('Custom script')
         ..setSituationText('Dinner');
@@ -182,7 +182,7 @@ void main() {
 
     void expectConfigured(CallProvider p) {
       expect(p.persona.id, 'landlord');
-      expect(p.ringtoneId, 'tskk');
+      expect(p.ringtoneId, 'classic');
       expect(p.languageCode, 'tl');
       expect(p.voiceScriptText, 'Custom script');
       expect(p.situationText, 'Dinner');
@@ -338,10 +338,10 @@ void main() {
     testWidgets('ringtone menu and script language reach the provider',
         (tester) async {
       await pumpApp(tester);
-      await tapText(tester, 'Hangouts');
-      await tester.tap(find.text('Living Tune').last);
+      await tapText(tester, 'Telephone');
+      await tester.tap(find.text('Classic Phone').last);
       await tester.pumpAndSettle();
-      expect(provider.ringtoneId, 'living');
+      expect(provider.ringtoneId, 'classic');
 
       await tapText(tester, 'Tagalog');
       expect(provider.languageCode, 'tl');

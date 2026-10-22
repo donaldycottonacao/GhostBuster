@@ -358,6 +358,36 @@ abstract class AppLocalizations {
   /// **'3 min'**
   String get setupDelay3Minutes;
 
+  /// Ringtone option: telephone
+  ///
+  /// In en, this message translates to:
+  /// **'Telephone'**
+  String get ringtoneTelephone;
+
+  /// Ringtone option: classic ring
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Ring'**
+  String get ringtoneRinging;
+
+  /// Ringtone option: classic phone
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Phone'**
+  String get ringtoneClassic;
+
+  /// Ringtone option: modern 1
+  ///
+  /// In en, this message translates to:
+  /// **'Modern 1'**
+  String get ringtoneModern1;
+
+  /// Ringtone option: modern 2
+  ///
+  /// In en, this message translates to:
+  /// **'Modern 2'**
+  String get ringtoneModern2;
+
   /// Custom ring-delay chip label
   ///
   /// In en, this message translates to:

@@ -64,7 +64,7 @@ class RecordingAudioService implements AudioServiceBase {
       _record('playRingtone', 'playRingtone', () {
         lastRingtoneAsset = assetPath;
         _ringtone = true;
-        _asset = assetPath ?? 'assets/audio/ringtone_ios.mp3';
+        _asset = assetPath ?? 'assets/audio/ringtone_telephone.mp3';
       });
 
   @override

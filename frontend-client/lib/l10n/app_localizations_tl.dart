@@ -147,6 +147,21 @@ class AppLocalizationsTl extends AppLocalizations {
   String get setupDelay3Minutes => '3 min';
 
   @override
+  String get ringtoneTelephone => 'Telepono';
+
+  @override
+  String get ringtoneRinging => 'Klasikong Tunog';
+
+  @override
+  String get ringtoneClassic => 'Klasikong Telepono';
+
+  @override
+  String get ringtoneModern1 => 'Moderno 1';
+
+  @override
+  String get ringtoneModern2 => 'Moderno 2';
+
+  @override
   String get setupDelayCustom => 'Pasadya';
 
   @override

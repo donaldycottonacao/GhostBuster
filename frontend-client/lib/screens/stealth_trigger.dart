@@ -533,25 +533,19 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                     },
                                     color: _surfaceRaised,
                                     itemBuilder: (context) => [
-                                      const PopupMenuItem(
-                                        value: 'hangouts',
-                                        child: Text('Hangouts'),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: 'living',
-                                        child: Text('Living Tune'),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: 'tskk',
-                                        child: Text('TSKK Ringtone'),
-                                      ),
+                                      for (final id in RingtoneOption.ids)
+                                        PopupMenuItem(
+                                          value: id,
+                                          child: Text(ringtoneLabel(l10n, id)),
+                                        ),
                                     ],
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Flexible(
                                           child: Text(
-                                            ringtoneLabel(_selectedRingtone),
+                                            ringtoneLabel(
+                                                l10n, _selectedRingtone),
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.end,
                                             style: const TextStyle(
@@ -916,10 +910,13 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
     );
   }
 
-  String ringtoneLabel(String ringtone) => switch (ringtone) {
-        'living' => 'Living Tune',
-        'tskk' => 'TSKK Ringtone',
-        _ => 'Hangouts',
+  String ringtoneLabel(AppLocalizations? l10n, String ringtone) =>
+      switch (ringtone) {
+        'ringing' => l10n?.ringtoneRinging ?? 'Classic Ring',
+        'classic' => l10n?.ringtoneClassic ?? 'Classic Phone',
+        'modern1' => l10n?.ringtoneModern1 ?? 'Modern 1',
+        'modern2' => l10n?.ringtoneModern2 ?? 'Modern 2',
+        _ => l10n?.ringtoneTelephone ?? 'Telephone',
       };
 
   Widget modeOption(String mode, String label) {
