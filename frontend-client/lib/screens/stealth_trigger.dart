@@ -3,8 +3,14 @@ import 'package:provider/provider.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/call_state.dart';
+import '../models/voice_scenario.dart';
 import '../providers/call_provider.dart';
+import '../providers/voice_script_manager_controller.dart';
 import '../services/api_client.dart';
+import '../services/audio_service.dart';
+import '../services/voice_recorder.dart';
+import '../services/voice_scenario_store.dart';
+import 'voice_script_manager_screen.dart';
 
 const _background = Color(0xFF080B09);
 const _surface = Color(0xFF151D18);
@@ -156,6 +162,32 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
       ),
     );
     if (chosen != null && mounted) provider.setPersona(chosen);
+  }
+
+  /// Opens the Voice Script Manager. A returned scenario is selected as the
+  /// voice for the next call; recording is blocked while a call is active.
+  Future<void> _openVoiceManager(CallProvider? provider) async {
+    final controller = VoiceScriptManagerController(
+      recorder: VoiceRecorder(),
+      store: VoiceScenarioStore(),
+      audio: AudioService(),
+    );
+    final chosen = await Navigator.of(context).push<VoiceScenario>(
+      MaterialPageRoute(
+        builder: (_) => VoiceScriptManagerScreen(
+          controller: controller,
+          selectedScenarioId: provider?.selectedVoiceScenarioId,
+          recordingBlocked: provider?.isCallAudioActive ?? false,
+        ),
+      ),
+    );
+    controller.dispose();
+    if (chosen != null && mounted) {
+      provider?.selectRecordedVoice(
+        scenarioId: chosen.id,
+        filePath: chosen.filePath,
+      );
+    }
   }
 
   Future<void> _chooseAppLanguage(CallProvider provider) async {
@@ -562,6 +594,11 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       ),
                     ),
                     const SizedBox(height: 14),
+                    _VoiceScriptEntry(
+                      callProvider: callProvider,
+                      onOpen: () => _openVoiceManager(callProvider),
+                    ),
+                    const SizedBox(height: 14),
                     _SectionCard(
                       title: l10n?.setupScriptLanguage ?? 'SCRIPT LANGUAGE',
                       icon: Icons.language_rounded,
@@ -892,6 +929,75 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
           borderSide: const BorderSide(color: _accent, width: 1.2),
         ),
       );
+}
+
+/// Tappable setup row that opens the Voice Script Manager and shows whether a
+/// user recording is currently selected for the call.
+class _VoiceScriptEntry extends StatelessWidget {
+  const _VoiceScriptEntry({
+    required this.callProvider,
+    required this.onOpen,
+  });
+
+  final CallProvider? callProvider;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final usesRecorded = callProvider?.usesRecordedVoice ?? false;
+    return Semantics(
+      button: true,
+      label: l10n?.voiceManagerTitle ?? 'Voice Script Manager',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: onOpen,
+          child: Ink(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+            decoration: BoxDecoration(
+              color: const Color(0xFF18221B),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: _border),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.graphic_eq_rounded, color: _muted, size: 21),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n?.voiceManagerEntry ?? 'Voice scripts',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 14),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        usesRecorded
+                            ? (l10n?.voiceSelectedForCall ??
+                                'Selected for call')
+                            : (l10n?.voiceCreateRecording ??
+                                'Create Recording'),
+                        style: TextStyle(
+                          color: usesRecorded ? _accent : _muted,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded,
+                    color: _muted, size: 22),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _SectionCard extends StatelessWidget {

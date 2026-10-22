@@ -56,6 +56,22 @@ class CallProvider extends ChangeNotifier {
   String get ringtoneId => _session.ringtoneId;
   String get ringtoneAsset => RingtoneOption.assetFor(_session.ringtoneId);
 
+  /// Id of the selected user recording, or null when using the persona asset.
+  String? get selectedVoiceScenarioId => _session.selectedVoiceScenarioId;
+
+  /// Device file path of the selected user recording, if any.
+  String? get selectedVoiceFilePath => _session.selectedVoiceFilePath;
+
+  /// Whether a user recording (rather than a bundled asset) will be played.
+  bool get usesRecordedVoice =>
+      (_session.selectedVoiceFilePath ?? '').isNotEmpty;
+
+  /// Whether audio is currently playing, so the UI can block recording while a
+  /// simulated call is producing sound.
+  bool get isCallAudioActive =>
+      _session.state == CallLifecycleState.ringing ||
+      _session.state == CallLifecycleState.active;
+
   /// Selected in-app language, or English when following the device.
   Locale get currentLocale => _localeOverride ?? const Locale('en');
 
@@ -161,6 +177,39 @@ class CallProvider extends ChangeNotifier {
     _voiceAvailable = null;
     notifyListeners();
     unawaited(refreshAudioReadiness());
+  }
+
+  /// Selects a user-recorded voice scenario to play during the next call.
+  ///
+  /// Ignored mid-simulation. Passing an empty/blank path clears the selection
+  /// and falls back to the persona's bundled asset.
+  void selectRecordedVoice(
+      {required String scenarioId, required String filePath}) {
+    if (!_canEditConfiguration) return;
+    if (filePath.isEmpty) {
+      clearRecordedVoice();
+      return;
+    }
+    if (_session.selectedVoiceScenarioId == scenarioId &&
+        _session.selectedVoiceFilePath == filePath) {
+      return;
+    }
+    _session = _session.copyWith(
+      selectedVoiceScenarioId: scenarioId,
+      selectedVoiceFilePath: filePath,
+    );
+    notifyListeners();
+  }
+
+  /// Clears any selected recording, reverting to the persona's bundled asset.
+  void clearRecordedVoice() {
+    if (!_canEditConfiguration) return;
+    if (_session.selectedVoiceScenarioId == null &&
+        _session.selectedVoiceFilePath == null) {
+      return;
+    }
+    _session = _session.copyWith(clearSelectedVoice: true);
+    notifyListeners();
   }
 
   /// Runs one fire-and-forget audio operation and contains its failure.
@@ -345,9 +394,17 @@ class CallProvider extends ChangeNotifier {
       notifyListeners();
     });
 
-    final audioTrack = _session.persona.audioTrackAsset;
-    if (audioTrack != null && audioTrack.isNotEmpty) {
-      _runAudio('playPeerAudio', () => _audioService.playPeerAudio(audioTrack));
+    final recordedPath = _session.selectedVoiceFilePath;
+    if (recordedPath != null && recordedPath.isNotEmpty) {
+      // A user recording takes precedence over the persona's bundled asset.
+      _runAudio(
+          'playVoiceFile', () => _audioService.playVoiceFile(recordedPath));
+    } else {
+      final audioTrack = _session.persona.audioTrackAsset;
+      if (audioTrack != null && audioTrack.isNotEmpty) {
+        _runAudio(
+            'playPeerAudio', () => _audioService.playPeerAudio(audioTrack));
+      }
     }
   }
 

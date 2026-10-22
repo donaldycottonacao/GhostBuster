@@ -26,6 +26,11 @@ class MockAudioService implements AudioServiceBase {
   @override
   bool get isVoicePlaying => _isVoicePlaying;
 
+  bool _isPreviewPlaying = false;
+
+  @override
+  bool get isPreviewPlaying => _isPreviewPlaying;
+
   @override
   String? get currentAsset => _currentAsset;
 
@@ -57,6 +62,24 @@ class MockAudioService implements AudioServiceBase {
 
   @override
   Future<void> playScenarioVoice(String assetPath) => playPeerAudio(assetPath);
+
+  @override
+  Future<void> playVoiceFile(String filePath) async {
+    peerAudioPlayCount++;
+    _isPlaying = true;
+    _isVoicePlaying = true;
+    _currentAsset = filePath;
+  }
+
+  @override
+  Future<void> playPreviewFile(String filePath) async {
+    _isPreviewPlaying = true;
+  }
+
+  @override
+  Future<void> stopPreview() async {
+    _isPreviewPlaying = false;
+  }
 
   @override
   Future<void> stopVoice() async {

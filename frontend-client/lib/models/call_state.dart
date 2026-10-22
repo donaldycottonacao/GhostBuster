@@ -87,6 +87,14 @@ class CallSession {
   final bool isSpeakerOn;
   final String ringtoneId;
 
+  /// Id of the selected user-recorded voice scenario, or null to use the
+  /// persona's bundled [CallerPersona.audioTrackAsset].
+  final String? selectedVoiceScenarioId;
+
+  /// Absolute device file path of the selected recording, when one is chosen.
+  /// Takes precedence over the persona's bundled asset during a call.
+  final String? selectedVoiceFilePath;
+
   const CallSession({
     this.state = CallLifecycleState.configuration,
     this.persona = CallerPersona.defaultPersona,
@@ -99,6 +107,8 @@ class CallSession {
     this.isMuted = false,
     this.isSpeakerOn = false,
     this.ringtoneId = RingtoneOption.defaultId,
+    this.selectedVoiceScenarioId,
+    this.selectedVoiceFilePath,
   });
 
   CallSession copyWith({
@@ -113,6 +123,9 @@ class CallSession {
     bool? isMuted,
     bool? isSpeakerOn,
     String? ringtoneId,
+    String? selectedVoiceScenarioId,
+    String? selectedVoiceFilePath,
+    bool clearSelectedVoice = false,
   }) {
     return CallSession(
       state: state ?? this.state,
@@ -127,6 +140,12 @@ class CallSession {
       isMuted: isMuted ?? this.isMuted,
       isSpeakerOn: isSpeakerOn ?? this.isSpeakerOn,
       ringtoneId: ringtoneId ?? this.ringtoneId,
+      selectedVoiceScenarioId: clearSelectedVoice
+          ? null
+          : (selectedVoiceScenarioId ?? this.selectedVoiceScenarioId),
+      selectedVoiceFilePath: clearSelectedVoice
+          ? null
+          : (selectedVoiceFilePath ?? this.selectedVoiceFilePath),
     );
   }
 }

@@ -13,14 +13,33 @@ abstract class AudioServiceBase {
   /// Explicitly stop only the ringtone player.
   Future<void> stopRingtone();
 
-  /// Play simulated peer dialogue speech track.
+  /// Play simulated peer dialogue speech track from a bundled asset.
   Future<void> playPeerAudio(String assetPath);
 
   /// Alias for playPeerAudio matching scenario playback specifications.
   Future<void> playScenarioVoice(String assetPath);
 
+  /// Play simulated peer dialogue from a device file path (user recording).
+  ///
+  /// Stops the ringtone first, mirroring [playPeerAudio], so the call sequence
+  /// (ring -> answer -> stop ringtone -> play voice) is preserved for both
+  /// bundled assets and user recordings.
+  Future<void> playVoiceFile(String filePath);
+
   /// Explicitly stop only the voice player.
   Future<void> stopVoice();
+
+  /// Preview a recording from a device file path on an isolated player.
+  ///
+  /// Independent of the call ringtone/voice players so the Voice Script Manager
+  /// can preview without disturbing (or being disturbed by) a call.
+  Future<void> playPreviewFile(String filePath);
+
+  /// Stops the preview player.
+  Future<void> stopPreview();
+
+  /// Whether the preview player is currently playing.
+  bool get isPreviewPlaying;
 
   /// Stop all active audio streams and reset player state.
   Future<void> stopAll();
@@ -52,13 +71,16 @@ class AudioService implements AudioServiceBase {
 
   AudioPlayer? _ringtonePlayer;
   AudioPlayer? _voicePlayer;
+  AudioPlayer? _previewPlayer;
   final bool _enableHardware;
 
   bool _isRingtonePlaying = false;
   bool _isVoicePlaying = false;
+  bool _isPreviewPlaying = false;
   String? _currentAsset;
   bool _isDisposed = false;
   int _operationGeneration = 0;
+  int _previewGeneration = 0;
 
   AudioService._internal({bool enableHardware = true})
       : _enableHardware = enableHardware {
@@ -70,11 +92,16 @@ class AudioService implements AudioServiceBase {
   AudioService.custom({
     AudioPlayer? ringtonePlayer,
     AudioPlayer? voicePlayer,
+    AudioPlayer? previewPlayer,
     bool enableHardware = true,
   })  : _ringtonePlayer = ringtonePlayer,
         _voicePlayer = voicePlayer,
+        _previewPlayer = previewPlayer,
         _enableHardware = enableHardware {
-    if (_enableHardware && _ringtonePlayer == null && _voicePlayer == null) {
+    if (_enableHardware &&
+        _ringtonePlayer == null &&
+        _voicePlayer == null &&
+        _previewPlayer == null) {
       _initPlayers();
     }
   }
@@ -84,6 +111,7 @@ class AudioService implements AudioServiceBase {
     try {
       _ringtonePlayer ??= AudioPlayer();
       _voicePlayer ??= AudioPlayer();
+      _previewPlayer ??= AudioPlayer();
     } catch (e) {
       debugPrint('[AudioService] AudioPlayer hardware init warning: $e');
     }
@@ -97,6 +125,9 @@ class AudioService implements AudioServiceBase {
 
   @override
   bool get isVoicePlaying => _isVoicePlaying;
+
+  @override
+  bool get isPreviewPlaying => _isPreviewPlaying;
 
   @override
   String? get currentAsset => _currentAsset;
@@ -191,6 +222,69 @@ class AudioService implements AudioServiceBase {
   Future<void> playScenarioVoice(String assetPath) => playPeerAudio(assetPath);
 
   @override
+  Future<void> playVoiceFile(String filePath) async {
+    if (_isDisposed) return;
+    final generation = ++_operationGeneration;
+
+    // Same invariant as playPeerAudio: ringtone stops before the voice starts.
+    final ringtoneStopped = await _stopRingtonePlayer();
+    if (_isDisposed || generation != _operationGeneration) return;
+    if (!ringtoneStopped) {
+      debugPrint(
+          '[AudioService] Voice file not started: ringtone stop failed (avoids overlap)');
+      return;
+    }
+
+    _currentAsset = filePath;
+    _isVoicePlaying = true;
+    debugPrint('[AudioService] Peer voice (file) triggered');
+
+    if (!_enableHardware || _voicePlayer == null) return;
+
+    try {
+      await _voicePlayer?.setReleaseMode(ReleaseMode.stop);
+      if (generation != _operationGeneration || !_isVoicePlaying) return;
+      await _voicePlayer?.play(DeviceFileSource(filePath));
+    } catch (e) {
+      debugPrint('[AudioService] Hardware voice file playback fallback: $e');
+    }
+  }
+
+  @override
+  Future<void> playPreviewFile(String filePath) async {
+    if (_isDisposed) return;
+    final generation = ++_previewGeneration;
+    _isPreviewPlaying = true;
+    debugPrint('[AudioService] Preview triggered');
+
+    if (!_enableHardware || _previewPlayer == null) return;
+
+    try {
+      await _previewPlayer?.stop();
+      await _previewPlayer?.setReleaseMode(ReleaseMode.stop);
+      if (generation != _previewGeneration || !_isPreviewPlaying) return;
+      await _previewPlayer?.play(DeviceFileSource(filePath));
+    } catch (e) {
+      _isPreviewPlaying = false;
+      debugPrint('[AudioService] Preview playback fallback: $e');
+    }
+  }
+
+  @override
+  Future<void> stopPreview() async {
+    _previewGeneration++;
+    _isPreviewPlaying = false;
+    if (_previewPlayer != null) {
+      try {
+        await _previewPlayer?.stop();
+      } catch (e) {
+        debugPrint('[AudioService] Error stopping preview player: $e');
+      }
+    }
+    debugPrint('[AudioService] Preview stopped');
+  }
+
+  @override
   Future<void> stopVoice() async {
     _isVoicePlaying = false;
     if (_voicePlayer != null) {
@@ -206,8 +300,10 @@ class AudioService implements AudioServiceBase {
   @override
   Future<void> stopAll() async {
     _operationGeneration++;
+    _previewGeneration++;
     _isRingtonePlaying = false;
     _isVoicePlaying = false;
+    _isPreviewPlaying = false;
     _currentAsset = null;
 
     // Independent stops ensure failure of one player does not block the other
@@ -224,6 +320,14 @@ class AudioService implements AudioServiceBase {
         await _voicePlayer?.stop();
       } catch (e) {
         debugPrint('[AudioService] Error stopping voice during stopAll: $e');
+      }
+    }
+
+    if (_previewPlayer != null) {
+      try {
+        await _previewPlayer?.stop();
+      } catch (e) {
+        debugPrint('[AudioService] Error stopping preview during stopAll: $e');
       }
     }
 
@@ -250,6 +354,14 @@ class AudioService implements AudioServiceBase {
       debugPrint('[AudioService] Error disposing voice player: $e');
     } finally {
       _voicePlayer = null;
+    }
+
+    try {
+      await _previewPlayer?.dispose();
+    } catch (e) {
+      debugPrint('[AudioService] Error disposing preview player: $e');
+    } finally {
+      _previewPlayer = null;
     }
 
     debugPrint('[AudioService] AudioService disposed');

@@ -285,4 +285,111 @@ class AppLocalizationsCeb extends AppLocalizations {
 
   @override
   String get activeCallScriptTitle => 'EMERGENCY NGA SCRIPT';
+
+  @override
+  String get voiceManagerTitle => 'Tigdumala sa Voice Script';
+
+  @override
+  String get voiceManagerEntry => 'Mga voice script';
+
+  @override
+  String get voiceCreateRecording => 'Paghimo og Recording';
+
+  @override
+  String get voiceEmptyTitle => 'Wala pay voice script';
+
+  @override
+  String get voiceEmptyBody =>
+      'Pagrecord sa imong kaugalingong emergency voice script nga motugtog sa simulated nga tawag.';
+
+  @override
+  String get voiceRecordingNow => 'Nagrecord...';
+
+  @override
+  String get voicePaused => 'Naka-pause';
+
+  @override
+  String get voicePause => 'I-pause';
+
+  @override
+  String get voiceResume => 'Padayon';
+
+  @override
+  String get voiceStop => 'Hunong';
+
+  @override
+  String get voiceCancel => 'Kanselahon';
+
+  @override
+  String get voiceReviewTitle => 'Nakuha ang recording';
+
+  @override
+  String get voicePreview => 'I-preview';
+
+  @override
+  String get voiceStopPreview => 'Hunongon ang preview';
+
+  @override
+  String get voiceRetake => 'Usba';
+
+  @override
+  String get voiceSave => 'I-save';
+
+  @override
+  String get voiceSaveTitle => 'I-save ang recording';
+
+  @override
+  String get voiceRename => 'Usba ang ngalan';
+
+  @override
+  String get voiceRenameTitle => 'Usba ang ngalan';
+
+  @override
+  String get voiceDelete => 'Papason';
+
+  @override
+  String get voiceDeleteTitle => 'Papason ang recording?';
+
+  @override
+  String get voiceDeleteBody =>
+      'Permanente nga tangtangon niini ang recording gikan niini nga device.';
+
+  @override
+  String get voiceNameLabel => 'Ngalan sa senaryo';
+
+  @override
+  String get voiceDescriptionLabel => 'Paghulagway (opsyonal)';
+
+  @override
+  String get voiceUseForCall => 'Gamita sa tawag';
+
+  @override
+  String get voiceSelectedForCall => 'Napili para sa tawag';
+
+  @override
+  String get voiceSavedSuccess => 'Na-save ang voice script.';
+
+  @override
+  String get voiceDeletedSuccess => 'Napapas ang recording.';
+
+  @override
+  String get voiceMicDenied =>
+      'Kinahanglan ang pagtugot sa mikropono aron makarecord.';
+
+  @override
+  String get voiceMicDeniedForever =>
+      'Na-block ang mikropono. I-enable kini sa system settings.';
+
+  @override
+  String get voiceRecordFailed => 'Napakyas ang pagrecord. Sulayi pag-usab.';
+
+  @override
+  String get voiceSaveFailed => 'Dili ma-save ang recording.';
+
+  @override
+  String get voiceEmptyRecording => 'Nawala o walay sulod ang recording file.';
+
+  @override
+  String get voiceRecordBlocked =>
+      'Humana una ang kasamtangang tawag sa dili pa magrecord.';
 }

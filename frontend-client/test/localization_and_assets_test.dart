@@ -26,6 +26,12 @@ class _MockAudioService implements AudioServiceBase {
   @override
   Future<void> playScenarioVoice(String assetPath) async {}
   @override
+  Future<void> playVoiceFile(String filePath) async {}
+  @override
+  Future<void> playPreviewFile(String filePath) async {}
+  @override
+  Future<void> stopPreview() async {}
+  @override
   Future<void> stopVoice() async {}
   @override
   Future<void> stopAll() async {}
@@ -37,6 +43,8 @@ class _MockAudioService implements AudioServiceBase {
   bool get isRingtonePlaying => false;
   @override
   bool get isVoicePlaying => false;
+  @override
+  bool get isPreviewPlaying => false;
   @override
   String? get currentAsset => null;
 }

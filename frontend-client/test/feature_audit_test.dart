@@ -126,7 +126,8 @@ void main() {
     test('reports missing ringtone and voice without blocking', () async {
       final provider = CallProvider(
         audioService: RecordingAudioService(),
-        assetProbe: (path) async => !path.contains('ringtone'),
+        // Treat the ringtone asset as missing, voice assets as present.
+        assetProbe: (path) async => !path.contains('hangouts'),
       );
       await provider.refreshAudioReadiness();
       expect(provider.ringtoneMissing, isTrue);

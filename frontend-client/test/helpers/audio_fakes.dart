@@ -19,6 +19,7 @@ class RecordingAudioService implements AudioServiceBase {
 
   bool _ringtone = false;
   bool _voice = false;
+  bool _preview = false;
   String? _asset;
 
   /// Number of calls to [operation] (matches `op` and `op:<argument>` entries).
@@ -45,6 +46,9 @@ class RecordingAudioService implements AudioServiceBase {
 
   @override
   bool get isVoicePlaying => _voice;
+
+  @override
+  bool get isPreviewPlaying => _preview;
 
   @override
   String? get currentAsset => _asset;
@@ -77,6 +81,24 @@ class RecordingAudioService implements AudioServiceBase {
 
   @override
   Future<void> playScenarioVoice(String assetPath) => playPeerAudio(assetPath);
+
+  @override
+  Future<void> playVoiceFile(String filePath) =>
+      _record('playVoiceFile:$filePath', 'playVoiceFile', () {
+        _ringtone = false;
+        _voice = true;
+        _asset = filePath;
+      });
+
+  @override
+  Future<void> playPreviewFile(String filePath) =>
+      _record('playPreviewFile:$filePath', 'playPreviewFile', () {
+        _preview = true;
+      });
+
+  @override
+  Future<void> stopPreview() =>
+      _record('stopPreview', 'stopPreview', () => _preview = false);
 
   @override
   Future<void> stopVoice() =>
