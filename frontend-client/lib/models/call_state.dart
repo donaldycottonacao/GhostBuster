@@ -31,8 +31,8 @@ class CallerPersona {
   });
 
   static const CallerPersona defaultPersona = CallerPersona(
-    id: 'mom',
-    name: 'Mom',
+    id: 'riley_morgan',
+    name: 'Riley Morgan',
     number: '+1 (555) 234-5678',
     audioTrackAsset: 'assets/audio/peer_mom.mp3',
   );
@@ -54,24 +54,72 @@ class CallerPersona {
   ];
 }
 
+/// Ringtone choices offered on the setup screen, mapped to bundled asset paths.
+///
+/// Only licensed audio may be placed at these paths (see assets/audio/README.md).
+/// A missing file is handled safely: the call screen still appears, silently.
+class RingtoneOption {
+  RingtoneOption._();
+
+  static const String defaultId = 'telephone';
+
+  static const Map<String, String> assetPaths = {
+    'telephone': 'assets/audio/ringtone_telephone.mp3',
+    'ringing': 'assets/audio/ringtone_ringing.mp3',
+    'classic': 'assets/audio/ringtone_classic.mp3',
+    'modern1': 'assets/audio/ringtone_modern1.mp3',
+    'modern2': 'assets/audio/ringtone_modern2.mp3',
+  };
+
+  /// Stable display order for the ringtone picker.
+  static const List<String> ids = [
+    'telephone',
+    'ringing',
+    'classic',
+    'modern1',
+    'modern2',
+  ];
+
+  /// Asset path for [id], falling back to the default ringtone.
+  static String assetFor(String id) => assetPaths[id] ?? assetPaths[defaultId]!;
+}
+
 /// State model tracking the current simulated call session.
 class CallSession {
   final CallLifecycleState state;
   final CallerPersona persona;
   final int countdownSeconds;
   final int remainingCountdown;
+  final String languageCode;
+  final String situationText;
+  final String voiceScriptText;
   final int activeDurationSeconds;
   final bool isMuted;
   final bool isSpeakerOn;
+  final String ringtoneId;
+
+  /// Id of the selected user-recorded voice scenario, or null to use the
+  /// persona's bundled [CallerPersona.audioTrackAsset].
+  final String? selectedVoiceScenarioId;
+
+  /// Absolute device file path of the selected recording, when one is chosen.
+  /// Takes precedence over the persona's bundled asset during a call.
+  final String? selectedVoiceFilePath;
 
   const CallSession({
     this.state = CallLifecycleState.configuration,
     this.persona = CallerPersona.defaultPersona,
     this.countdownSeconds = 10,
     this.remainingCountdown = 10,
+    this.languageCode = 'en',
+    this.situationText = '',
+    this.voiceScriptText = 'Hey, can you call me? I need a reason to step out.',
     this.activeDurationSeconds = 0,
     this.isMuted = false,
     this.isSpeakerOn = false,
+    this.ringtoneId = RingtoneOption.defaultId,
+    this.selectedVoiceScenarioId,
+    this.selectedVoiceFilePath,
   });
 
   CallSession copyWith({
@@ -79,18 +127,39 @@ class CallSession {
     CallerPersona? persona,
     int? countdownSeconds,
     int? remainingCountdown,
+    String? languageCode,
+    String? situationText,
+    String? voiceScriptText,
     int? activeDurationSeconds,
     bool? isMuted,
     bool? isSpeakerOn,
+    String? ringtoneId,
+    String? selectedVoiceScenarioId,
+    String? selectedVoiceFilePath,
+    bool clearSelectedVoice = false,
   }) {
     return CallSession(
       state: state ?? this.state,
       persona: persona ?? this.persona,
       countdownSeconds: countdownSeconds ?? this.countdownSeconds,
       remainingCountdown: remainingCountdown ?? this.remainingCountdown,
-      activeDurationSeconds: activeDurationSeconds ?? this.activeDurationSeconds,
+      languageCode: languageCode ?? this.languageCode,
+      situationText: situationText ?? this.situationText,
+      voiceScriptText: voiceScriptText ?? this.voiceScriptText,
+      activeDurationSeconds:
+          activeDurationSeconds ?? this.activeDurationSeconds,
       isMuted: isMuted ?? this.isMuted,
       isSpeakerOn: isSpeakerOn ?? this.isSpeakerOn,
+      ringtoneId: ringtoneId ?? this.ringtoneId,
+      selectedVoiceScenarioId: clearSelectedVoice
+          ? null
+          : (selectedVoiceScenarioId ?? this.selectedVoiceScenarioId),
+      selectedVoiceFilePath: clearSelectedVoice
+          ? null
+          : (selectedVoiceFilePath ?? this.selectedVoiceFilePath),
     );
   }
 }
+
+/// Architectural alias for CallLifecycleState.
+typedef CallState = CallLifecycleState;

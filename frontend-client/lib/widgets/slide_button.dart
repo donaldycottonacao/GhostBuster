@@ -32,76 +32,82 @@ class _SlideButtonState extends State<SlideButton> {
   Widget build(BuildContext context) {
     final double maxDrag = widget.width - widget.height;
 
-    return Container(
-      width: widget.width,
-      height: widget.height,
-      decoration: BoxDecoration(
-        color: widget.backgroundColor,
-        borderRadius: BorderRadius.circular(widget.height / 2),
-      ),
-      child: Stack(
-        children: [
-          // Centered instructional label
-          Center(
-            child: Opacity(
-              opacity: (1.0 - (_dragPosition / maxDrag)).clamp(0.0, 1.0),
-              child: Text(
-                widget.label,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.5,
+    return Semantics(
+      label: '${widget.label}. Double tap or slide across to answer',
+      button: true,
+      onTap: widget.onSlideComplete,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        decoration: BoxDecoration(
+          color: widget.backgroundColor,
+          borderRadius: BorderRadius.circular(widget.height / 2),
+        ),
+        child: Stack(
+          children: [
+            // Centered instructional label
+            Center(
+              child: Opacity(
+                opacity: (1.0 - (_dragPosition / maxDrag)).clamp(0.0, 1.0),
+                child: Text(
+                  widget.label,
+                  style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
             ),
-          ),
-          // Draggable thumb button
-          Positioned(
-            left: _dragPosition,
-            child: GestureDetector(
-              onHorizontalDragUpdate: (details) {
-                setState(() {
-                  _dragPosition = (_dragPosition + details.delta.dx).clamp(0.0, maxDrag);
-                });
-              },
-              onHorizontalDragEnd: (details) {
-                if (_dragPosition >= maxDrag * 0.85) {
-                  // Reached trigger threshold
+            // Draggable thumb button
+            Positioned(
+              left: _dragPosition,
+              child: GestureDetector(
+                onHorizontalDragUpdate: (details) {
                   setState(() {
-                    _dragPosition = maxDrag;
+                    _dragPosition =
+                        (_dragPosition + details.delta.dx).clamp(0.0, maxDrag);
                   });
-                  widget.onSlideComplete();
-                } else {
-                  // Animate back to start
-                  setState(() {
-                    _dragPosition = 0.0;
-                  });
-                }
-              },
-              child: Container(
-                width: widget.height,
-                height: widget.height,
-                decoration: BoxDecoration(
-                  color: widget.sliderColor,
-                  shape: BoxShape.circle,
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 8,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.call,
-                  color: widget.iconColor,
-                  size: 32,
+                },
+                onHorizontalDragEnd: (details) {
+                  if (_dragPosition >= maxDrag * 0.85) {
+                    // Reached trigger threshold
+                    setState(() {
+                      _dragPosition = maxDrag;
+                    });
+                    widget.onSlideComplete();
+                  } else {
+                    // Animate back to start
+                    setState(() {
+                      _dragPosition = 0.0;
+                    });
+                  }
+                },
+                child: Container(
+                  width: widget.height,
+                  height: widget.height,
+                  decoration: BoxDecoration(
+                    color: widget.sliderColor,
+                    shape: BoxShape.circle,
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 8,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    Icons.call,
+                    color: widget.iconColor,
+                    size: 32,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
