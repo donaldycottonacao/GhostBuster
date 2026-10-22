@@ -522,6 +522,14 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                         value: 'hangouts',
                                         child: Text('Hangouts'),
                                       ),
+                                      const PopupMenuItem(
+                                        value: 'living',
+                                        child: Text('Living Tune'),
+                                      ),
+                                      const PopupMenuItem(
+                                        value: 'tskk',
+                                        child: Text('TSKK Ringtone'),
+                                      ),
                                       PopupMenuItem(
                                         value: 'containment',
                                         child: Text(
@@ -815,6 +823,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   String ringtoneLabel(AppLocalizations? l10n, String ringtone) =>
       switch (ringtone) {
         'hangouts' => 'Hangouts',
+        'living' => 'Living Tune',
+        'tskk' => 'TSKK Ringtone',
         'soft' => l10n?.setupRingtoneSoft ?? 'Soft Chime',
         'classic' => l10n?.setupRingtoneClassic ?? 'Classic Ringtone',
         'containment' => l10n?.setupRingtoneContainment ?? 'Containment Alarm',
