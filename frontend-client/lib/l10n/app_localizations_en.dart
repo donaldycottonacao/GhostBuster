@@ -147,6 +147,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setupDelay3Minutes => '3 min';
 
   @override
+  String get setupDelayCustom => 'Custom';
+
+  @override
+  String get setupDelayCustomTitle => 'Custom ring delay';
+
+  @override
+  String get setupDelayCustomRange => 'Between 10 seconds and 3 minutes.';
+
+  @override
+  String get setupDelaySet => 'SET';
+
+  @override
   String get setupIncomingCall => 'INCOMING CALL';
 
   @override

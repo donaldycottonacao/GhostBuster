@@ -41,7 +41,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
   final _situationController = TextEditingController();
   final _scriptController = TextEditingController();
 
-  int _selectedDelay = 30;
+  /// Delay presets offered as quick-pick chips (seconds).
+  static const List<int> _delayPresets = [10, 30, 60, 180];
+
+  int _selectedDelay = 10;
   String _selectedLanguage = 'en';
   String _selectedMode = 'own';
   String _selectedRingtone = RingtoneOption.defaultId;
@@ -64,7 +67,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
     if (provider != null) {
       _selectedDelay = provider.validateDelay(provider.delaySeconds)
           ? provider.delaySeconds
-          : 30;
+          : 10;
       _selectedLanguage = provider.languageCode;
       _selectedRingtone = provider.ringtoneId;
       _situationController.text = provider.situationText;
@@ -348,35 +351,26 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                         textAlign: TextAlign.end,
                         style: const TextStyle(color: _muted, fontSize: 11),
                       ),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Expanded(
-                            child: delayOption(
-                              10,
-                              l10n?.setupDelay10Seconds ?? '10 sec',
-                            ),
+                          Row(
+                            children: [
+                              for (var i = 0;
+                                  i < _delayPresets.length;
+                                  i++) ...[
+                                if (i > 0) const SizedBox(width: 7),
+                                Expanded(
+                                  child: delayOption(
+                                    _delayPresets[i],
+                                    _presetLabel(l10n, _delayPresets[i]),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
-                          const SizedBox(width: 7),
-                          Expanded(
-                            child: delayOption(
-                              30,
-                              l10n?.setupDelay30Seconds ?? '30 sec',
-                            ),
-                          ),
-                          const SizedBox(width: 7),
-                          Expanded(
-                            child: delayOption(
-                              60,
-                              l10n?.setupDelay1Minute ?? '1 min',
-                            ),
-                          ),
-                          const SizedBox(width: 7),
-                          Expanded(
-                            child: delayOption(
-                              180,
-                              l10n?.setupDelay3Minutes ?? '3 min',
-                            ),
-                          ),
+                          const SizedBox(height: 7),
+                          customDelayOption(l10n),
                         ],
                       ),
                     ),
@@ -810,6 +804,104 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
       isSelected: isSelected,
       onTap: () => setState(() => _selectedDelay = seconds),
     );
+  }
+
+  /// Localized label for a preset delay value.
+  String _presetLabel(AppLocalizations? l10n, int seconds) => switch (seconds) {
+        10 => l10n?.setupDelay10Seconds ?? '10 sec',
+        30 => l10n?.setupDelay30Seconds ?? '30 sec',
+        60 => l10n?.setupDelay1Minute ?? '1 min',
+        180 => l10n?.setupDelay3Minutes ?? '3 min',
+        _ => _formatDelay(seconds),
+      };
+
+  /// Human label for any delay, e.g. "45 sec" or "1:30 min".
+  String _formatDelay(int seconds) {
+    if (seconds < 60) return '$seconds sec';
+    final minutes = seconds ~/ 60;
+    final rem = seconds % 60;
+    return rem == 0
+        ? '$minutes min'
+        : '$minutes:${rem.toString().padLeft(2, '0')} min';
+  }
+
+  /// The "Custom" chip. Selected whenever the current delay isn't a preset;
+  /// shows the chosen value so the user can see what's set.
+  Widget customDelayOption(AppLocalizations? l10n) {
+    final isCustom = !_delayPresets.contains(_selectedDelay);
+    final label = isCustom
+        ? '${l10n?.setupDelayCustom ?? 'Custom'} · ${_formatDelay(_selectedDelay)}'
+        : (l10n?.setupDelayCustom ?? 'Custom');
+    return _SelectionChip(
+      label: label,
+      isSelected: isCustom,
+      onTap: () => _pickCustomDelay(l10n),
+    );
+  }
+
+  /// Opens a dialog to choose any delay within the allowed range.
+  Future<void> _pickCustomDelay(AppLocalizations? l10n) async {
+    const minDelay = CallProvider.minCountdownDelay; // 10
+    const maxDelay = CallProvider.maxCountdownDelay; // 180
+    var value = _selectedDelay.clamp(minDelay, maxDelay);
+
+    final chosen = await showDialog<int>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: _surface,
+          title: Text(
+            l10n?.setupDelayCustomTitle ?? 'Custom ring delay',
+            style: const TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _formatDelay(value),
+                style: const TextStyle(
+                  color: _accent,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Slider(
+                value: value.toDouble(),
+                min: minDelay.toDouble(),
+                max: maxDelay.toDouble(),
+                divisions: maxDelay - minDelay,
+                activeColor: _accent,
+                label: _formatDelay(value),
+                onChanged: (v) => setDialogState(() => value = v.round()),
+              ),
+              Text(
+                l10n?.setupDelayCustomRange ??
+                    'Between 10 seconds and 3 minutes.',
+                style: const TextStyle(color: _muted, fontSize: 12),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: Text(l10n?.countdownCancelButton ?? 'CANCEL'),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: _accent),
+              onPressed: () => Navigator.of(dialogContext).pop(value),
+              child: Text(
+                l10n?.setupDelaySet ?? 'SET',
+                style: const TextStyle(color: Color(0xFF102017)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (chosen != null && mounted) {
+      setState(() => _selectedDelay = chosen);
+    }
   }
 
   Widget languageOption(String code, String label) {

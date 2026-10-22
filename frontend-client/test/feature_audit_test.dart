@@ -275,6 +275,33 @@ void main() {
       await tester.pumpAndSettle();
     }
 
+    testWidgets('ring delay defaults to 10 seconds', (tester) async {
+      await pumpApp(tester);
+      await tapText(tester, 'ARM STEALTH MODE');
+      expect(provider.delaySeconds, 10);
+      expect(find.text('00:10'), findsOneWidget);
+    });
+
+    testWidgets('custom ring delay: slider sets an off-preset value',
+        (tester) async {
+      await pumpApp(tester);
+
+      await tapText(tester, 'Custom');
+      expect(find.text('Custom ring delay'), findsOneWidget);
+
+      // Drag the slider right so the value leaves the 10s minimum.
+      await tester.drag(find.byType(Slider), const Offset(60, 0));
+      await tester.pumpAndSettle();
+      await tapText(tester, 'SET');
+
+      // The chip now reflects a custom (non-preset) value, and arming uses it.
+      expect(find.textContaining('Custom ·'), findsOneWidget);
+      await tapText(tester, 'ARM STEALTH MODE');
+      expect(provider.state, CallLifecycleState.countdown);
+      expect(provider.delaySeconds, isNot(anyOf(10, 30, 60, 180)));
+      expect(provider.validateDelay(provider.delaySeconds), isTrue);
+    });
+
     testWidgets('caller picker changes the caller everywhere', (tester) async {
       final semantics = tester.ensureSemantics();
       await pumpApp(tester);

@@ -358,6 +358,30 @@ abstract class AppLocalizations {
   /// **'3 min'**
   String get setupDelay3Minutes;
 
+  /// Custom ring-delay chip label
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get setupDelayCustom;
+
+  /// Title of the custom delay dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Custom ring delay'**
+  String get setupDelayCustomTitle;
+
+  /// Allowed range hint in the custom delay dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Between 10 seconds and 3 minutes.'**
+  String get setupDelayCustomRange;
+
+  /// Confirm button in the custom delay dialog
+  ///
+  /// In en, this message translates to:
+  /// **'SET'**
+  String get setupDelaySet;
+
   /// Incoming call section heading
   ///
   /// In en, this message translates to:

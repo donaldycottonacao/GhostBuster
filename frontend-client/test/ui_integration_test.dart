@@ -129,7 +129,7 @@ void main() {
         expect(find.text('ARM STEALTH MODE'), findsOneWidget);
         expect(callProvider.state, CallLifecycleState.configuration);
 
-        // 2. Select 30s delay and arm stealth mode
+        // 2. Arm stealth mode at the default delay (10s)
         final armButton = find.text('ARM STEALTH MODE');
         await tester.ensureVisible(armButton);
         await tester.tap(armButton);
@@ -138,7 +138,7 @@ void main() {
         // 3. Silent countdown screen appears
         expect(callProvider.state, CallLifecycleState.countdown);
         expect(find.text('SILENT COUNTDOWN'), findsOneWidget);
-        expect(find.text('00:30'), findsOneWidget);
+        expect(find.text('00:10'), findsOneWidget);
         expect(mockAudio.ringtonePlayCount, 0);
 
         // 4. Trigger incoming call via preview trigger hook

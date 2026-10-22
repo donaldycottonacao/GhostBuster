@@ -140,9 +140,9 @@ void main() {
         ),
         findsOneWidget,
       );
-      expect(provider.remainingCountdown, 30);
+      expect(provider.remainingCountdown, 10);
 
-      await tester.pump(const Duration(seconds: 30));
+      await tester.pump(const Duration(seconds: 10));
       expect(find.text(_incomingTitle), findsOneWidget);
       expect(audio.count('playRingtone'), 1);
     });

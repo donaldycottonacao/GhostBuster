@@ -98,8 +98,8 @@ class CallSession {
   const CallSession({
     this.state = CallLifecycleState.configuration,
     this.persona = CallerPersona.defaultPersona,
-    this.countdownSeconds = 30,
-    this.remainingCountdown = 30,
+    this.countdownSeconds = 10,
+    this.remainingCountdown = 10,
     this.languageCode = 'en',
     this.situationText = '',
     this.voiceScriptText = 'Hey, can you call me? I need a reason to step out.',

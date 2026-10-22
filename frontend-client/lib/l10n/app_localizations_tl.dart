@@ -147,6 +147,18 @@ class AppLocalizationsTl extends AppLocalizations {
   String get setupDelay3Minutes => '3 min';
 
   @override
+  String get setupDelayCustom => 'Pasadya';
+
+  @override
+  String get setupDelayCustomTitle => 'Pasadyang antala ng tawag';
+
+  @override
+  String get setupDelayCustomRange => 'Sa pagitan ng 10 segundo at 3 minuto.';
+
+  @override
+  String get setupDelaySet => 'ITAKDA';
+
+  @override
   String get setupIncomingCall => 'PAPASOK NA TAWAG';
 
   @override

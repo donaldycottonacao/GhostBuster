@@ -129,8 +129,8 @@ void main() {
 
     test('starts in configuration state with default settings', () {
       expect(provider.state, CallLifecycleState.configuration);
-      expect(provider.delaySeconds, 30);
-      expect(provider.remainingCountdown, 30);
+      expect(provider.delaySeconds, 10);
+      expect(provider.remainingCountdown, 10);
       expect(provider.persona, CallerPersona.defaultPersona);
       expect(provider.isCountdownActive, isFalse);
     });
