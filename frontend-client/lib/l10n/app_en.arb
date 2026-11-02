@@ -343,5 +343,13 @@
   "voiceEmptyRecording": "The recording file is missing or empty.",
   "@voiceEmptyRecording": { "description": "Empty/missing recording error" },
   "voiceRecordBlocked": "Finish the current call before recording.",
-  "@voiceRecordBlocked": { "description": "Recording blocked during an active call" }
+  "@voiceRecordBlocked": { "description": "Recording blocked during an active call" },
+  "theme": "Theme",
+  "@theme": { "description": "Tooltip and title of the light/dark theme picker" },
+  "themeSystem": "Device setting",
+  "@themeSystem": { "description": "Theme picker option that follows the device's light/dark setting" },
+  "themeLight": "Light",
+  "@themeLight": { "description": "Theme picker option for the light theme" },
+  "themeDark": "Dark",
+  "@themeDark": { "description": "Theme picker option for the dark theme" }
 }

@@ -129,5 +129,9 @@
   "voiceRecordFailed": "Napakyas ang pagrecord. Sulayi pag-usab.",
   "voiceSaveFailed": "Dili ma-save ang recording.",
   "voiceEmptyRecording": "Nawala o walay sulod ang recording file.",
-  "voiceRecordBlocked": "Humana una ang kasamtangang tawag sa dili pa magrecord."
+  "voiceRecordBlocked": "Humana una ang kasamtangang tawag sa dili pa magrecord.",
+  "theme": "Tema",
+  "themeSystem": "Setting sa device",
+  "themeLight": "Hayag",
+  "themeDark": "Ngitngit"
 }
