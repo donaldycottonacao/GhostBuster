@@ -129,5 +129,9 @@
   "voiceRecordFailed": "Nabigo ang pag-record. Subukan ulit.",
   "voiceSaveFailed": "Hindi ma-save ang recording.",
   "voiceEmptyRecording": "Nawawala o walang laman ang recording file.",
-  "voiceRecordBlocked": "Tapusin muna ang kasalukuyang tawag bago mag-record."
+  "voiceRecordBlocked": "Tapusin muna ang kasalukuyang tawag bago mag-record.",
+  "theme": "Tema",
+  "themeSystem": "Setting ng device",
+  "themeLight": "Maliwanag",
+  "themeDark": "Madilim"
 }

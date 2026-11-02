@@ -6,9 +6,16 @@ import 'package:provider/provider.dart';
 import 'l10n/app_localizations.dart';
 import 'providers/call_provider.dart';
 import 'screens/screen_preview_host.dart';
+import 'theme/app_theme.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Restore the saved light/dark choice before the first frame so the app
+  // doesn't flash the wrong theme on launch.
+  final themeController =
+      ThemeController(store: SharedPreferencesThemeModeStore());
+  await themeController.load();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -19,21 +26,30 @@ void main() {
     ),
   );
 
-  runApp(const GhostBusterApp());
+  runApp(GhostBusterApp(themeController: themeController));
 }
 
 /// Root widget for the GhostBuster application.
 class GhostBusterApp extends StatelessWidget {
   final CallProvider? provider;
 
-  const GhostBusterApp({super.key, this.provider});
+  /// Light/dark choice. Defaults to an in-memory controller that follows the
+  /// device setting, so tests don't touch device storage.
+  final ThemeController? themeController;
+
+  const GhostBusterApp({super.key, this.provider, this.themeController});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => provider ?? CallProvider(),
-      child: Consumer<CallProvider>(
-        builder: (context, callProvider, _) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => provider ?? CallProvider()),
+        ChangeNotifierProvider(
+          create: (_) => themeController ?? ThemeController(),
+        ),
+      ],
+      child: Consumer2<CallProvider, ThemeController>(
+        builder: (context, callProvider, themeController, _) {
           return MaterialApp(
             title: 'GhostBuster',
             debugShowCheckedModeBanner: false,
@@ -60,31 +76,9 @@ class GhostBusterApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            themeMode: ThemeMode.dark,
-            theme: ThemeData(
-              brightness: Brightness.light,
-              useMaterial3: true,
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: const Color(0xFF2563EB),
-                brightness: Brightness.light,
-              ),
-            ),
-            darkTheme: ThemeData(
-              brightness: Brightness.dark,
-              useMaterial3: true,
-              scaffoldBackgroundColor: const Color(0xFF0A0D0C),
-              colorScheme: const ColorScheme.dark(
-                primary: Color(0xFF3B82F6),
-                secondary: Color(0xFF10B981),
-                surface: Color(0xFF191D20),
-                error: Color(0xFFEF4444),
-              ),
-              appBarTheme: const AppBarTheme(
-                backgroundColor: Color(0xFF0A0D0C),
-                foregroundColor: Colors.white,
-                elevation: 0,
-              ),
-            ),
+            themeMode: themeController.mode,
+            theme: GhostTheme.light(),
+            darkTheme: GhostTheme.dark(),
             home: const ScreenPreviewHost(),
           );
         },

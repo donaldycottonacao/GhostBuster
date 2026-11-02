@@ -3,15 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../models/voice_scenario.dart';
 import '../providers/voice_script_manager_controller.dart';
-
-// Palette mirrors the setup screen so the manager feels native to GhostBuster.
-const _background = Color(0xFF080B09);
-const _surface = Color(0xFF151D18);
-const _surfaceRaised = Color(0xFF1B261F);
-const _border = Color(0xFF344138);
-const _accent = Color(0xFF8BC49A);
-const _muted = Color(0xFFABB4AD);
-const _danger = Color(0xFFE53935);
+import '../theme/app_theme.dart';
 
 /// Full-screen Voice Script Manager. Returns the [VoiceScenario] the user chose
 /// to use for a call (via "Use for call"), or null if none was selected.
@@ -37,6 +29,8 @@ class VoiceScriptManagerScreen extends StatefulWidget {
 }
 
 class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
+  GhostPalette get c => GhostPalette.of(context);
+
   VoiceScriptManagerController get _c => widget.controller;
 
   @override
@@ -87,7 +81,10 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
   void _toast(String message) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: _surfaceRaised),
+      SnackBar(
+        content: Text(message, style: TextStyle(color: c.textPrimary)),
+        backgroundColor: c.surfaceRaised,
+      ),
     );
   }
 
@@ -99,10 +96,10 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
         textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Bell MT'),
       ),
       child: Scaffold(
-        backgroundColor: _background,
+        backgroundColor: c.background,
         appBar: AppBar(
-          backgroundColor: _background,
-          foregroundColor: Colors.white,
+          backgroundColor: c.background,
+          foregroundColor: c.textPrimary,
           title: Text(l10n?.voiceManagerTitle ?? 'Voice Script Manager'),
         ),
         body: SafeArea(child: _buildBody()),
@@ -116,8 +113,8 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
     final l10n = _l10n;
     final blocked = widget.recordingBlocked;
     return FloatingActionButton.extended(
-      backgroundColor: blocked ? _surfaceRaised : _accent,
-      foregroundColor: blocked ? _muted : Colors.black,
+      backgroundColor: blocked ? c.surfaceRaised : c.accent,
+      foregroundColor: blocked ? c.muted : c.onAccent,
       onPressed: blocked
           ? () => _toast(l10n?.voiceRecordBlocked ??
               'Finish the current call before recording.')
@@ -130,7 +127,7 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
   Widget _buildBody() {
     return switch (_c.phase) {
       ManagerPhase.loading =>
-        const Center(child: CircularProgressIndicator(color: _accent)),
+        Center(child: CircularProgressIndicator(color: c.accent)),
       ManagerPhase.recording => _RecordingView(controller: _c, l10n: _l10n),
       ManagerPhase.review => _ReviewView(
           controller: _c,
@@ -149,18 +146,18 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.graphic_eq_rounded, color: _muted, size: 64),
+            Icon(Icons.graphic_eq_rounded, color: c.muted, size: 64),
             const SizedBox(height: 16),
             Text(
               l10n?.voiceEmptyTitle ?? 'No voice scripts yet',
-              style: const TextStyle(color: Colors.white, fontSize: 20),
+              style: TextStyle(color: c.textPrimary, fontSize: 20),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               l10n?.voiceEmptyBody ??
                   'Record your own emergency voice script to play during a simulated call.',
-              style: const TextStyle(color: _muted, fontSize: 14),
+              style: TextStyle(color: c.muted, fontSize: 14),
               textAlign: TextAlign.center,
             ),
           ],
@@ -230,15 +227,15 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: _surface,
+        backgroundColor: c.surface,
         title: Text(
           l10n?.voiceDeleteTitle ?? 'Delete recording?',
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: c.textPrimary),
         ),
         content: Text(
           l10n?.voiceDeleteBody ??
               'This permanently removes the recording from this device.',
-          style: const TextStyle(color: _muted),
+          style: TextStyle(color: c.muted),
         ),
         actions: [
           TextButton(
@@ -249,7 +246,7 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
             onPressed: () => Navigator.of(dialogContext).pop(true),
             child: Text(
               l10n?.voiceDelete ?? 'Delete',
-              style: const TextStyle(color: _danger),
+              style: TextStyle(color: c.danger),
             ),
           ),
         ],
@@ -273,7 +270,7 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
     final descController = TextEditingController(text: initialDescription);
     return showModalBottomSheet<(String, String)>(
       context: context,
-      backgroundColor: _surface,
+      backgroundColor: c.surface,
       isScrollControlled: true,
       showDragHandle: true,
       builder: (sheetContext) {
@@ -290,8 +287,8 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
             children: [
               Text(
                 title,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: c.textPrimary,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                 ),
@@ -300,40 +297,40 @@ class _VoiceScriptManagerScreenState extends State<VoiceScriptManagerScreen> {
               TextField(
                 controller: nameController,
                 autofocus: true,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: c.textPrimary),
                 decoration: InputDecoration(
                   labelText: l10n?.voiceNameLabel ?? 'Scenario name',
-                  labelStyle: const TextStyle(color: _muted),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: _border),
+                  labelStyle: TextStyle(color: c.muted),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: c.border),
                   ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: _accent),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: c.accent),
                   ),
                 ),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: descController,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: c.textPrimary),
                 maxLines: 2,
                 decoration: InputDecoration(
                   labelText:
                       l10n?.voiceDescriptionLabel ?? 'Description (optional)',
-                  labelStyle: const TextStyle(color: _muted),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: _border),
+                  labelStyle: TextStyle(color: c.muted),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: c.border),
                   ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: _accent),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: c.accent),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
               FilledButton(
                 style: FilledButton.styleFrom(
-                  backgroundColor: _accent,
-                  foregroundColor: Colors.black,
+                  backgroundColor: c.accent,
+                  foregroundColor: c.onAccent,
                 ),
                 onPressed: () => Navigator.of(sheetContext)
                     .pop((nameController.text, descController.text)),
@@ -370,11 +367,12 @@ class _ScenarioTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     return Container(
       decoration: BoxDecoration(
-        color: _surface,
+        color: c.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: isSelected ? _accent : _border),
+        border: Border.all(color: isSelected ? c.accent : c.border),
       ),
       padding: const EdgeInsets.fromLTRB(12, 10, 6, 10),
       child: Column(
@@ -393,7 +391,7 @@ class _ScenarioTile extends StatelessWidget {
                     isPreviewing
                         ? Icons.stop_circle_rounded
                         : Icons.play_circle_rounded,
-                    color: _accent,
+                    color: c.accent,
                     size: 34,
                   ),
                 ),
@@ -406,8 +404,8 @@ class _ScenarioTile extends StatelessWidget {
                       scenario.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: c.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -419,14 +417,14 @@ class _ScenarioTile extends StatelessWidget {
                           : '${scenario.formattedDuration} · ${scenario.description}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: _muted, fontSize: 13),
+                      style: TextStyle(color: c.muted, fontSize: 13),
                     ),
                   ],
                 ),
               ),
               PopupMenuButton<String>(
-                color: _surfaceRaised,
-                icon: const Icon(Icons.more_vert_rounded, color: _muted),
+                color: c.surfaceRaised,
+                icon: Icon(Icons.more_vert_rounded, color: c.muted),
                 onSelected: (value) {
                   switch (value) {
                     case 'rename':
@@ -454,14 +452,14 @@ class _ScenarioTile extends StatelessWidget {
               onPressed: onUse,
               icon: Icon(
                 isSelected ? Icons.check_rounded : Icons.call_rounded,
-                color: _accent,
+                color: c.accent,
                 size: 18,
               ),
               label: Text(
                 isSelected
                     ? (l10n?.voiceSelectedForCall ?? 'Selected for call')
                     : (l10n?.voiceUseForCall ?? 'Use for call'),
-                style: const TextStyle(color: _accent),
+                style: TextStyle(color: c.accent),
               ),
             ),
           ),
@@ -479,6 +477,7 @@ class _RecordingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     final paused = controller.isPaused;
     return Padding(
       padding: const EdgeInsets.all(28),
@@ -489,11 +488,11 @@ class _RecordingView extends StatelessWidget {
           const SizedBox(height: 28),
           Text(
             controller.formattedElapsed,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: c.textPrimary,
               fontSize: 44,
               fontWeight: FontWeight.w300,
-              fontFeatures: [FontFeature.tabularFigures()],
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
           const SizedBox(height: 8),
@@ -501,7 +500,7 @@ class _RecordingView extends StatelessWidget {
             paused
                 ? (l10n?.voicePaused ?? 'Paused')
                 : (l10n?.voiceRecordingNow ?? 'Recording...'),
-            style: const TextStyle(color: _muted, fontSize: 15),
+            style: TextStyle(color: c.muted, fontSize: 15),
           ),
           const SizedBox(height: 40),
           Row(
@@ -510,7 +509,7 @@ class _RecordingView extends StatelessWidget {
               _RoundAction(
                 icon: Icons.close_rounded,
                 label: l10n?.voiceCancel ?? 'Cancel',
-                color: _muted,
+                color: c.muted,
                 onTap: controller.cancelRecording,
               ),
               _RoundAction(
@@ -518,7 +517,7 @@ class _RecordingView extends StatelessWidget {
                 label: paused
                     ? (l10n?.voiceResume ?? 'Resume')
                     : (l10n?.voicePause ?? 'Pause'),
-                color: _accent,
+                color: c.accent,
                 onTap: paused
                     ? controller.resumeRecording
                     : controller.pauseRecording,
@@ -526,7 +525,7 @@ class _RecordingView extends StatelessWidget {
               _RoundAction(
                 icon: Icons.stop_rounded,
                 label: l10n?.voiceStop ?? 'Stop',
-                color: _danger,
+                color: c.danger,
                 onTap: controller.stopRecording,
               ),
             ],
@@ -545,6 +544,7 @@ class _MicIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     final ringSize = 140.0 + (level.clamp(0.0, 1.0) * 60.0);
     return SizedBox(
       width: 220,
@@ -556,11 +556,11 @@ class _MicIndicator extends StatelessWidget {
           height: ringSize,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _accent.withValues(alpha: 0.12),
-            border: Border.all(color: _accent.withValues(alpha: 0.5)),
+            color: c.accent.withValues(alpha: 0.12),
+            border: Border.all(color: c.accent.withValues(alpha: 0.5)),
           ),
-          child: const Center(
-            child: Icon(Icons.mic_rounded, color: _accent, size: 56),
+          child: Center(
+            child: Icon(Icons.mic_rounded, color: c.accent, size: 56),
           ),
         ),
       ),
@@ -583,6 +583,7 @@ class _RoundAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     return Semantics(
       button: true,
       label: label,
@@ -590,7 +591,7 @@ class _RoundAction extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Material(
-            color: _surfaceRaised,
+            color: c.surfaceRaised,
             shape: CircleBorder(side: BorderSide(color: color)),
             child: InkWell(
               customBorder: const CircleBorder(),
@@ -622,22 +623,23 @@ class _ReviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     final isPreviewing = controller.previewingId == '__pending__';
     return Padding(
       padding: const EdgeInsets.all(28),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.graphic_eq_rounded, color: _accent, size: 64),
+          Icon(Icons.graphic_eq_rounded, color: c.accent, size: 64),
           const SizedBox(height: 20),
           Text(
             l10n?.voiceReviewTitle ?? 'Recording captured',
-            style: const TextStyle(color: Colors.white, fontSize: 20),
+            style: TextStyle(color: c.textPrimary, fontSize: 20),
           ),
           const SizedBox(height: 6),
           Text(
             controller.formattedElapsed,
-            style: const TextStyle(color: _muted, fontSize: 15),
+            style: TextStyle(color: c.muted, fontSize: 15),
           ),
           const SizedBox(height: 32),
           Row(
@@ -650,7 +652,7 @@ class _ReviewView extends StatelessWidget {
                 label: isPreviewing
                     ? (l10n?.voiceStopPreview ?? 'Stop')
                     : (l10n?.voicePreview ?? 'Preview'),
-                color: _accent,
+                color: c.accent,
                 onTap: () => isPreviewing
                     ? controller.stopPreview()
                     : controller.previewPending(),
@@ -658,13 +660,13 @@ class _ReviewView extends StatelessWidget {
               _RoundAction(
                 icon: Icons.refresh_rounded,
                 label: l10n?.voiceRetake ?? 'Retake',
-                color: _muted,
+                color: c.muted,
                 onTap: controller.retake,
               ),
               _RoundAction(
                 icon: Icons.close_rounded,
                 label: l10n?.voiceCancel ?? 'Cancel',
-                color: _danger,
+                color: c.danger,
                 onTap: controller.cancelRecording,
               ),
             ],
@@ -674,8 +676,8 @@ class _ReviewView extends StatelessWidget {
             width: double.infinity,
             child: FilledButton.icon(
               style: FilledButton.styleFrom(
-                backgroundColor: _accent,
-                foregroundColor: Colors.black,
+                backgroundColor: c.accent,
+                foregroundColor: c.onAccent,
               ),
               onPressed: () => onSave(),
               icon: const Icon(Icons.save_rounded),

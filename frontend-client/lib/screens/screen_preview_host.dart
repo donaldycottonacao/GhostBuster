@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../models/call_state.dart';
 import '../providers/call_provider.dart';
+import '../theme/app_theme.dart';
 import 'active_call_ui.dart';
 import 'call_ended_screen.dart';
 import 'countdown_screen.dart';
@@ -57,6 +59,28 @@ class _ScreenPreviewHostState extends State<ScreenPreviewHost>
       callProvider = null;
     }
 
+    final page = _buildPage(callProvider);
+    // The call screens imitate a real phone call, so they stay dark even when
+    // the app uses the light theme.
+    final isCallScreen = callProvider != null
+        ? const {
+            CallLifecycleState.ringing,
+            CallLifecycleState.active,
+            CallLifecycleState.ended,
+          }.contains(callProvider.state)
+        : const {_PreviewPage.incoming, _PreviewPage.active, _PreviewPage.ended}
+            .contains(_page);
+    if (!isCallScreen) return page;
+    return Theme(
+      data: GhostTheme.dark(),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: page,
+      ),
+    );
+  }
+
+  Widget _buildPage(CallProvider? callProvider) {
     // If CallProvider is available, state-machine lifecycle is the single source of truth
     if (callProvider != null) {
       return switch (callProvider.state) {
@@ -73,14 +97,14 @@ class _ScreenPreviewHostState extends State<ScreenPreviewHost>
             delaySeconds: callProvider.delaySeconds,
             remainingSeconds: callProvider.remainingCountdown,
             callerName: callProvider.persona.name,
-            onCancel: () => callProvider?.cancelCountdown(),
-            onPreviewIncoming: () => callProvider?.triggerRinging(),
+            onCancel: () => callProvider.cancelCountdown(),
+            onPreviewIncoming: () => callProvider.triggerRinging(),
           ),
         CallLifecycleState.ringing => IncomingCallScreen(
             callerName: callProvider.persona.name,
             callerNumber: callProvider.persona.number,
-            onAnswer: () => callProvider?.answerCall(),
-            onDecline: () => callProvider?.declineCall(),
+            onAnswer: () => callProvider.answerCall(),
+            onDecline: () => callProvider.declineCall(),
           ),
         // Live flow shows the provider's simulated duration (starts at 00:00);
         // the 00:18 placeholder is only for the provider-less preview below.
@@ -90,9 +114,9 @@ class _ScreenPreviewHostState extends State<ScreenPreviewHost>
             durationText: callProvider.formattedElapsedTime,
             isMuted: callProvider.isMuted,
             isSpeakerOn: callProvider.isSpeakerOn,
-            onToggleMute: () => callProvider?.toggleMute(),
-            onToggleSpeaker: () => callProvider?.toggleSpeaker(),
-            onEndCall: () => callProvider?.endCall(),
+            onToggleMute: () => callProvider.toggleMute(),
+            onToggleSpeaker: () => callProvider.toggleSpeaker(),
+            onEndCall: () => callProvider.endCall(),
           ),
         // returnToSetup keeps the user's caller/delay/script/ringtone so the
         // next simulation is one tap away (reset() would discard them).
@@ -100,7 +124,7 @@ class _ScreenPreviewHostState extends State<ScreenPreviewHost>
             callerName: callProvider.persona.name,
             durationSeconds: callProvider.activeDurationSeconds,
             durationText: callProvider.formattedElapsedTime,
-            onReturnToSetup: () => callProvider?.returnToSetup(),
+            onReturnToSetup: () => callProvider.returnToSetup(),
           ),
       };
     }

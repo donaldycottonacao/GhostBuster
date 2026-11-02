@@ -879,6 +879,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finish the current call before recording.'**
   String get voiceRecordBlocked;
+
+  /// Tooltip and title of the light/dark theme picker
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// Theme picker option that follows the device's light/dark setting
+  ///
+  /// In en, this message translates to:
+  /// **'Device setting'**
+  String get themeSystem;
+
+  /// Theme picker option for the light theme
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// Theme picker option for the dark theme
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
 }
 
 class _AppLocalizationsDelegate

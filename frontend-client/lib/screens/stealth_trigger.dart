@@ -10,16 +10,8 @@ import '../services/api_client.dart';
 import '../services/audio_service.dart';
 import '../services/voice_recorder.dart';
 import '../services/voice_scenario_store.dart';
+import '../theme/app_theme.dart';
 import 'voice_script_manager_screen.dart';
-
-const _background = Color(0xFF080B09);
-const _surface = Color(0xFF151D18);
-const _surfaceRaised = Color(0xFF1B261F);
-const _border = Color(0xFF344138);
-const _accent = Color(0xFF8BC49A);
-const _muted = Color(0xFFABB4AD);
-const _orange = Color(0xFFFFB347);
-const _ghostbusterRed = Color(0xFFE53935);
 
 class StealthTriggerScreen extends StatefulWidget {
   const StealthTriggerScreen({
@@ -36,6 +28,8 @@ class StealthTriggerScreen extends StatefulWidget {
 }
 
 class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
+  GhostPalette get c => GhostPalette.of(context);
+
   late final GhostBusterApiClient _apiClient =
       widget.apiClient ?? GhostBusterApiClient();
   final _situationController = TextEditingController();
@@ -119,7 +113,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
     final l10n = AppLocalizations.of(context);
     final chosen = await showModalBottomSheet<CallerPersona>(
       context: context,
-      backgroundColor: _surface,
+      backgroundColor: c.surface,
       showDragHandle: true,
       builder: (sheetContext) => SafeArea(
         child: Column(
@@ -130,8 +124,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
               child: Text(
                 l10n?.setupChooseCaller ?? 'Choose caller',
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: c.textPrimary,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                 ),
@@ -140,21 +134,21 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
             for (final persona in CallerPersona.defaultPersonas)
               ListTile(
                 minTileHeight: 64,
-                leading: const CircleAvatar(
-                  backgroundColor: Color(0xFF304A38),
-                  child: Icon(Icons.person_rounded, color: _accent),
+                leading: CircleAvatar(
+                  backgroundColor: c.selectedFill,
+                  child: Icon(Icons.person_rounded, color: c.accent),
                 ),
                 title: Text(
                   persona.name,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: c.textPrimary),
                 ),
                 subtitle: Text(
                   '${_personaRelationship(l10n, persona)} · '
                   '${_personaVoiceBadge(l10n, persona)}',
-                  style: const TextStyle(color: _muted),
+                  style: TextStyle(color: c.muted),
                 ),
                 trailing: persona.id == provider.persona.id
-                    ? const Icon(Icons.check_rounded, color: _accent)
+                    ? Icon(Icons.check_rounded, color: c.accent)
                     : null,
                 selected: persona.id == provider.persona.id,
                 onTap: () => Navigator.of(sheetContext).pop(persona),
@@ -205,10 +199,10 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
     final picked = await showDialog<(String?,)>(
       context: context,
       builder: (dialogContext) => SimpleDialog(
-        backgroundColor: _surface,
+        backgroundColor: c.surface,
         title: Text(
           l10n?.selectLanguage ?? 'Select Language',
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: c.textPrimary),
         ),
         children: [
           for (final (code, label) in options)
@@ -221,11 +215,11 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                     Expanded(
                       child: Text(
                         label,
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: c.textPrimary),
                       ),
                     ),
                     if (code == current)
-                      const Icon(Icons.check_rounded, color: _accent),
+                      Icon(Icons.check_rounded, color: c.accent),
                   ],
                 ),
               ),
@@ -242,6 +236,55 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
     }
   }
 
+  IconData _themeIcon(ThemeMode mode) => switch (mode) {
+        ThemeMode.light => Icons.light_mode_rounded,
+        ThemeMode.dark => Icons.dark_mode_rounded,
+        ThemeMode.system => Icons.brightness_auto_rounded,
+      };
+
+  Future<void> _chooseTheme(ThemeController controller) async {
+    final l10n = AppLocalizations.of(context);
+    final options = <(ThemeMode, String)>[
+      (ThemeMode.system, l10n?.themeSystem ?? 'Device setting'),
+      (ThemeMode.light, l10n?.themeLight ?? 'Light'),
+      (ThemeMode.dark, l10n?.themeDark ?? 'Dark'),
+    ];
+    final picked = await showDialog<ThemeMode>(
+      context: context,
+      builder: (dialogContext) => SimpleDialog(
+        backgroundColor: c.surface,
+        title: Text(
+          l10n?.theme ?? 'Theme',
+          style: TextStyle(color: c.textPrimary),
+        ),
+        children: [
+          for (final (mode, label) in options)
+            SimpleDialogOption(
+              onPressed: () => Navigator.of(dialogContext).pop(mode),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  children: [
+                    Icon(_themeIcon(mode), color: c.muted, size: 20),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        label,
+                        style: TextStyle(color: c.textPrimary),
+                      ),
+                    ),
+                    if (mode == controller.mode)
+                      Icon(Icons.check_rounded, color: c.accent),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (picked != null && mounted) await controller.setMode(picked);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -250,6 +293,12 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
       callProvider = context.watch<CallProvider>();
     } catch (_) {
       callProvider = null;
+    }
+    ThemeController? themeController;
+    try {
+      themeController = context.watch<ThemeController>();
+    } catch (_) {
+      themeController = null;
     }
     final persona = callProvider?.persona ?? CallerPersona.defaultPersona;
 
@@ -260,39 +309,44 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
             Theme.of(context).primaryTextTheme.apply(fontFamily: 'Bell MT'),
       ),
       child: Scaffold(
-        backgroundColor: _background,
+        backgroundColor: c.background,
         appBar: AppBar(
-          backgroundColor: _background,
-          foregroundColor: Colors.white,
+          backgroundColor: c.background,
+          foregroundColor: c.textPrimary,
           centerTitle: true,
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(text: 'PHANTOM '),
-                    TextSpan(
-                      text: 'EXIT',
-                      style: TextStyle(color: _accent),
-                    ),
-                  ],
+          // Scales the brand title down on very narrow screens with large text
+          // instead of cutting it off.
+          title: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      const TextSpan(text: 'PHANTOM '),
+                      TextSpan(
+                        text: 'EXIT',
+                        style: TextStyle(color: c.accent),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Text(
-                l10n?.setupTagline ?? 'DISCREET EXITS. BRIGHTER DAYS.',
-                style: const TextStyle(
-                  color: _muted,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 1.1,
+                Text(
+                  l10n?.setupTagline ?? 'DISCREET EXITS. BRIGHTER DAYS.',
+                  style: TextStyle(
+                    color: c.muted,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.1,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          titleTextStyle: const TextStyle(
-            color: Colors.white,
+          titleTextStyle: TextStyle(
+            color: c.textPrimary,
             fontSize: 19,
             fontWeight: FontWeight.w800,
             letterSpacing: 1.1,
@@ -301,8 +355,14 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
             if (callProvider != null)
               IconButton(
                 tooltip: l10n?.language ?? 'Language',
-                icon: const Icon(Icons.translate_rounded, color: _muted),
+                icon: Icon(Icons.translate_rounded, color: c.muted),
                 onPressed: () => _chooseAppLanguage(callProvider!),
+              ),
+            if (themeController != null)
+              IconButton(
+                tooltip: l10n?.theme ?? 'Theme',
+                icon: Icon(_themeIcon(themeController.mode), color: c.muted),
+                onPressed: () => _chooseTheme(themeController!),
               ),
           ],
         ),
@@ -317,25 +377,25 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 8),
-                    const Center(
+                    Center(
                       child: Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(text: 'GHOST'),
+                            const TextSpan(text: 'GHOST'),
                             TextSpan(
                               text: 'BUSTER',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: c.textPrimary),
                             ),
                           ],
                         ),
                         style: TextStyle(
-                          color: _accent,
+                          color: c.accent,
                           fontSize: 34,
                           fontWeight: FontWeight.w900,
                           letterSpacing: 1.4,
                           shadows: [
-                            Shadow(color: _accent, blurRadius: 14),
-                            Shadow(color: _ghostbusterRed, blurRadius: 2),
+                            Shadow(color: c.logoGlow, blurRadius: 14),
+                            Shadow(color: c.danger, blurRadius: 2),
                           ],
                         ),
                       ),
@@ -349,7 +409,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                             'Set how long until the call comes in.',
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.end,
-                        style: const TextStyle(color: _muted, fontSize: 11),
+                        style: TextStyle(color: c.muted, fontSize: 11),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -380,12 +440,12 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.circle, color: _orange, size: 9),
+                          Icon(Icons.circle, color: c.warning, size: 9),
                           const SizedBox(width: 6),
                           Text(
                             l10n?.setupPreview ?? 'PREVIEW',
-                            style: const TextStyle(
-                              color: _orange,
+                            style: TextStyle(
+                              color: c.warning,
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.8,
@@ -408,22 +468,22 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                 child: Ink(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF18221B),
+                                    color: c.field,
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: _border),
+                                    border: Border.all(color: c.border),
                                   ),
                                   child: Row(
                                     children: [
                                       Container(
                                         width: 56,
                                         height: 56,
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFF304A38),
+                                        decoration: BoxDecoration(
+                                          color: c.selectedFill,
                                           shape: BoxShape.circle,
                                         ),
-                                        child: const Icon(
+                                        child: Icon(
                                           Icons.person_rounded,
-                                          color: _accent,
+                                          color: c.accent,
                                           size: 34,
                                         ),
                                       ),
@@ -435,8 +495,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                           children: [
                                             Text(
                                               persona.name,
-                                              style: const TextStyle(
-                                                color: Colors.white,
+                                              style: TextStyle(
+                                                color: c.textPrimary,
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -445,18 +505,19 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                             Text(
                                               _personaRelationship(
                                                   l10n, persona),
-                                              style: const TextStyle(
-                                                color: _muted,
+                                              style: TextStyle(
+                                                color: c.muted,
                                                 fontSize: 13,
                                               ),
                                             ),
                                             const SizedBox(height: 7),
                                             DecoratedBox(
-                                              decoration: const BoxDecoration(
+                                              decoration: BoxDecoration(
                                                 border: Border.fromBorderSide(
-                                                  BorderSide(color: _orange),
+                                                  BorderSide(color: c.warning),
                                                 ),
-                                                borderRadius: BorderRadius.all(
+                                                borderRadius:
+                                                    const BorderRadius.all(
                                                   Radius.circular(7),
                                                 ),
                                               ),
@@ -469,8 +530,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                                 child: Text(
                                                   _personaVoiceBadge(
                                                       l10n, persona),
-                                                  style: const TextStyle(
-                                                    color: _orange,
+                                                  style: TextStyle(
+                                                    color: c.warning,
                                                     fontSize: 10,
                                                     fontWeight: FontWeight.w700,
                                                     letterSpacing: 0.8,
@@ -481,9 +542,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                           ],
                                         ),
                                       ),
-                                      const Icon(
+                                      Icon(
                                         Icons.chevron_right_rounded,
-                                        color: _muted,
+                                        color: c.muted,
                                         size: 25,
                                       ),
                                     ],
@@ -499,15 +560,15 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                               vertical: 11,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF18221B),
+                              color: c.field,
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: _border),
+                              border: Border.all(color: c.border),
                             ),
                             child: Row(
                               children: [
-                                const Icon(
+                                Icon(
                                   Icons.notifications_none_rounded,
-                                  color: _muted,
+                                  color: c.muted,
                                   size: 21,
                                 ),
                                 const SizedBox(width: 12),
@@ -516,8 +577,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                   child: Text(
                                     l10n?.setupRingtone ?? 'Ringtone',
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: c.textPrimary,
                                       fontSize: 14,
                                     ),
                                   ),
@@ -531,7 +592,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                       setState(() => _selectedRingtone = value);
                                       callProvider?.setRingtone(value);
                                     },
-                                    color: _surfaceRaised,
+                                    color: c.surfaceRaised,
                                     itemBuilder: (context) => [
                                       for (final id in RingtoneOption.ids)
                                         PopupMenuItem(
@@ -548,16 +609,16 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                                                 l10n, _selectedRingtone),
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.end,
-                                            style: const TextStyle(
-                                              color: _muted,
+                                            style: TextStyle(
+                                              color: c.muted,
                                               fontSize: 13,
                                             ),
                                           ),
                                         ),
                                         const SizedBox(width: 4),
-                                        const Icon(
+                                        Icon(
                                           Icons.chevron_right_rounded,
-                                          color: _muted,
+                                          color: c.muted,
                                           size: 22,
                                         ),
                                       ],
@@ -612,8 +673,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                         controller: _situationController,
                         minLines: 3,
                         maxLines: 5,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(color: c.textPrimary, fontSize: 14),
                         decoration: fieldDecoration(
                           l10n?.setupSituationHint ??
                               'e.g., At a party and ready to head home',
@@ -650,8 +710,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                             controller: _scriptController,
                             minLines: 2,
                             maxLines: 5,
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: c.textPrimary,
                               fontSize: 14,
                               height: 1.5,
                             ),
@@ -663,15 +723,15 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(Icons.edit_outlined,
-                                  color: _accent, size: 16),
+                              Icon(Icons.edit_outlined,
+                                  color: c.accent, size: 16),
                               const SizedBox(width: 7),
                               Expanded(
                                 child: Text(
                                   l10n?.setupReviewNote ??
                                       'Review and edit before use.',
-                                  style: const TextStyle(
-                                    color: _muted,
+                                  style: TextStyle(
+                                    color: c.muted,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -750,8 +810,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                             );
                           },
                           style: FilledButton.styleFrom(
-                            backgroundColor: _accent,
-                            foregroundColor: const Color(0xFF102017),
+                            backgroundColor: c.accent,
+                            foregroundColor: c.onAccent,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
@@ -775,8 +835,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                       l10n?.setupDisclaimer ??
                           'Preview only. No call is scheduled from this screen.',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Color(0xFF7E8981),
+                      style: TextStyle(
+                        color: c.subtle,
                         fontSize: 11,
                         height: 1.4,
                       ),
@@ -843,18 +903,18 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          backgroundColor: _surface,
+          backgroundColor: c.surface,
           title: Text(
             l10n?.setupDelayCustomTitle ?? 'Custom ring delay',
-            style: const TextStyle(color: Colors.white, fontSize: 18),
+            style: TextStyle(color: c.textPrimary, fontSize: 18),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 _formatDelay(value),
-                style: const TextStyle(
-                  color: _accent,
+                style: TextStyle(
+                  color: c.accent,
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
                 ),
@@ -864,14 +924,14 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                 min: minDelay.toDouble(),
                 max: maxDelay.toDouble(),
                 divisions: maxDelay - minDelay,
-                activeColor: _accent,
+                activeColor: c.accent,
                 label: _formatDelay(value),
                 onChanged: (v) => setDialogState(() => value = v.round()),
               ),
               Text(
                 l10n?.setupDelayCustomRange ??
                     'Between 10 seconds and 3 minutes.',
-                style: const TextStyle(color: _muted, fontSize: 12),
+                style: TextStyle(color: c.muted, fontSize: 12),
               ),
             ],
           ),
@@ -881,11 +941,11 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
               child: Text(l10n?.countdownCancelButton ?? 'CANCEL'),
             ),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: _accent),
+              style: FilledButton.styleFrom(backgroundColor: c.accent),
               onPressed: () => Navigator.of(dialogContext).pop(value),
               child: Text(
                 l10n?.setupDelaySet ?? 'SET',
-                style: const TextStyle(color: Color(0xFF102017)),
+                style: TextStyle(color: c.onAccent),
               ),
             ),
           ],
@@ -956,9 +1016,9 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
         constraints: const BoxConstraints(minHeight: 42),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF304A38) : _surfaceRaised,
+          color: isSelected ? c.selectedFill : c.surfaceRaised,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: isSelected ? _accent : _border),
+          border: Border.all(color: isSelected ? c.accent : c.border),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -967,7 +1027,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
               Icon(
                 Icons.auto_awesome_rounded,
                 size: 15,
-                color: isSelected ? _accent : _muted,
+                color: isSelected ? c.accent : c.muted,
               ),
               const SizedBox(width: 5),
             ],
@@ -976,7 +1036,7 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                 label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : _muted,
+                  color: isSelected ? c.textPrimary : c.muted,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                 ),
@@ -990,21 +1050,21 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
 
   InputDecoration fieldDecoration(String hint) => InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(color: Color(0xFF778179), fontSize: 13),
+        hintStyle: TextStyle(color: c.hint, fontSize: 13),
         filled: true,
-        fillColor: const Color(0xFF18221B),
+        fillColor: c.field,
         contentPadding: const EdgeInsets.all(14),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: _border),
+          borderSide: BorderSide(color: c.border),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: _border),
+          borderSide: BorderSide(color: c.border),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(11),
-          borderSide: const BorderSide(color: _accent, width: 1.2),
+          borderSide: BorderSide(color: c.accent, width: 1.2),
         ),
       );
 }
@@ -1022,6 +1082,7 @@ class _VoiceScriptEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     final l10n = AppLocalizations.of(context);
     final usesRecorded = callProvider?.usesRecordedVoice ?? false;
     return Semantics(
@@ -1035,13 +1096,13 @@ class _VoiceScriptEntry extends StatelessWidget {
           child: Ink(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 13),
             decoration: BoxDecoration(
-              color: const Color(0xFF18221B),
+              color: c.field,
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: _border),
+              border: Border.all(color: c.border),
             ),
             child: Row(
               children: [
-                const Icon(Icons.graphic_eq_rounded, color: _muted, size: 21),
+                Icon(Icons.graphic_eq_rounded, color: c.muted, size: 21),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -1049,8 +1110,7 @@ class _VoiceScriptEntry extends StatelessWidget {
                     children: [
                       Text(
                         l10n?.voiceManagerEntry ?? 'Voice scripts',
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 14),
+                        style: TextStyle(color: c.textPrimary, fontSize: 14),
                       ),
                       const SizedBox(height: 2),
                       Text(
@@ -1060,15 +1120,14 @@ class _VoiceScriptEntry extends StatelessWidget {
                             : (l10n?.voiceCreateRecording ??
                                 'Create Recording'),
                         style: TextStyle(
-                          color: usesRecorded ? _accent : _muted,
+                          color: usesRecorded ? c.accent : c.muted,
                           fontSize: 12,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right_rounded,
-                    color: _muted, size: 22),
+                Icon(Icons.chevron_right_rounded, color: c.muted, size: 22),
               ],
             ),
           ),
@@ -1093,27 +1152,28 @@ class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _surface,
+        color: c.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _border),
+        border: Border.all(color: c.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
-              Icon(icon, color: _accent, size: 17),
+              Icon(icon, color: c.accent, size: 17),
               const SizedBox(width: 8),
               Expanded(
                 flex: trailing != null ? 3 : 1,
                 child: Text(
                   title,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: c.textPrimary,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1,
@@ -1148,19 +1208,20 @@ class _AudioWarning extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     return Semantics(
       liveRegion: true,
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: const Color(0xFF2A2214),
+          color: c.warningSurface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: _orange.withValues(alpha: 0.6)),
+          border: Border.all(color: c.warning.withValues(alpha: 0.6)),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.volume_off_rounded, color: _orange, size: 20),
+            Icon(Icons.volume_off_rounded, color: c.warning, size: 20),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -1171,8 +1232,8 @@ class _AudioWarning extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 2),
                       child: Text(
                         message,
-                        style: const TextStyle(
-                          color: Color(0xFFF3DDB8),
+                        style: TextStyle(
+                          color: c.warningText,
                           fontSize: 12.5,
                           height: 1.35,
                         ),
@@ -1201,6 +1262,7 @@ class _SelectionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(10),
@@ -1209,14 +1271,14 @@ class _SelectionChip extends StatelessWidget {
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 9),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF304A38) : _surfaceRaised,
+          color: isSelected ? c.selectedFill : c.surfaceRaised,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: isSelected ? _accent : _border),
+          border: Border.all(color: isSelected ? c.accent : c.border),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: isSelected ? Colors.white : _muted,
+            color: isSelected ? c.textPrimary : c.muted,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
