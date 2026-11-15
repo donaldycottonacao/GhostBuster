@@ -10,6 +10,7 @@ import '../services/api_client.dart';
 import '../services/audio_service.dart';
 import '../services/voice_recorder.dart';
 import '../services/voice_scenario_store.dart';
+import '../widgets/ghost_logo.dart';
 import 'voice_script_manager_screen.dart';
 
 const _background = Color(0xFF080B09);
@@ -317,6 +318,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 8),
+                    const Center(child: GhostLogo()),
+                    const SizedBox(height: 10),
                     const Center(
                       child: Text.rich(
                         TextSpan(
