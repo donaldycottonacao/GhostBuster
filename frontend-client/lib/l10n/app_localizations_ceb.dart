@@ -419,4 +419,16 @@ class AppLocalizationsCeb extends AppLocalizations {
   @override
   String get voiceRecordBlocked =>
       'Humana una ang kasamtangang tawag sa dili pa magrecord.';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get themeSystem => 'Setting sa device';
+
+  @override
+  String get themeLight => 'Hayag';
+
+  @override
+  String get themeDark => 'Ngitngit';
 }

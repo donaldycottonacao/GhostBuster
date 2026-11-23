@@ -416,4 +416,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get voiceRecordBlocked => 'Finish the current call before recording.';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get themeSystem => 'Device setting';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
 }

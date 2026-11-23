@@ -1,27 +1,46 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
+
 /// Decorative ghost mark drawn with a [CustomPainter] (Material has no ghost
 /// icon). Static on purpose: no animation, so it never blocks pumpAndSettle.
+///
+/// Colors follow the current [GhostPalette] (light or dark theme) unless
+/// overridden.
 class GhostLogo extends StatelessWidget {
   const GhostLogo({
     super.key,
     this.width = 72,
-    this.color = const Color(0xFF8BC49A),
-    this.eyeColor = const Color(0xFF080B09),
+    this.color,
+    this.eyeColor,
+    this.glowColor,
   });
 
   final double width;
-  final Color color;
-  final Color eyeColor;
+
+  /// Body color. Defaults to the palette accent.
+  final Color? color;
+
+  /// Eyes and mouth. Defaults to a color that contrasts with the body.
+  final Color? eyeColor;
+
+  /// Soft glow behind the body. Defaults to the palette logo glow.
+  final Color? glowColor;
 
   @override
   Widget build(BuildContext context) {
+    final palette = GhostPalette.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return ExcludeSemantics(
       child: SizedBox(
         width: width,
         height: width * 1.15,
         child: CustomPaint(
-          painter: _GhostPainter(color: color, eyeColor: eyeColor),
+          painter: _GhostPainter(
+            color: color ?? palette.accent,
+            eyeColor: eyeColor ?? (isDark ? palette.background : Colors.white),
+            glowColor: glowColor ?? palette.logoGlow,
+          ),
         ),
       ),
     );
@@ -29,10 +48,15 @@ class GhostLogo extends StatelessWidget {
 }
 
 class _GhostPainter extends CustomPainter {
-  _GhostPainter({required this.color, required this.eyeColor});
+  _GhostPainter({
+    required this.color,
+    required this.eyeColor,
+    required this.glowColor,
+  });
 
   final Color color;
   final Color eyeColor;
+  final Color glowColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -58,18 +82,18 @@ class _GhostPainter extends CustomPainter {
     canvas.drawPath(
       body,
       Paint()
-        ..color = color.withValues(alpha: 0.55)
+        ..color = glowColor
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
     );
 
-    // Body fill: light top fading into the accent color.
+    // Body fill: a lighter tint of the body color at the top fading into it.
     canvas.drawPath(
       body,
       Paint()
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Colors.white.withValues(alpha: 0.95), color],
+          colors: [Color.lerp(color, Colors.white, 0.55)!, color],
         ).createShader(Rect.fromLTWH(0, 0, w, h)),
     );
 
@@ -98,5 +122,7 @@ class _GhostPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_GhostPainter old) =>
-      old.color != color || old.eyeColor != eyeColor;
+      old.color != color ||
+      old.eyeColor != eyeColor ||
+      old.glowColor != glowColor;
 }

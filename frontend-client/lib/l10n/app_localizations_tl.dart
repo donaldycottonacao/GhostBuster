@@ -419,4 +419,16 @@ class AppLocalizationsTl extends AppLocalizations {
   @override
   String get voiceRecordBlocked =>
       'Tapusin muna ang kasalukuyang tawag bago mag-record.';
+
+  @override
+  String get theme => 'Tema';
+
+  @override
+  String get themeSystem => 'Setting ng device';
+
+  @override
+  String get themeLight => 'Maliwanag';
+
+  @override
+  String get themeDark => 'Madilim';
 }

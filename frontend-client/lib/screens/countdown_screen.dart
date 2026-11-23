@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../l10n/app_localizations.dart';
+import '../theme/app_theme.dart';
 
-const _background = Color(0xFF080B09);
-const _surface = Color(0xFF151D18);
-const _border = Color(0xFF344138);
-const _accent = Color(0xFF8BD49A);
-const _muted = Color(0xFFA9B4AB);
-
-const _glossyIconShadows = [
-  Shadow(color: Color(0xAAFFFFFF), blurRadius: 2),
-  Shadow(color: Color(0xCC07100B), offset: Offset(0, 2), blurRadius: 3),
-];
+/// Glossy highlight on icons. Only drawn in the dark theme; on a light
+/// background the white highlight reads as a smudge.
+List<Shadow>? _glossyIconShadows(BuildContext context) =>
+    Theme.of(context).brightness == Brightness.dark
+        ? const [
+            Shadow(color: Color(0xAAFFFFFF), blurRadius: 2),
+            Shadow(
+                color: Color(0xCC07100B), offset: Offset(0, 2), blurRadius: 3),
+          ]
+        : null;
 
 class CountdownScreen extends StatelessWidget {
   const CountdownScreen({
@@ -32,6 +34,8 @@ class CountdownScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final c = GhostPalette.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final effectiveRemaining = remainingSeconds ?? delaySeconds;
     final minutes = (effectiveRemaining ~/ 60).toString().padLeft(2, '0');
     final seconds = (effectiveRemaining % 60).toString().padLeft(2, '0');
@@ -39,117 +43,122 @@ class CountdownScreen extends StatelessWidget {
     final progress = delaySeconds > 0
         ? (effectiveRemaining / delaySeconds).clamp(0.0, 1.0)
         : 0.5;
-    return Scaffold(
-      backgroundColor: _background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 480),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const _CountdownHeader(),
-                  const SizedBox(height: 42),
-                  Text(
-                    l10n?.countdownStandingBy ?? 'Standing by...',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w700,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: c.background,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 18, 24, 24),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 480),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const _CountdownHeader(),
+                    const SizedBox(height: 42),
+                    Text(
+                      l10n?.countdownStandingBy ?? 'Standing by...',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: c.textPrimary,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 26),
-                  Center(
-                    child: SizedBox.square(
-                      dimension: 260,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox.expand(
-                            child: CircularProgressIndicator(
-                              value: progress,
-                              strokeWidth: 4,
-                              backgroundColor: _border,
-                              color: _accent,
+                    const SizedBox(height: 26),
+                    Center(
+                      child: SizedBox.square(
+                        dimension: 260,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            SizedBox.expand(
+                              child: CircularProgressIndicator(
+                                value: progress,
+                                strokeWidth: 4,
+                                backgroundColor: c.border,
+                                color: c.accent,
+                              ),
                             ),
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                formattedTime,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 58,
-                                  fontWeight: FontWeight.w300,
-                                  fontFeatures: [FontFeature.tabularFigures()],
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  formattedTime,
+                                  style: TextStyle(
+                                    color: c.textPrimary,
+                                    fontSize: 58,
+                                    fontWeight: FontWeight.w300,
+                                    fontFeatures: const [
+                                      FontFeature.tabularFigures()
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                l10n?.countdownSilent ?? 'SILENT COUNTDOWN',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 2,
+                                const SizedBox(height: 8),
+                                Text(
+                                  l10n?.countdownSilent ?? 'SILENT COUNTDOWN',
+                                  style: TextStyle(
+                                    color: c.textPrimary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 2,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 26),
-                  Text(
-                    l10n?.countdownKeepOpen ??
-                        'Keep GhostBuster open. Leaving the app cancels the call.',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: _muted, fontSize: 15),
-                  ),
-                  const SizedBox(height: 24),
-                  _CallerPreviewCard(callerName: callerName),
-                  const SizedBox(height: 20),
-                  Semantics(
-                    label: 'Cancel countdown',
-                    button: true,
-                    child: OutlinedButton(
-                      onPressed: onCancel,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size.fromHeight(58),
-                        side: const BorderSide(color: _muted),
-                        shape: const StadiumBorder(),
-                      ),
-                      child: Text(
-                        l10n?.countdownCancelButton ?? 'CANCEL',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 2,
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Semantics(
-                    label: 'Preview incoming call screen',
-                    button: true,
-                    child: TextButton(
-                      onPressed: onPreviewIncoming,
-                      child: Text(
-                        l10n?.countdownRingNow ??
-                            'Preview incoming call screen',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: _muted),
+                    const SizedBox(height: 26),
+                    Text(
+                      l10n?.countdownKeepOpen ??
+                          'Keep GhostBuster open. Leaving the app cancels the call.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: c.muted, fontSize: 15),
+                    ),
+                    const SizedBox(height: 24),
+                    _CallerPreviewCard(callerName: callerName),
+                    const SizedBox(height: 20),
+                    Semantics(
+                      label: 'Cancel countdown',
+                      button: true,
+                      child: OutlinedButton(
+                        onPressed: onCancel,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: c.textPrimary,
+                          minimumSize: const Size.fromHeight(58),
+                          side: BorderSide(color: c.muted),
+                          shape: const StadiumBorder(),
+                        ),
+                        child: Text(
+                          l10n?.countdownCancelButton ?? 'CANCEL',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 2,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Semantics(
+                      label: 'Preview incoming call screen',
+                      button: true,
+                      child: TextButton(
+                        onPressed: onPreviewIncoming,
+                        child: Text(
+                          l10n?.countdownRingNow ??
+                              'Preview incoming call screen',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: c.muted),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -164,41 +173,43 @@ class _CountdownHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    final c = GhostPalette.of(context);
+    final shadows = _glossyIconShadows(context);
+    return Row(
       children: [
         Icon(
           Icons.menu_rounded,
-          color: _muted,
+          color: c.muted,
           size: 25,
-          shadows: _glossyIconShadows,
+          shadows: shadows,
         ),
-        SizedBox(width: 14),
+        const SizedBox(width: 14),
         Expanded(
           child: Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: 'PHANTOM EXIT  ·  '),
+                const TextSpan(text: 'PHANTOM EXIT  ·  '),
                 TextSpan(
                   text: 'STEALTH ACTIVE',
-                  style: TextStyle(color: _accent),
+                  style: TextStyle(color: c.accent),
                 ),
               ],
             ),
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: _muted,
+              color: c.muted,
               fontSize: 12,
               fontWeight: FontWeight.w600,
               letterSpacing: 1.5,
             ),
           ),
         ),
-        SizedBox(width: 14),
+        const SizedBox(width: 14),
         Icon(
           Icons.more_horiz_rounded,
-          color: _muted,
+          color: c.muted,
           size: 25,
-          shadows: _glossyIconShadows,
+          shadows: shadows,
         ),
       ],
     );
@@ -212,23 +223,25 @@ class _CallerPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = GhostPalette.of(context);
+    final shadows = _glossyIconShadows(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _surface,
+        color: c.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _border),
+        border: Border.all(color: c.border),
       ),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 31,
-            backgroundColor: Color(0xFF385442),
+            backgroundColor: c.avatarFill,
             child: Icon(
               Icons.person_rounded,
-              color: Color(0xFFD8F1DC),
+              color: c.avatarIcon,
               size: 38,
-              shadows: _glossyIconShadows,
+              shadows: shadows,
             ),
           ),
           const SizedBox(width: 14),
@@ -238,8 +251,8 @@ class _CallerPreviewCard extends StatelessWidget {
               children: [
                 Text(
                   callerName,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: c.textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
                   ),
@@ -248,16 +261,16 @@ class _CallerPreviewCard extends StatelessWidget {
                 Text(
                   AppLocalizations.of(context)?.setupEmergencyContact ??
                       'Emergency contact',
-                  style: const TextStyle(color: _muted, fontSize: 14),
+                  style: TextStyle(color: c.muted, fontSize: 14),
                 ),
               ],
             ),
           ),
-          const Icon(
+          Icon(
             Icons.equalizer_rounded,
-            color: Color(0xFFFFC247),
+            color: c.amber,
             size: 24,
-            shadows: _glossyIconShadows,
+            shadows: shadows,
           ),
         ],
       ),
