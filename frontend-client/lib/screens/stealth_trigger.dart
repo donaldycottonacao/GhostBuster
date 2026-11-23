@@ -11,6 +11,7 @@ import '../services/audio_service.dart';
 import '../services/voice_recorder.dart';
 import '../services/voice_scenario_store.dart';
 import '../theme/app_theme.dart';
+import '../widgets/ghost_logo.dart';
 import 'voice_script_manager_screen.dart';
 
 class StealthTriggerScreen extends StatefulWidget {
@@ -377,6 +378,8 @@ class _StealthTriggerScreenState extends State<StealthTriggerScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 8),
+                    const Center(child: GhostLogo()),
+                    const SizedBox(height: 10),
                     Center(
                       child: Text.rich(
                         TextSpan(
